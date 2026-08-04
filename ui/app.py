@@ -1,6 +1,6 @@
 """
 ui/app.py — VendorMind AI  •  Futuristic Interactive Neural AI Dashboard
-Featuring Live HTML5 Neural Canvas Particle Mesh, High-Contrast UI, and Plotly Analytics.
+Featuring Live HTML5 Neural Hero Canvas, Results Dashboard Neural Mesh Canvas, High-Contrast UI, and Plotly Analytics.
 """
 
 import os, sys, json, time, threading
@@ -74,6 +74,7 @@ section[data-testid="stSidebar"] {
     border-right: 1px solid rgba(0,212,255,0.25) !important;
     box-shadow: 5px 0 25px rgba(0,0,0,0.5);
 }
+section[data-testid="stSidebar"] h2,
 section[data-testid="stSidebar"] h3 {
     color: #00D4FF !important;
     font-weight: 800 !important;
@@ -119,35 +120,36 @@ div[data-testid="stTextInput"] input:focus {
 /* Tabs */
 div[data-baseweb="tab-list"] {
     background: rgba(0,212,255,0.05) !important;
-    border: 1px solid rgba(0,212,255,0.2) !important;
-    border-radius: 14px !important; padding: 5px !important; gap: 4px !important;
+    border: 1px solid rgba(0,212,255,0.25) !important;
+    border-radius: 14px !important; padding: 6px !important; gap: 6px !important;
+    box-shadow: 0 0 20px rgba(0,212,255,0.08) !important;
 }
 button[role="tab"] {
-    color: #94A3B8 !important; font-weight: 700 !important;
-    font-size: 0.85rem !important; border-radius: 10px !important;
-    transition: all 0.25s !important; padding: 0.6rem 1.3rem !important;
+    color: #A5B4FC !important; font-weight: 700 !important;
+    font-size: 0.88rem !important; border-radius: 10px !important;
+    transition: all 0.25s !important; padding: 0.65rem 1.4rem !important;
 }
 button[role="tab"][aria-selected="true"] {
-    background: linear-gradient(135deg, rgba(0,212,255,0.2), rgba(124,58,237,0.18)) !important;
+    background: linear-gradient(135deg, rgba(0,212,255,0.22), rgba(124,58,237,0.2)) !important;
     color: #00D4FF !important;
-    box-shadow: 0 0 18px rgba(0,212,255,0.25), inset 0 0 0 1px rgba(0,212,255,0.35) !important;
+    box-shadow: 0 0 20px rgba(0,212,255,0.3), inset 0 0 0 1.5px rgba(0,212,255,0.45) !important;
 }
 
 /* Metrics */
 div[data-testid="metric-container"] {
     background: linear-gradient(135deg, rgba(0,212,255,0.06), rgba(124,58,237,0.04)) !important;
-    border: 1px solid rgba(0,212,255,0.25) !important; border-radius: 16px !important;
+    border: 1px solid rgba(0,212,255,0.3) !important; border-radius: 16px !important;
     padding: 1.2rem 1.4rem !important;
-    box-shadow: 0 0 20px rgba(0,212,255,0.05) !important;
+    box-shadow: 0 0 25px rgba(0,212,255,0.08) !important;
 }
-div[data-testid="metric-container"] label { color: #94A3B8 !important; font-size: 0.75rem !important; text-transform: uppercase !important; letter-spacing: 0.08em !important; font-weight: 700 !important; }
+div[data-testid="metric-container"] label { color: #A5B4FC !important; font-size: 0.75rem !important; text-transform: uppercase !important; letter-spacing: 0.08em !important; font-weight: 700 !important; }
 div[data-testid="metric-container"] div[data-testid="stMetricValue"] { color: #F1F5F9 !important; font-size: 1.5rem !important; font-weight: 800 !important; }
 
 /* Expander */
-div[data-testid="stExpander"] { background: rgba(0,212,255,0.03) !important; border: 1px solid rgba(0,212,255,0.2) !important; border-radius: 14px !important; }
+div[data-testid="stExpander"] { background: rgba(0,212,255,0.03) !important; border: 1px solid rgba(0,212,255,0.25) !important; border-radius: 14px !important; }
 div[data-testid="stExpander"] summary { color: #E2E8F0 !important; font-weight: 700 !important; }
 
-.block-container { padding: 1.2rem 2rem 3rem !important; max-width: 1550px !important; }
+.block-container { padding: 1rem 2rem 3rem !important; max-width: 1550px !important; }
 
 /* Keyframe Animations */
 @keyframes neonPulse {
@@ -296,7 +298,7 @@ with st.sidebar:
     run_btn = st.button("⚡  RUN  8-AGENT  PIPELINE", type="primary", use_container_width=True)
 
 # ──────────────────────────────────────────────────────────────────────────────
-# INTERACTIVE NEURAL CANVAS HERO  (HTML5 Particle Mesh Canvas)
+# INTERACTIVE NEURAL CANVAS HERO (Framed perfectly with 100% complete borders)
 # ──────────────────────────────────────────────────────────────────────────────
 NEURAL_HERO_HTML = """
 <!DOCTYPE html>
@@ -305,17 +307,17 @@ NEURAL_HERO_HTML = """
 <meta charset="utf-8">
 <style>
   * { margin:0; padding:0; box-sizing:border-box; font-family:'Space Grotesk', system-ui, sans-serif; }
-  body { background: transparent; overflow: hidden; }
+  body { background: transparent; overflow: hidden; padding: 6px; }
   .canvas-container {
-    position: relative; width: 100%; height: 210px; border-radius: 22px;
+    position: relative; width: 100%; height: 215px; border-radius: 20px;
     background: linear-gradient(135deg, rgba(2,8,22,0.95), rgba(15,10,35,0.92));
-    border: 1px solid rgba(0,212,255,0.3);
-    box-shadow: 0 0 50px rgba(0,212,255,0.12), inset 0 0 30px rgba(0,212,255,0.04);
+    border: 1.5px solid rgba(0,212,255,0.45);
+    box-shadow: 0 0 45px rgba(0,212,255,0.2), inset 0 0 30px rgba(0,212,255,0.06);
     overflow: hidden;
   }
   canvas { position: absolute; top:0; left:0; width:100%; height:100%; z-index:1; }
   .hero-content {
-    position: relative; z-index: 2; height: 100%; padding: 25px 35px;
+    position: relative; z-index: 2; height: 100%; padding: 22px 32px;
     display: flex; align-items: center; justify-content: space-between;
     pointer-events: none;
   }
@@ -323,14 +325,14 @@ NEURAL_HERO_HTML = """
   .brain-orb {
     width: 65px; height: 65px; border-radius: 18px;
     background: linear-gradient(135deg, rgba(0,212,255,0.25), rgba(124,58,237,0.35));
-    border: 1.5px solid rgba(0,212,255,0.5);
+    border: 1.5px solid rgba(0,212,255,0.6);
     display: flex; align-items: center; justify-content: center; font-size: 2.2rem;
-    box-shadow: 0 0 30px rgba(0,212,255,0.3);
+    box-shadow: 0 0 30px rgba(0,212,255,0.4);
     animation: orbGlow 3s ease-in-out infinite;
   }
   @keyframes orbGlow {
-    0%, 100% { box-shadow: 0 0 20px rgba(0,212,255,0.3); }
-    50% { box-shadow: 0 0 45px rgba(0,212,255,0.7), 0 0 70px rgba(124,58,237,0.4); }
+    0%, 100% { box-shadow: 0 0 20px rgba(0,212,255,0.4); }
+    50% { box-shadow: 0 0 45px rgba(0,212,255,0.8), 0 0 70px rgba(124,58,237,0.5); }
   }
   .title-text {
     font-size: 2.5rem; font-weight: 800; margin: 0; line-height: 1.1;
@@ -343,22 +345,22 @@ NEURAL_HERO_HTML = """
   }
   .badges-row { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
   .badge {
-    background: rgba(0,212,255,0.12); border: 1px solid rgba(0,212,255,0.35);
+    background: rgba(0,212,255,0.14); border: 1px solid rgba(0,212,255,0.4);
     color: #00D4FF; border-radius: 6px; font-size: 0.68rem; font-weight: 700;
     padding: 3px 9px; text-transform: uppercase; letter-spacing: 0.06em;
   }
-  .badge.purple { background: rgba(124,58,237,0.15); border-color: rgba(124,58,237,0.4); color: #C084FC; }
-  .badge.green  { background: rgba(16,185,129,0.15); border-color: rgba(16,185,129,0.4); color: #34D399; }
+  .badge.purple { background: rgba(124,58,237,0.18); border-color: rgba(124,58,237,0.5); color: #C084FC; }
+  .badge.green  { background: rgba(16,185,129,0.18); border-color: rgba(16,185,129,0.5); color: #34D399; }
   
   .topology-map { display: flex; gap: 6px; align-items: center; pointer-events: auto; }
   .node-dot {
-    width: 24px; height: 24px; border-radius: 50%; background: rgba(0,212,255,0.15);
-    border: 1px solid rgba(0,212,255,0.4); color: #00D4FF; font-size: 0.65rem; font-weight: 800;
+    width: 24px; height: 24px; border-radius: 50%; background: rgba(0,212,255,0.2);
+    border: 1.5px solid rgba(0,212,255,0.5); color: #00D4FF; font-size: 0.65rem; font-weight: 800;
     display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 0 10px rgba(0,212,255,0.2); transition: all 0.3s;
+    box-shadow: 0 0 10px rgba(0,212,255,0.3); transition: all 0.3s;
   }
   .node-dot:hover { transform: scale(1.3); background: #00D4FF; color: #000; box-shadow: 0 0 20px #00D4FF; }
-  .node-line { width: 14px; height: 2px; background: linear-gradient(90deg, rgba(0,212,255,0.4), rgba(124,58,237,0.4)); }
+  .node-line { width: 14px; height: 2px; background: linear-gradient(90deg, rgba(0,212,255,0.5), rgba(124,58,237,0.5)); }
 </style>
 </head>
 <body>
@@ -381,7 +383,7 @@ NEURAL_HERO_HTML = """
       </div>
     </div>
     <div style="text-align:right">
-      <div style="color:#64748B;font-size:0.65rem;font-weight:700;letter-spacing:0.1em;margin-bottom:6px">LIVE AGENT TOPOLOGY</div>
+      <div style="color:#A5B4FC;font-size:0.65rem;font-weight:800;letter-spacing:0.1em;margin-bottom:6px">LIVE AGENT TOPOLOGY</div>
       <div class="topology-map">
         <div class="node-dot" title="1. Intake">1</div><div class="node-line"></div>
         <div class="node-dot" title="2. Criteria">2</div><div class="node-line"></div>
@@ -390,7 +392,7 @@ NEURAL_HERO_HTML = """
         <div class="node-dot" title="5. Audit">5</div><div class="node-line"></div>
         <div class="node-dot" title="6. Explain">6</div><div class="node-line"></div>
         <div class="node-dot" title="7. Compare">7</div><div class="node-line"></div>
-        <div class="node-dot" style="border-color:#34D399;color:#34D399" title="8. HITL">8</div>
+        <div class="node-dot" style="border-color:#34D399;color:#34D399;box-shadow:0 0 12px #34D399" title="8. HITL">8</div>
       </div>
     </div>
   </div>
@@ -408,15 +410,15 @@ resize();
 window.addEventListener('resize', resize);
 
 const particles = [];
-const numParticles = 45;
+const numParticles = 48;
 
 for (let i = 0; i < numParticles; i++) {
   particles.push({
     x: Math.random() * canvas.width,
     y: Math.random() * canvas.height,
-    vx: (Math.random() - 0.5) * 0.8,
-    vy: (Math.random() - 0.5) * 0.8,
-    radius: Math.random() * 2 + 1,
+    vx: (Math.random() - 0.5) * 0.9,
+    vy: (Math.random() - 0.5) * 0.9,
+    radius: Math.random() * 2.2 + 1,
     color: Math.random() > 0.4 ? 'rgba(0,212,255,' : 'rgba(167,139,250,'
   });
 }
@@ -434,7 +436,7 @@ function animate() {
     
     ctx.beginPath();
     ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-    ctx.fillStyle = p.color + '0.8)';
+    ctx.fillStyle = p.color + '0.85)';
     ctx.fill();
     
     for (let j = i + 1; j < particles.length; j++) {
@@ -443,13 +445,13 @@ function animate() {
       let dy = p.y - p2.y;
       let dist = Math.sqrt(dx * dx + dy * dy);
       
-      if (dist < 110) {
+      if (dist < 115) {
         ctx.beginPath();
         ctx.moveTo(p.x, p.y);
         ctx.lineTo(p2.x, p2.y);
-        let alpha = (1 - dist / 110) * 0.25;
+        let alpha = (1 - dist / 115) * 0.3;
         ctx.strokeStyle = p.color + alpha + ')';
-        ctx.lineWidth = 0.8;
+        ctx.lineWidth = 0.9;
         ctx.stroke();
       }
     }
@@ -462,7 +464,7 @@ animate();
 </html>
 """
 
-components.html(NEURAL_HERO_HTML, height=225)
+components.html(NEURAL_HERO_HTML, height=238)
 
 # ──────────────────────────────────────────────────────────────────────────────
 # AGENTS CONFIG
@@ -578,6 +580,122 @@ if run_btn:
             st.success(f"✅ All 8 agents complete!  **{n} vendors ranked.** Top pick: **{top}**")
 
 # ──────────────────────────────────────────────────────────────────────────────
+# SECOND ANIMATED AI NEURAL CANVAS  (Behind Results Dashboard)
+# ──────────────────────────────────────────────────────────────────────────────
+RESULTS_NEURAL_HTML = """
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; font-family:'Space Grotesk', system-ui, sans-serif; }
+  body { background: transparent; overflow: hidden; padding: 6px; }
+  .res-container {
+    position: relative; width: 100%; height: 110px; border-radius: 18px;
+    background: linear-gradient(135deg, rgba(2,12,30,0.95), rgba(20,5,40,0.92));
+    border: 1.5px solid rgba(124,58,237,0.45);
+    box-shadow: 0 0 45px rgba(124,58,237,0.2), inset 0 0 25px rgba(0,212,255,0.06);
+    overflow: hidden;
+  }
+  canvas { position: absolute; top:0; left:0; width:100%; height:100%; z-index:1; }
+  .res-content {
+    position: relative; z-index: 2; height: 100%; padding: 18px 30px;
+    display: flex; align-items: center; justify-content: space-between;
+    pointer-events: none;
+  }
+  .res-title {
+    font-size: 1.6rem; font-weight: 800; color: #F8FAFC;
+    background: linear-gradient(90deg, #34D399 0%, #00D4FF 50%, #C084FC 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .res-sub { color: #A5B4FC; font-size: 0.8rem; font-weight: 600; margin-top: 3px; }
+  .pulse-chip {
+    background: rgba(52,211,153,0.15); border: 1px solid rgba(52,211,153,0.4);
+    color: #34D399; font-size: 0.72rem; font-weight: 800; padding: 5px 14px;
+    border-radius: 20px; text-transform: uppercase; letter-spacing: 0.08em;
+    box-shadow: 0 0 15px rgba(52,211,153,0.25); animation: pulseGlow 2s ease-in-out infinite;
+  }
+  @keyframes pulseGlow {
+    0%, 100% { box-shadow: 0 0 10px rgba(52,211,153,0.2); }
+    50% { box-shadow: 0 0 25px rgba(52,211,153,0.6); }
+  }
+</style>
+</head>
+<body>
+<div class="res-container">
+  <canvas id="resCanvas"></canvas>
+  <div class="res-content">
+    <div>
+      <div class="res-title">📊 EVALUATION RESULTS MATRIX</div>
+      <div class="res-sub">Multi-Signal Composite Scores • Risk Guardrail Audits • HITL Approval Checkpoint</div>
+    </div>
+    <div>
+      <span class="pulse-chip">⚡ 8/8 AGENTS EXECUTED</span>
+    </div>
+  </div>
+</div>
+
+<script>
+const canvas = document.getElementById('resCanvas');
+const ctx = canvas.getContext('2d');
+
+function resize() {
+  canvas.width = canvas.offsetWidth;
+  canvas.height = canvas.offsetHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+const nodes = [];
+const count = 35;
+for (let i = 0; i < count; i++) {
+  nodes.push({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    vx: (Math.random() - 0.5) * 1.1,
+    vy: (Math.random() - 0.5) * 1.1,
+    r: Math.random() * 2.5 + 1,
+    hue: Math.random() > 0.5 ? '#34D399' : '#00D4FF'
+  });
+}
+
+function animate() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  for (let i = 0; i < nodes.length; i++) {
+    let n = nodes[i];
+    n.x += n.vx; n.y += n.vy;
+    if (n.x < 0 || n.x > canvas.width) n.vx *= -1;
+    if (n.y < 0 || n.y > canvas.height) n.vy *= -1;
+    
+    ctx.beginPath();
+    ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+    ctx.fillStyle = n.hue;
+    ctx.shadowBlur = 10;
+    ctx.shadowColor = n.hue;
+    ctx.fill();
+    
+    for (let j = i + 1; j < nodes.length; j++) {
+      let n2 = nodes[j];
+      let dist = Math.hypot(n.x - n2.x, n.y - n2.y);
+      if (dist < 100) {
+        ctx.beginPath();
+        ctx.moveTo(n.x, n.y);
+        ctx.lineTo(n2.x, n2.y);
+        ctx.strokeStyle = `rgba(0, 212, 255, ${0.35 * (1 - dist / 100)})`;
+        ctx.lineWidth = 0.8;
+        ctx.stroke();
+      }
+    }
+  }
+  requestAnimationFrame(animate);
+}
+animate();
+</script>
+</body>
+</html>
+"""
+
+# ──────────────────────────────────────────────────────────────────────────────
 # RESULTS DASHBOARD
 # ──────────────────────────────────────────────────────────────────────────────
 if st.session_state.result:
@@ -588,7 +706,9 @@ if st.session_state.result:
     hitl   = res.get("hitl_approved")
     n_v    = len(table)
 
-    st.markdown('<div class="vm-section"><div class="vm-section-title">📊&nbsp; EVALUATION RESULTS DASHBOARD</div><div class="vm-section-line"></div></div>', unsafe_allow_html=True)
+    # 2ND ANIMATED NEURAL CANVAS BACKGROUND FOR RESULTS
+    components.html(RESULTS_NEURAL_HTML, height=130)
+
     c1,c2,c3,c4 = st.columns(4)
     c1.metric("👑 Top Vendor", top)
     c2.metric("📋 Vendors Ranked", n_v)
