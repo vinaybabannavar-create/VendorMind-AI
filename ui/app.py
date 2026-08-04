@@ -644,15 +644,14 @@ if st.session_state.result:
             sems     = [round(r["semantic_score"]*100,1) for r in table]
             flags_ct = [r.get("risk_flag_count",0) for r in table]
 
-            PLOTLY_LAYOUT = dict(
+            PLOTLY_BASE = dict(
                 paper_bgcolor="rgba(0,0,0,0)",
                 plot_bgcolor ="rgba(0,0,0,0)",
                 font=dict(family="Space Grotesk, sans-serif", color="#475569"),
-                xaxis=dict(gridcolor="rgba(0,212,255,0.06)", zerolinecolor="rgba(0,212,255,0.08)", tickfont=dict(color="#334155")),
-                yaxis=dict(gridcolor="rgba(0,212,255,0.06)", zerolinecolor="rgba(0,212,255,0.08)", tickfont=dict(color="#334155")),
                 legend=dict(bgcolor="rgba(0,0,0,0)", bordercolor="rgba(0,212,255,0.15)", borderwidth=1, font=dict(color="#64748B")),
                 margin=dict(l=20,r=20,t=40,b=20),
             )
+            AXIS_STYLE = dict(gridcolor="rgba(0,212,255,0.06)", zerolinecolor="rgba(0,212,255,0.08)", tickfont=dict(color="#334155"))
 
             col_left, col_right = st.columns([1.2, 1])
 
@@ -669,10 +668,10 @@ if st.session_state.result:
                 fig_bar.add_trace(go.Bar(name="🔍 Semantic",   y=vendors, x=sems,   orientation='h',
                     marker=dict(color="#A78BFA", opacity=0.9, line=dict(color="#A78BFA",width=0)),
                     hovertemplate="<b>%{y}</b><br>Semantic Fit: %{x:.1f}<extra></extra>"))
-                fig_bar.update_layout(**PLOTLY_LAYOUT, barmode='group', height=300,
+                fig_bar.update_layout(**PLOTLY_BASE, barmode='group', height=300,
                     title=dict(text="Signal Scores per Vendor (0-100)", font=dict(size=13,color="#475569")),
-                    xaxis=dict(**PLOTLY_LAYOUT["xaxis"], title="Score (0–100)", range=[0,110]),
-                    yaxis=dict(**PLOTLY_LAYOUT["yaxis"], autorange="reversed"))
+                    xaxis=dict(**AXIS_STYLE, title="Score (0–100)", range=[0,110]),
+                    yaxis=dict(**AXIS_STYLE, autorange="reversed"))
                 st.plotly_chart(fig_bar, use_container_width=True, config={"displayModeBar":False})
 
                 # ── Composite ranking
@@ -685,10 +684,10 @@ if st.session_state.result:
                     textfont=dict(color="#94A3B8", size=12),
                     hovertemplate="<b>%{x}</b><br>Composite Score: %{y:.1f}<extra></extra>"
                 ))
-                fig_rank.update_layout(**PLOTLY_LAYOUT, height=280,
+                fig_rank.update_layout(**PLOTLY_BASE, height=280,
                     title=dict(text="Final Composite Score — Higher is Better", font=dict(size=13,color="#475569")),
-                    yaxis=dict(**PLOTLY_LAYOUT["yaxis"], range=[0,115], title="Score"),
-                    xaxis=dict(**PLOTLY_LAYOUT["xaxis"]))
+                    yaxis=dict(**AXIS_STYLE, range=[0,115], title="Score"),
+                    xaxis=dict(**AXIS_STYLE))
                 st.plotly_chart(fig_rank, use_container_width=True, config={"displayModeBar":False})
 
             with col_right:
