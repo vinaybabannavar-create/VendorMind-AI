@@ -63,26 +63,52 @@ st.markdown(r"""
 html, body, [class*="css"] { font-family: 'Space Grotesk', sans-serif !important; }
 
 /* Main App Transparent so Full-Screen Canvas shows behind everything */
-.stApp {
+html, body {
     background: #020712 !important;
 }
+.stApp, [data-testid="stAppViewContainer"], [data-testid="stHeader"], .main {
+    background: transparent !important;
+}
 
-/* Sidebar High-Contrast Glass */
+/* ── Sidebar: AI Neural Glass ── */
 section[data-testid="stSidebar"] {
-    background: rgba(3,9,24,0.92) !important;
-    border-right: 1px solid rgba(0,212,255,0.25) !important;
-    backdrop-filter: blur(15px);
+    background: linear-gradient(180deg, rgba(2,6,18,0.98) 0%, rgba(5,3,20,0.98) 100%) !important;
+    border-right: 1.5px solid rgba(0,212,255,0.3) !important;
+    backdrop-filter: blur(24px);
+    box-shadow: 4px 0 40px rgba(0,212,255,0.08) !important;
 }
-section[data-testid="stSidebar"] h2,
-section[data-testid="stSidebar"] h3 {
-    color: #00D4FF !important;
-    font-weight: 800 !important;
-    letter-spacing: 0.05em !important;
+/* Sidebar scrollbar */
+section[data-testid="stSidebar"]::-webkit-scrollbar { width: 4px; }
+section[data-testid="stSidebar"]::-webkit-scrollbar-track { background: transparent; }
+section[data-testid="stSidebar"]::-webkit-scrollbar-thumb { background: rgba(0,212,255,0.3); border-radius: 4px; }
+/* Sidebar inner padding */
+section[data-testid="stSidebar"] > div:first-child { padding: 0 !important; }
+section[data-testid="stSidebar"] .block-container { padding: 0 14px 20px 14px !important; }
+/* Sidebar labels */
+section[data-testid="stSidebar"] label {
+    color: #7DD3FA !important; font-weight: 700 !important; font-size: 0.8rem !important;
+    letter-spacing: 0.04em !important;
 }
-section[data-testid="stSidebar"] label,
-section[data-testid="stSidebar"] p {
-    color: #A5B4FC !important;
-    font-weight: 600 !important;
+/* Sidebar expander */
+section[data-testid="stSidebar"] details {
+    background: rgba(0,212,255,0.04) !important;
+    border: 1px solid rgba(0,212,255,0.18) !important;
+    border-radius: 12px !important; margin-bottom: 8px !important;
+}
+section[data-testid="stSidebar"] summary {
+    color: #00D4FF !important; font-weight: 700 !important; font-size: 0.85rem !important;
+    padding: 10px 14px !important;
+}
+section[data-testid="stSidebar"] summary:hover {
+    background: rgba(0,212,255,0.08) !important; border-radius: 11px !important;
+}
+/* Number input */
+section[data-testid="stSidebar"] div[data-testid="stNumberInput"] button {
+    background: rgba(0,212,255,0.12) !important; border-color: rgba(0,212,255,0.3) !important;
+    color: #00D4FF !important; border-radius: 8px !important; font-weight: 800 !important;
+}
+section[data-testid="stSidebar"] div[data-testid="stNumberInput"] button:hover {
+    background: rgba(0,212,255,0.25) !important; box-shadow: 0 0 12px rgba(0,212,255,0.3) !important;
 }
 
 /* Glow Inputs */
@@ -261,7 +287,7 @@ div[data-testid="stExpander"] summary { color: #E2E8F0 !important; font-weight: 
 """, unsafe_allow_html=True)
 
 # ──────────────────────────────────────────────────────────────────────────────
-# FULL-SCREEN BACKGROUND NEURAL CANVAS INJECTOR (Injected directly into parent window)
+# FULL-SCREEN BACKGROUND NEURAL CANVAS INJECTOR (Distinct Multi-Layer AI Engine)
 # ──────────────────────────────────────────────────────────────────────────────
 FULL_PAGE_NEURAL_BG_HTML = """
 <!DOCTYPE html>
@@ -271,6 +297,8 @@ FULL_PAGE_NEURAL_BG_HTML = """
 <script>
 (function() {
   const pDoc = window.parent.document;
+  pDoc.body.style.backgroundColor = '#020712';
+  
   if (!pDoc.getElementById('bg-neural-canvas')) {
     const canvas = pDoc.createElement('canvas');
     canvas.id = 'bg-neural-canvas';
@@ -291,21 +319,76 @@ FULL_PAGE_NEURAL_BG_HTML = """
     resize();
     window.parent.addEventListener('resize', resize);
 
+    // ── Neural Network Nodes ──
     const particles = [];
-    const count = 75;
+    const count = 85;
     for (let i = 0; i < count; i++) {
       particles.push({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
-        vx: (Math.random() - 0.5) * 0.75,
-        vy: (Math.random() - 0.5) * 0.75,
+        vx: (Math.random() - 0.5) * 0.6,
+        vy: (Math.random() - 0.5) * 0.6,
         r: Math.random() * 2.2 + 1,
-        color: Math.random() > 0.45 ? 'rgba(0, 212, 255, ' : 'rgba(167, 139, 250, '
+        color: Math.random() > 0.6 ? 'rgba(0, 212, 255, ' : Math.random() > 0.3 ? 'rgba(167, 139, 250, ' : 'rgba(52, 211, 153, '
       });
     }
 
+    // ── Floating AI Data Stream Packets ──
+    const dataPackets = [];
+    const labels = ['010101', 'LANGGRAPH', 'GEMINI_2.0', 'NODE_SYNC', 'VECTOR_MATCH', 'HITL_PASS', 'SCORE_98.4', 'SLA_VALID', 'SOC2_TYPE2'];
+    for (let i = 0; i < 14; i++) {
+      dataPackets.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        vy: -0.3 - Math.random() * 0.4,
+        text: labels[Math.floor(Math.random() * labels.length)],
+        alpha: Math.random() * 0.4 + 0.15,
+        color: Math.random() > 0.5 ? '#00D4FF' : '#A78BFA'
+      });
+    }
+
+    // ── Rotating Hexagon Beacons ──
+    const hexes = [];
+    for (let i = 0; i < 6; i++) {
+      hexes.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        size: Math.random() * 35 + 25,
+        rot: Math.random() * Math.PI * 2,
+        rotSpeed: (Math.random() - 0.5) * 0.008,
+        color: Math.random() > 0.5 ? 'rgba(0,212,255,0.08)' : 'rgba(167,139,250,0.08)'
+      });
+    }
+
+    function drawHex(x, y, r, rot, col) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(rot);
+      ctx.beginPath();
+      for (let i = 0; i < 6; i++) {
+        const a = (i * Math.PI) / 3;
+        const px = r * Math.cos(a);
+        const py = r * Math.sin(a);
+        i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+      }
+      ctx.closePath();
+      ctx.strokeStyle = col;
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    // ── Main Render Loop ──
     function draw() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // 1. Draw Rotating Hexagons
+      for (let h of hexes) {
+        h.rot += h.rotSpeed;
+        drawHex(h.x, h.y, h.size, h.rot, h.color);
+      }
+
+      // 2. Draw Particles & Synapses
       for (let i = 0; i < particles.length; i++) {
         let p = particles[i];
         p.x += p.vx; p.y += p.vy;
@@ -320,16 +403,31 @@ FULL_PAGE_NEURAL_BG_HTML = """
         for (let j = i + 1; j < particles.length; j++) {
           let p2 = particles[j];
           let dist = Math.hypot(p.x - p2.x, p.y - p2.y);
-          if (dist < 125) {
+          if (dist < 135) {
             ctx.beginPath();
             ctx.moveTo(p.x, p.y);
             ctx.lineTo(p2.x, p2.y);
-            ctx.strokeStyle = p.color + ((1 - dist / 125) * 0.22) + ')';
+            ctx.strokeStyle = p.color + ((1 - dist / 135) * 0.25) + ')';
             ctx.lineWidth = 0.8;
             ctx.stroke();
           }
         }
       }
+
+      // 3. Draw Floating Data Packets
+      ctx.font = '10px "JetBrains Mono", monospace';
+      for (let dp of dataPackets) {
+        dp.y += dp.vy;
+        if (dp.y < -20) {
+          dp.y = canvas.height + 20;
+          dp.x = Math.random() * canvas.width;
+        }
+        ctx.fillStyle = dp.color;
+        ctx.globalAlpha = dp.alpha;
+        ctx.fillText(dp.text, dp.x, dp.y);
+        ctx.globalAlpha = 1.0;
+      }
+
       requestAnimationFrame(draw);
     }
     draw();
@@ -349,36 +447,193 @@ for k, v in [("evaluation_id",None),("result",None),("pipeline_state","idle")]:
     if k not in st.session_state: st.session_state[k] = v
 
 # ──────────────────────────────────────────────────────────────────────────────
-# SIDEBAR
+# SIDEBAR — Full AI-Grade Animated Panel
 # ──────────────────────────────────────────────────────────────────────────────
-with st.sidebar:
-    st.markdown("<h2 style='color:#00D4FF;font-weight:800;margin-bottom:0'>🧠 VendorMind AI</h2>", unsafe_allow_html=True)
-    st.markdown("<p style='color:#A5B4FC;font-size:0.75rem;font-family:JetBrains Mono,monospace;letter-spacing:0.06em;font-weight:700'>AI AGENT BUILDER SERIES 2026</p>", unsafe_allow_html=True)
-    st.markdown("<hr style='border:none;border-top:1px solid rgba(0,212,255,0.2);margin:0.8rem 0'>", unsafe_allow_html=True)
+SIDEBAR_HEADER_HTML = """
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; font-family:'Space Grotesk',system-ui,sans-serif; }
+  body { background:transparent; overflow:hidden; }
+  .sb-wrap {
+    position:relative; width:100%; height:185px; overflow:hidden;
+    background: linear-gradient(135deg, rgba(0,6,18,0.98), rgba(8,2,22,0.98));
+    border-radius: 0 0 20px 20px;
+    border-bottom: 1.5px solid rgba(0,212,255,0.35);
+    border-left: none; border-right: none;
+    box-shadow: 0 10px 40px rgba(0,212,255,0.1), inset 0 -1px 30px rgba(124,58,237,0.08);
+  }
+  canvas { position:absolute; top:0; left:0; width:100%; height:100%; z-index:1; }
+  .sb-content {
+    position:relative; z-index:2; padding:18px 16px 14px;
+    display:flex; flex-direction:column; height:100%;
+  }
+  .sb-logo-row { display:flex; align-items:center; gap:10px; margin-bottom:8px; }
+  .sb-orb {
+    width:44px; height:44px; border-radius:12px; flex-shrink:0;
+    background: linear-gradient(135deg,rgba(0,212,255,0.3),rgba(124,58,237,0.4));
+    border: 1.5px solid rgba(0,212,255,0.7);
+    display:flex; align-items:center; justify-content:center; font-size:1.4rem;
+    box-shadow: 0 0 20px rgba(0,212,255,0.5);
+    animation: orbPulse 2.5s ease-in-out infinite;
+  }
+  @keyframes orbPulse {
+    0%,100% { box-shadow:0 0 15px rgba(0,212,255,0.4); }
+    50% { box-shadow:0 0 35px rgba(0,212,255,0.9),0 0 55px rgba(124,58,237,0.5); }
+  }
+  .sb-brand { }
+  .sb-name {
+    font-size:1.25rem; font-weight:800; line-height:1.1;
+    background: linear-gradient(90deg,#00D4FF,#A78BFA,#34D399);
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  }
+  .sb-sub {
+    font-size:0.58rem; font-family:'JetBrains Mono',monospace; font-weight:700;
+    color:#4B5563; letter-spacing:0.12em; text-transform:uppercase; margin-top:1px;
+  }
+  .sb-nodes { display:flex; align-items:center; gap:4px; margin:8px 0; flex-wrap:nowrap; }
+  .sn {
+    width:22px; height:22px; border-radius:50%;
+    background:rgba(0,212,255,0.12); border:1.2px solid rgba(0,212,255,0.4);
+    color:#00D4FF; font-size:0.6rem; font-weight:800;
+    display:flex; align-items:center; justify-content:center;
+    animation: nodeGlow 2s ease-in-out infinite;
+    flex-shrink:0;
+  }
+  .sn:last-child { border-color:rgba(52,211,153,0.6); color:#34D399; box-shadow:0 0 8px rgba(52,211,153,0.5); }
+  @keyframes nodeGlow {
+    0%,100% { opacity:0.6; } 50% { opacity:1; box-shadow:0 0 10px rgba(0,212,255,0.5); }
+  }
+  .sn:nth-child(odd)  { animation-delay: 0.2s; }
+  .sn:nth-child(even) { animation-delay: 0.8s; }
+  .sl { width:10px; height:1.5px; background:linear-gradient(90deg,rgba(0,212,255,0.4),rgba(124,58,237,0.4)); flex-shrink:0; }
+  .sb-stats { display:flex; gap:10px; margin-top:auto; }
+  .sbst {
+    flex:1; background:rgba(0,212,255,0.07); border:1px solid rgba(0,212,255,0.18);
+    border-radius:8px; padding:5px 6px; text-align:center;
+  }
+  .sbst-v { font-size:1rem; font-weight:800; font-family:'JetBrains Mono',monospace; }
+  .sbst-v.cy { color:#00D4FF; } .sbst-v.pu { color:#A78BFA; } .sbst-v.gr { color:#34D399; }
+  .sbst-l { font-size:0.55rem; font-weight:700; color:#374151; text-transform:uppercase; letter-spacing:0.06em; margin-top:1px; }
+  .live-dot {
+    display:inline-block; width:6px; height:6px; border-radius:50%;
+    background:#34D399; margin-right:5px;
+    animation: liveBlink 1s ease-in-out infinite;
+  }
+  @keyframes liveBlink { 0%,100%{opacity:1;} 50%{opacity:0.2;} }
+  .sb-status {
+    font-size:0.62rem; font-weight:700; color:#34D399; letter-spacing:0.06em;
+    display:flex; align-items:center; margin-bottom:4px;
+  }
+</style>
+</head>
+<body>
+<div class="sb-wrap">
+  <canvas id="sbCanvas"></canvas>
+  <div class="sb-content">
+    <div class="sb-status"><span class="live-dot"></span>VENDORMIND AI · READY</div>
+    <div class="sb-logo-row">
+      <div class="sb-orb">🧠</div>
+      <div class="sb-brand">
+        <div class="sb-name">VendorMind AI</div>
+        <div class="sb-sub">Agentic Procurement · LangGraph</div>
+      </div>
+    </div>
+    <div class="sb-nodes">
+      <div class="sn">1</div><div class="sl"></div>
+      <div class="sn">2</div><div class="sl"></div>
+      <div class="sn">3</div><div class="sl"></div>
+      <div class="sn">4</div><div class="sl"></div>
+      <div class="sn">5</div><div class="sl"></div>
+      <div class="sn">6</div><div class="sl"></div>
+      <div class="sn">7</div><div class="sl"></div>
+      <div class="sn" style="border-color:rgba(52,211,153,0.6);color:#34D399">8</div>
+    </div>
+    <div class="sb-stats">
+      <div class="sbst"><div class="sbst-v cy">8</div><div class="sbst-l">Agents</div></div>
+      <div class="sbst"><div class="sbst-v pu">Gemini</div><div class="sbst-l">2.0 Flash</div></div>
+      <div class="sbst"><div class="sbst-v gr">HITL</div><div class="sbst-l">Gated</div></div>
+    </div>
+  </div>
+</div>
+<script>
+const c=document.getElementById('sbCanvas'),x=c.getContext('2d');
+function rsz(){c.width=c.offsetWidth;c.height=c.offsetHeight;}rsz();
+const pts=[];
+for(let i=0;i<35;i++) pts.push({x:Math.random()*400,y:Math.random()*200,vx:(Math.random()-.5)*.5,vy:(Math.random()-.5)*.5,r:Math.random()*1.5+.5,col:Math.random()>.5?'rgba(0,212,255,':'rgba(124,58,237,'});
+function draw(){
+  x.clearRect(0,0,c.width,c.height);
+  for(let i=0;i<pts.length;i++){
+    let p=pts[i]; p.x+=p.vx; p.y+=p.vy;
+    if(p.x<0||p.x>c.width) p.vx*=-1;
+    if(p.y<0||p.y>c.height) p.vy*=-1;
+    x.beginPath(); x.arc(p.x,p.y,p.r,0,Math.PI*2);
+    x.fillStyle=p.col+'0.7)'; x.fill();
+    for(let j=i+1;j<pts.length;j++){
+      const q=pts[j],d=Math.hypot(p.x-q.x,p.y-q.y);
+      if(d<80){x.beginPath();x.moveTo(p.x,p.y);x.lineTo(q.x,q.y);
+        x.strokeStyle=p.col+(0.18*(1-d/80))+')';x.lineWidth=.6;x.stroke();}
+    }
+  }
+  requestAnimationFrame(draw);
+}
+draw();
+</script>
+</body>
+</html>
+"""
 
-    st.markdown("<p style='color:#00D4FF;font-size:0.7rem;font-weight:800;text-transform:uppercase;letter-spacing:0.12em;margin-bottom:0.3rem'>① PRESET RFP TEMPLATE</p>", unsafe_allow_html=True)
+with st.sidebar:
+    # ── Animated AI Header Panel ──
+    components.html(SIDEBAR_HEADER_HTML, height=195)
+
+    # ── Section label helper ──
+    def sb_label(num, txt):
+        st.markdown(f"""
+        <div style='display:flex;align-items:center;gap:8px;margin:14px 0 6px'>
+          <div style='width:22px;height:22px;border-radius:50%;background:rgba(0,212,255,0.15);
+            border:1px solid rgba(0,212,255,0.5);display:flex;align-items:center;justify-content:center;
+            color:#00D4FF;font-size:0.65rem;font-weight:800;flex-shrink:0'>{num}</div>
+          <span style='color:#00D4FF;font-size:0.68rem;font-weight:800;text-transform:uppercase;
+            letter-spacing:0.14em'>{txt}</span>
+        </div>""", unsafe_allow_html=True)
+
+    # ── ① Preset RFP ──
+    sb_label("①", "Preset RFP Template")
     preset_key = st.selectbox("_p", ["custom"]+list(PRESET_RFPS.keys()),
         format_func=lambda k: "✍️  Custom Input" if k=="custom" else PRESET_RFPS[k]["title"],
         label_visibility="collapsed")
     default_rfp     = PRESET_RFPS[preset_key]["rfp_text"] if preset_key!="custom" else ""
     default_vendors = SAMPLE_VENDORS if preset_key!="custom" else SAMPLE_VENDORS[:2]
 
-    st.markdown("<p style='color:#00D4FF;font-size:0.7rem;font-weight:800;text-transform:uppercase;letter-spacing:0.12em;margin:0.9rem 0 0.3rem'>② RFP REQUIREMENTS</p>", unsafe_allow_html=True)
-    rfp_input = st.text_area("_r", value=default_rfp, height=175, label_visibility="collapsed",
+    # ── ② RFP Requirements ──
+    sb_label("②", "RFP Requirements")
+    rfp_input = st.text_area("_r", value=default_rfp, height=160, label_visibility="collapsed",
                               placeholder="Paste RFP requirements, compliance rules, SLA, budget ceiling...")
 
-    st.markdown("<p style='color:#00D4FF;font-size:0.7rem;font-weight:800;text-transform:uppercase;letter-spacing:0.12em;margin:0.9rem 0 0.3rem'>③ VENDOR SUBMISSIONS</p>", unsafe_allow_html=True)
+    # ── ③ Vendor Submissions ──
+    sb_label("③", "Vendor Submissions")
     num_v = st.number_input("_nv", min_value=1, max_value=8, value=min(len(default_vendors),3), step=1, label_visibility="collapsed")
     vendor_inputs = []
     for i in range(int(num_v)):
         v = default_vendors[i] if i<len(default_vendors) else {"vendor_id":f"vendor_{i+1}","vendor_name":f"Vendor {chr(65+i)}","raw_text":""}
         with st.expander(f"🏢  {v.get('vendor_name','')}", expanded=(i==0)):
             vname = st.text_input("Name", value=v.get("vendor_name",""), key=f"vn_{i}")
-            vtext = st.text_area("Proposal", value=v.get("raw_text","").strip(), key=f"vt_{i}", height=105, label_visibility="collapsed", placeholder="Proposal text, pricing, certs...")
+            vtext = st.text_area("Proposal", value=v.get("raw_text","").strip(), key=f"vt_{i}", height=100, label_visibility="collapsed", placeholder="Proposal text, pricing, certs...")
             vendor_inputs.append({"vendor_id":f"vendor_{i+1}","vendor_name":vname,"raw_text":vtext})
 
-    st.markdown("<hr style='border:none;border-top:1px solid rgba(0,212,255,0.2);margin:0.9rem 0'>", unsafe_allow_html=True)
+    # ── Run Button ──
+    st.markdown("""
+    <div style='margin:16px 0 4px'>
+      <div style='height:1px;background:linear-gradient(90deg,transparent,rgba(0,212,255,0.4),rgba(124,58,237,0.4),transparent);margin-bottom:14px'></div>
+    </div>""", unsafe_allow_html=True)
     run_btn = st.button("⚡  RUN  8-AGENT  PIPELINE", type="primary", use_container_width=True)
+    st.markdown("""
+    <div style='text-align:center;margin-top:8px'>
+      <span style='font-size:0.6rem;color:#1E3A5F;font-weight:700;letter-spacing:0.08em;text-transform:uppercase'>Powered by LangGraph · Gemini 2.0 · ChromaDB</span>
+    </div>""", unsafe_allow_html=True)
 
 # ──────────────────────────────────────────────────────────────────────────────
 # HERO CANVAS (Framed with padding & clear top border)
@@ -1027,16 +1282,342 @@ if st.session_state.result:
             st.download_button("📄  Download JSON Report", data=json.dumps(payload,indent=2), file_name=f"vendormind_{st.session_state.evaluation_id}.json", mime="application/json", use_container_width=True)
 
 # ──────────────────────────────────────────────────────────────────────────────
-# EMPTY STATE
+# EMPTY STATE  — Interactive AI Globe + Neural Grid Welcome Screen
 # ──────────────────────────────────────────────────────────────────────────────
 else:
     if st.session_state.pipeline_state == "idle":
-        st.markdown("""
-        <div style="text-align:center;padding:4rem 2rem;background:rgba(0,212,255,0.03);border:1px solid rgba(0,212,255,0.15);border-radius:24px;margin:0.5rem 0">
-          <div style="width:100px;height:100px;border-radius:50%;margin:0 auto 2rem;background:radial-gradient(circle,rgba(0,212,255,0.25),rgba(124,58,237,0.15),transparent);border:1px solid rgba(0,212,255,0.3);display:flex;align-items:center;justify-content:center;font-size:3rem;animation:neonPulse 3s ease infinite">🧠</div>
-          <div style="color:#F8FAFC;font-size:2rem;font-weight:800;margin-bottom:0.6rem">Ready to Evaluate Vendors</div>
-          <div style="color:#94A3B8;font-size:0.98rem;max-width:520px;margin:0 auto 2.5rem;line-height:1.75;font-weight:500">
-            Select a Preset RFP in the sidebar, add vendor proposals, then click
-            <b style="color:#00D4FF">⚡ RUN 8-AGENT PIPELINE</b> to start the LangGraph evaluation.
-          </div>
-        </div>""", unsafe_allow_html=True)
+        WELCOME_GLOBE_HTML = """
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; font-family:'Space Grotesk', system-ui, sans-serif; }
+  body { background: transparent; overflow: hidden; padding: 6px; }
+  .welcome-wrap {
+    position: relative; width: 100%; height: 520px; border-radius: 24px;
+    background: linear-gradient(135deg, rgba(2,10,26,0.97), rgba(12,4,30,0.97));
+    border: 1.5px solid rgba(0,212,255,0.35);
+    box-shadow: 0 0 60px rgba(0,212,255,0.12), inset 0 0 40px rgba(124,58,237,0.06);
+    overflow: hidden;
+  }
+  canvas { position: absolute; top:0; left:0; width:100%; height:100%; z-index:1; }
+  .ui-layer {
+    position: relative; z-index: 2; width: 100%; height: 100%;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    pointer-events: none; padding: 0 2rem;
+  }
+  .agent-title {
+    font-size: 0.72rem; font-weight: 800; letter-spacing: 0.2em; text-transform: uppercase;
+    color: #00D4FF; margin-bottom: 0.8rem;
+    text-shadow: 0 0 20px rgba(0,212,255,0.8);
+  }
+  .main-title {
+    font-size: 2.6rem; font-weight: 800; text-align: center; line-height: 1.15;
+    background: linear-gradient(135deg, #F8FAFC 0%, #A5B4FC 50%, #00D4FF 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    margin-bottom: 0.9rem;
+  }
+  .sub-text {
+    color: #64748B; font-size: 0.95rem; text-align: center;
+    max-width: 520px; line-height: 1.75; font-weight: 500; margin-bottom: 2.5rem;
+  }
+  .sub-text b { color: #00D4FF; }
+  .step-row {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 2.2rem; flex-wrap: wrap; justify-content: center;
+  }
+  .step {
+    background: rgba(0,212,255,0.08); border: 1px solid rgba(0,212,255,0.2);
+    border-radius: 12px; padding: 8px 16px; text-align: center;
+    transition: all 0.3s;
+  }
+  .step:hover { background: rgba(0,212,255,0.16); box-shadow: 0 0 18px rgba(0,212,255,0.2); }
+  .step-icon { font-size: 1.4rem; display: block; margin-bottom: 3px; }
+  .step-num { color: #00D4FF; font-size: 0.6rem; font-weight: 800; letter-spacing: 0.08em; }
+  .step-lbl { color: #E2E8F0; font-size: 0.72rem; font-weight: 700; margin-top: 1px; }
+  .step-arr { color: rgba(0,212,255,0.3); font-size: 1.3rem; font-weight: 300; }
+  .cta-chip {
+    background: linear-gradient(135deg, rgba(0,212,255,0.15), rgba(124,58,237,0.15));
+    border: 1.5px solid rgba(0,212,255,0.4); border-radius: 14px;
+    padding: 10px 28px; color: #00D4FF; font-size: 0.85rem; font-weight: 800;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    box-shadow: 0 0 25px rgba(0,212,255,0.2); animation: ctaPulse 2.5s ease-in-out infinite;
+  }
+  @keyframes ctaPulse {
+    0%, 100% { box-shadow: 0 0 15px rgba(0,212,255,0.2); }
+    50% { box-shadow: 0 0 35px rgba(0,212,255,0.5), 0 0 60px rgba(124,58,237,0.2); }
+  }
+  .stats-row {
+    display: flex; gap: 30px; margin-top: 1.8rem;
+  }
+  .stat { text-align: center; }
+  .stat-val { font-size: 1.5rem; font-weight: 800; font-family: 'JetBrains Mono', monospace; }
+  .stat-val.cy { color: #00D4FF; } .stat-val.pu { color: #A78BFA; } .stat-val.gr { color: #34D399; }
+  .stat-lbl { color: #334155; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; margin-top: 2px; }
+</style>
+</head>
+<body>
+<div class="welcome-wrap">
+  <canvas id="globeCanvas"></canvas>
+  <div class="ui-layer">
+    <div class="agent-title">⚡ VendorMind AI — Agentic Procurement Intelligence</div>
+    <div class="main-title">Ready to Evaluate<br>Your Vendors</div>
+    <div class="sub-text">
+      Configure your RFP requirements in the sidebar and add vendor proposals.<br>
+      Then click <b>⚡ Run 8-Agent Pipeline</b> to start the LangGraph evaluation.
+    </div>
+    <div class="step-row">
+      <div class="step"><span class="step-icon">📥</span><span class="step-num">Node 1</span><span class="step-lbl">Intake</span></div>
+      <div class="step-arr">→</div>
+      <div class="step"><span class="step-icon">🔍</span><span class="step-num">Node 2-3</span><span class="step-lbl">Extract & Retrieve</span></div>
+      <div class="step-arr">→</div>
+      <div class="step"><span class="step-icon">📊</span><span class="step-num">Node 4-5</span><span class="step-lbl">Score & Audit</span></div>
+      <div class="step-arr">→</div>
+      <div class="step"><span class="step-icon">💬</span><span class="step-num">Node 6-7</span><span class="step-lbl">Explain & Compare</span></div>
+      <div class="step-arr">→</div>
+      <div class="step" style="border-color:rgba(52,211,153,0.4);background:rgba(52,211,153,0.08)"><span class="step-icon">✅</span><span class="step-num" style="color:#34D399">Node 8</span><span class="step-lbl">HITL Approve</span></div>
+    </div>
+    <div class="cta-chip">← Configure RFP & Vendors in Sidebar, then Run Pipeline</div>
+    <div class="stats-row">
+      <div class="stat"><div class="stat-val cy">8</div><div class="stat-lbl">AI Agents</div></div>
+      <div class="stat"><div class="stat-val pu">3</div><div class="stat-lbl">Signals</div></div>
+      <div class="stat"><div class="stat-val gr">100%</div><div class="stat-lbl">Explainable</div></div>
+      <div class="stat"><div class="stat-val cy">HITL</div><div class="stat-lbl">Gated Output</div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const canvas = document.getElementById('globeCanvas');
+const ctx = canvas.getContext('2d');
+
+function resize() {
+  canvas.width = canvas.offsetWidth;
+  canvas.height = canvas.offsetHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+// ── Globe Parameters ──
+const cx = () => canvas.width * 0.82;
+const cy = () => canvas.height * 0.5;
+const R  = 130;
+let   rotY = 0;
+
+// Globe point grid
+const points = [];
+for (let lat = -80; lat <= 80; lat += 18) {
+  for (let lng = 0; lng < 360; lng += 18) {
+    const la = lat * Math.PI / 180;
+    const lo = lng * Math.PI / 180;
+    points.push({ la, lo,
+      col: Math.random() > 0.6 ? '#00D4FF' : Math.random() > 0.5 ? '#A78BFA' : '#34D399' });
+  }
+}
+
+// Orbital rings
+const rings = [
+  { r: R + 28, tilt: 0.4, speed: 0.012, phase: 0,    color: 'rgba(0,212,255,0.5)', dot: '#00D4FF' },
+  { r: R + 50, tilt: 1.1, speed: -0.008, phase: 2,   color: 'rgba(167,139,250,0.4)', dot: '#A78BFA' },
+  { r: R + 72, tilt: 0.6, speed: 0.006, phase: 4,    color: 'rgba(52,211,153,0.35)', dot: '#34D399' },
+];
+
+// Background neural particles
+const particles = [];
+for (let i = 0; i < 55; i++) {
+  particles.push({
+    x: Math.random() * 900,
+    y: Math.random() * 600,
+    vx: (Math.random() - 0.5) * 0.7,
+    vy: (Math.random() - 0.5) * 0.7,
+    r:  Math.random() * 1.8 + 0.8,
+    color: Math.random() > 0.5 ? 'rgba(0,212,255,' : 'rgba(167,139,250,'
+  });
+}
+
+// Data stream arcs
+const arcs = [];
+for (let i = 0; i < 6; i++) {
+  arcs.push({
+    progress: Math.random(),
+    speed: 0.003 + Math.random() * 0.004,
+    startLa: (Math.random() * 120 - 60) * Math.PI / 180,
+    startLo: Math.random() * Math.PI * 2,
+    endLa:   (Math.random() * 120 - 60) * Math.PI / 180,
+    endLo:   Math.random() * Math.PI * 2,
+    color: ['#00D4FF', '#A78BFA', '#34D399', '#FBBF24'][Math.floor(Math.random() * 4)]
+  });
+}
+
+function project3D(la, lo, rotY) {
+  const x0 = R * Math.cos(la) * Math.sin(lo + rotY);
+  const y0 = R * Math.sin(la);
+  const z0 = R * Math.cos(la) * Math.cos(lo + rotY);
+  return { x: cx() + x0, y: cy() - y0, z: z0 };
+}
+
+function lerpLa(la1, la2, t) { return la1 + (la2 - la1) * t; }
+function lerpLo(lo1, lo2, t) {
+  let diff = lo2 - lo1;
+  while (diff >  Math.PI) diff -= 2 * Math.PI;
+  while (diff < -Math.PI) diff += 2 * Math.PI;
+  return lo1 + diff * t;
+}
+
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Background particles + mesh
+  for (let i = 0; i < particles.length; i++) {
+    let p = particles[i];
+    p.x += p.vx; p.y += p.vy;
+    if (p.x < 0 || p.x > canvas.width)  p.vx *= -1;
+    if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    ctx.fillStyle = p.color + '0.6)';
+    ctx.fill();
+    for (let j = i + 1; j < particles.length; j++) {
+      const q = particles[j];
+      const d = Math.hypot(p.x - q.x, p.y - q.y);
+      if (d < 100) {
+        ctx.beginPath();
+        ctx.moveTo(p.x, p.y);
+        ctx.lineTo(q.x, q.y);
+        ctx.strokeStyle = p.color + (0.15 * (1 - d / 100)) + ')';
+        ctx.lineWidth = 0.7;
+        ctx.stroke();
+      }
+    }
+  }
+
+  // Globe glow
+  const grad = ctx.createRadialGradient(cx(), cy(), R * 0.3, cx(), cy(), R);
+  grad.addColorStop(0, 'rgba(0,212,255,0.06)');
+  grad.addColorStop(1, 'rgba(0,212,255,0)');
+  ctx.beginPath();
+  ctx.arc(cx(), cy(), R, 0, Math.PI * 2);
+  ctx.fillStyle = grad;
+  ctx.fill();
+
+  // Globe outline
+  ctx.beginPath();
+  ctx.arc(cx(), cy(), R, 0, Math.PI * 2);
+  ctx.strokeStyle = 'rgba(0,212,255,0.25)';
+  ctx.lineWidth = 1;
+  ctx.stroke();
+
+  // Latitude lines
+  for (let lat = -60; lat <= 60; lat += 30) {
+    const la = lat * Math.PI / 180;
+    const r2 = Math.abs(R * Math.cos(la));
+    const yy = cy() - R * Math.sin(la);
+    ctx.beginPath();
+    ctx.ellipse(cx(), yy, r2, r2 * 0.18, 0, 0, Math.PI * 2);
+    ctx.strokeStyle = 'rgba(0,212,255,0.08)';
+    ctx.lineWidth = 0.8;
+    ctx.stroke();
+  }
+
+  // Longitude lines
+  for (let lng = 0; lng < 180; lng += 30) {
+    const lo = lng * Math.PI / 180;
+    ctx.beginPath();
+    for (let la = -90; la <= 90; la += 5) {
+      const rad = la * Math.PI / 180;
+      const p = project3D(rad, lo, rotY);
+      if (la === -90) ctx.moveTo(p.x, p.y);
+      else ctx.lineTo(p.x, p.y);
+    }
+    ctx.strokeStyle = 'rgba(0,212,255,0.06)';
+    ctx.lineWidth = 0.8;
+    ctx.stroke();
+  }
+
+  // Globe dots
+  const visibleDots = points
+    .map(p => { const proj = project3D(p.la, p.lo, rotY); return { ...p, ...proj }; })
+    .filter(p => p.z > 0)
+    .sort((a, b) => a.z - b.z);
+
+  for (const p of visibleDots) {
+    const alpha = 0.3 + 0.7 * (p.z / R);
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 1.8, 0, Math.PI * 2);
+    ctx.fillStyle = p.col.replace(')', `, ${alpha})`).replace('rgb', 'rgba');
+    ctx.fill();
+  }
+
+  // Data arc streams
+  for (const arc of arcs) {
+    arc.progress = (arc.progress + arc.speed) % 1;
+    const tail = 0.12;
+    const head = arc.progress;
+    const tailStart = Math.max(0, head - tail);
+    for (let t = tailStart; t < head; t += 0.01) {
+      const la = lerpLa(arc.startLa, arc.endLa, t);
+      const lo = lerpLo(arc.startLo, arc.endLo, t);
+      const p = project3D(la, lo, rotY);
+      if (p.z < 0) continue;
+      const alpha = ((t - tailStart) / tail) * 0.9;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
+      ctx.fillStyle = arc.color.replace(')', `, ${alpha})`).includes('rgba') ? arc.color : arc.color;
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = arc.color;
+      ctx.fill();
+      ctx.globalAlpha = 1;
+    }
+    // Head dot
+    const hla = lerpLa(arc.startLa, arc.endLa, head);
+    const hlo = lerpLo(arc.startLo, arc.endLo, head);
+    const hp = project3D(hla, hlo, rotY);
+    if (hp.z > 0) {
+      ctx.beginPath();
+      ctx.arc(hp.x, hp.y, 3.5, 0, Math.PI * 2);
+      ctx.fillStyle = arc.color;
+      ctx.shadowBlur = 12;
+      ctx.shadowColor = arc.color;
+      ctx.fill();
+      ctx.shadowBlur = 0;
+    }
+  }
+
+  // Orbital rings
+  for (const ring of rings) {
+    ring.phase += ring.speed;
+    const steps = 180;
+    ctx.beginPath();
+    for (let s = 0; s <= steps; s++) {
+      const angle = (s / steps) * Math.PI * 2;
+      const px = cx() + ring.r * Math.cos(angle) * Math.cos(ring.tilt);
+      const py = cy() + ring.r * Math.sin(angle) * 0.35 - ring.r * Math.cos(angle) * Math.sin(ring.tilt) * 0.4;
+      s === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+    }
+    ctx.strokeStyle = ring.color;
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    // Orbital dot
+    const da = ring.phase;
+    const dx = cx() + ring.r * Math.cos(da) * Math.cos(ring.tilt);
+    const dy = cy() + ring.r * Math.sin(da) * 0.35 - ring.r * Math.cos(da) * Math.sin(ring.tilt) * 0.4;
+    ctx.beginPath();
+    ctx.arc(dx, dy, 5, 0, Math.PI * 2);
+    ctx.fillStyle = ring.dot;
+    ctx.shadowBlur = 15;
+    ctx.shadowColor = ring.dot;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+  }
+
+  rotY += 0.005;
+  requestAnimationFrame(draw);
+}
+
+draw();
+</script>
+</body>
+</html>
+"""
+        components.html(WELCOME_GLOBE_HTML, height=538)
