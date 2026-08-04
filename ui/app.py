@@ -287,6 +287,359 @@ div[data-testid="stExpander"] summary { color: #E2E8F0 !important; font-weight: 
 """, unsafe_allow_html=True)
 
 # ──────────────────────────────────────────────────────────────────────────────
+# CINEMATIC 10-SECOND AI SPLASH SCREEN (Plays once per session, then transitions)
+# ──────────────────────────────────────────────────────────────────────────────
+SPLASH_HTML = """
+<!DOCTYPE html><html><head><meta charset="utf-8"></head><body><script>
+(function(){
+  const pWin = window.parent;
+  const pDoc = pWin.document;
+
+  // ── Show only once per browser session ──
+  if (pWin.sessionStorage.getItem('vm_splash_v2')) return;
+  pWin.sessionStorage.setItem('vm_splash_v2','1');
+
+  // ── Create full-screen overlay ──
+  const ov = pDoc.createElement('div');
+  ov.id = 'vm-splash';
+  ov.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:999999;background:#00000f;overflow:hidden;cursor:none;';
+  pDoc.body.appendChild(ov);
+
+  // ── Main Canvas ──
+  const cv = pDoc.createElement('canvas');
+  cv.style.cssText='position:absolute;top:0;left:0;width:100%;height:100%;';
+  ov.appendChild(cv);
+  const ctx = cv.getContext('2d');
+  function rsz(){ cv.width=pWin.innerWidth; cv.height=pWin.innerHeight; }
+  rsz(); pWin.addEventListener('resize',rsz);
+
+  // ── UI Text Layer ──
+  const ui = pDoc.createElement('div');
+  ui.style.cssText='position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;z-index:2;';
+  ov.appendChild(ui);
+
+  function el(tag,css,html){
+    const e=pDoc.createElement(tag);
+    e.style.cssText=css; if(html) e.innerHTML=html;
+    return e;
+  }
+
+  const hackBadge = el('div',
+    'font-family:JetBrains Mono,monospace;font-size:0.72rem;font-weight:800;letter-spacing:0.22em;text-transform:uppercase;color:#00D4FF;opacity:0;transition:opacity 1s ease;margin-bottom:18px;text-shadow:0 0 20px rgba(0,212,255,0.8);',
+    '⚡ &nbsp; HiDevs  ·  AI Agent Builder Series 2026  —  National Finale &nbsp; ⚡');
+
+  const titleWrap = el('div','position:relative;text-align:center;margin-bottom:12px;opacity:0;transition:opacity 0.8s ease,transform 0.8s ease;transform:translateY(30px);','');
+  const titleMain = el('div',
+    'font-family:Space Grotesk,sans-serif;font-size:clamp(3rem,8vw,7rem);font-weight:900;letter-spacing:-0.03em;line-height:1;background:linear-gradient(135deg,#ffffff 0%,#a5f3fc 30%,#00D4FF 55%,#818CF8 80%,#C084FC 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 40px rgba(0,212,255,0.6));',
+    'VendorMind AI');
+  const titleSub = el('div',
+    'font-family:JetBrains Mono,monospace;font-size:clamp(0.75rem,1.5vw,1.1rem);font-weight:600;color:#A5B4FC;letter-spacing:0.18em;text-transform:uppercase;margin-top:12px;',
+    'Agentic Procurement Intelligence  ·  8-Node LangGraph Pipeline');
+  titleWrap.appendChild(titleMain);
+  titleWrap.appendChild(titleSub);
+
+  const agentRow = el('div',
+    'display:flex;align-items:center;gap:8px;margin:22px 0;opacity:0;transition:opacity 0.8s ease;',
+    '');
+  const agentColors=['#00D4FF','#00D4FF','#818CF8','#818CF8','#F59E0B','#F59E0B','#34D399','#34D399'];
+  for(let i=0;i<8;i++){
+    const nd=el('div',
+      `width:32px;height:32px;border-radius:50%;border:2px solid ${agentColors[i]};color:${agentColors[i]};font-size:0.7rem;font-weight:800;display:flex;align-items:center;justify-content:center;font-family:JetBrains Mono,monospace;box-shadow:0 0 12px ${agentColors[i]}66;`,
+      `${i+1}`);
+    agentRow.appendChild(nd);
+    if(i<7){
+      const ln=el('div',`width:20px;height:2px;background:linear-gradient(90deg,${agentColors[i]},${agentColors[i+1]});opacity:0.5;`,'');
+      agentRow.appendChild(ln);
+    }
+  }
+
+  const creatorWrap = el('div','opacity:0;transition:opacity 0.8s ease;transform:translateX(40px);transition:opacity 0.8s ease,transform 0.8s ease;margin-top:8px;text-align:center;','');
+  const creatorLine = el('div',
+    'font-family:JetBrains Mono,monospace;font-size:0.75rem;color:#475569;letter-spacing:0.1em;margin-bottom:4px;',
+    'DEVELOPED BY');
+  const creatorName = el('div',
+    'font-family:Space Grotesk,sans-serif;font-size:clamp(1.2rem,2.5vw,1.8rem);font-weight:800;color:#F1F5F9;letter-spacing:0.04em;text-shadow:0 0 30px rgba(129,140,248,0.6);',
+    'Vinay Babannavar');
+  creatorWrap.appendChild(creatorLine);
+  creatorWrap.appendChild(creatorName);
+
+  const progressWrap = el('div','width:min(480px,70vw);margin-top:32px;opacity:0;transition:opacity 0.6s ease;','');
+  const progressLabel = el('div','font-family:JetBrains Mono,monospace;font-size:0.68rem;color:#00D4FF;letter-spacing:0.12em;margin-bottom:8px;display:flex;justify-content:space-between;',
+    '<span>INITIALIZING 8-AGENT PIPELINE...</span><span id="vm-pct">0%</span>');
+  const progressBg = el('div','height:3px;background:rgba(0,212,255,0.12);border-radius:3px;overflow:hidden;','');
+  const progressBar = el('div','height:100%;width:0%;background:linear-gradient(90deg,#00D4FF,#818CF8,#34D399);border-radius:3px;transition:width 0.1s ease;box-shadow:0 0 12px rgba(0,212,255,0.5);','');
+  progressBg.appendChild(progressBar);
+  progressWrap.appendChild(progressLabel);
+  progressWrap.appendChild(progressBg);
+
+  ui.appendChild(hackBadge);
+  ui.appendChild(titleWrap);
+  ui.appendChild(agentRow);
+  ui.appendChild(creatorWrap);
+  ui.appendChild(progressWrap);
+
+  // ── Web Audio Engine ──
+  let audio;
+  try {
+    const AC = pWin.AudioContext || pWin.webkitAudioContext;
+    audio = new AC();
+
+    function playTone(freq, startT, durT, type, gainVal, fadeIn, fadeOut){
+      const osc = audio.createOscillator();
+      const g = audio.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, startT);
+      g.gain.setValueAtTime(0, startT);
+      g.gain.linearRampToValueAtTime(gainVal, startT + fadeIn);
+      g.gain.setValueAtTime(gainVal, startT + durT - fadeOut);
+      g.gain.linearRampToValueAtTime(0, startT + durT);
+      osc.connect(g); g.connect(audio.destination);
+      osc.start(startT); osc.stop(startT + durT);
+    }
+
+    function playNoise(startT, durT, gainVal){
+      const bufSize = audio.sampleRate * durT;
+      const buf = audio.createBuffer(1, bufSize, audio.sampleRate);
+      const data = buf.getChannelData(0);
+      for(let i=0;i<bufSize;i++) data[i]=(Math.random()*2-1)*0.3;
+      const src = audio.createBufferSource();
+      const bpf = audio.createBiquadFilter();
+      bpf.type='bandpass'; bpf.frequency.value=800; bpf.Q.value=2;
+      const g = audio.createGain();
+      g.gain.setValueAtTime(0,startT);
+      g.gain.linearRampToValueAtTime(gainVal,startT+0.1);
+      g.gain.linearRampToValueAtTime(0,startT+durT);
+      src.buffer=buf; src.connect(bpf); bpf.connect(g); g.connect(audio.destination);
+      src.start(startT); src.stop(startT+durT);
+    }
+
+    const now = audio.currentTime;
+    // Warp whoosh (0-2s)
+    playTone(80, now, 2.0, 'sawtooth', 0.08, 0.1, 0.4);
+    playTone(160, now+0.1, 1.8, 'sine', 0.04, 0.2, 0.5);
+    playNoise(now, 1.5, 0.12);
+    // Hyperspace (1-3s)
+    playTone(220, now+1.0, 1.5, 'sine', 0.06, 0.3, 0.5);
+    playTone(440, now+1.5, 1.0, 'triangle', 0.04, 0.1, 0.3);
+    // Title materialise (3-5s)
+    [261.6,329.6,392,523.3].forEach((f,i)=>{
+      playTone(f, now+3.2+i*0.15, 0.6, 'sine', 0.07, 0.05, 0.3);
+    });
+    playTone(880, now+3.8, 0.4, 'triangle', 0.05, 0.02, 0.2);
+    // Neural data clicks (5-7s)
+    [0,0.18,0.36,0.55,0.72,0.9].forEach(dt=>{
+      playTone(1200+Math.random()*800, now+5.0+dt, 0.08, 'square', 0.03, 0.005, 0.07);
+    });
+    // Final success chord (8-10s)
+    [261.6,329.6,392,523.3,659.3].forEach((f,i)=>{
+      playTone(f, now+7.8+i*0.06, 1.8, 'sine', 0.08, 0.1, 0.6);
+    });
+    playTone(1046.5, now+8.2, 1.2, 'sine', 0.05, 0.05, 0.8);
+  } catch(e){}
+
+  // ── Warp Stars ──
+  const stars=[];
+  for(let i=0;i<300;i++){
+    const angle = Math.random()*Math.PI*2;
+    const speed = 0.5 + Math.random()*8;
+    stars.push({
+      angle, speed,
+      dist: Math.random()*200,
+      maxDist: 500+Math.random()*700,
+      hue: Math.random()>0.7 ? 200 : 240,
+      size: Math.random()*2+0.5
+    });
+  }
+
+  // ── Hex Grid ──
+  function drawHexGrid(alpha){
+    const cw=cv.width, ch=cv.height;
+    const size=55;
+    ctx.strokeStyle=`rgba(0,212,255,${alpha*0.06})`;
+    ctx.lineWidth=0.7;
+    for(let row=-2;row<ch/size+2;row++){
+      for(let col=-2;col<cw/(size*1.73)+2;col++){
+        const x=col*size*1.73+(row%2)*size*0.87;
+        const y=row*size*0.75;
+        ctx.beginPath();
+        for(let s=0;s<6;s++){
+          const a=s*Math.PI/3-Math.PI/6;
+          s===0?ctx.moveTo(x+size*Math.cos(a),y+size*Math.sin(a)):ctx.lineTo(x+size*Math.cos(a),y+size*Math.sin(a));
+        }
+        ctx.closePath(); ctx.stroke();
+      }
+    }
+  }
+
+  // ── Floating Particles ──
+  const fpts=[];
+  for(let i=0;i<60;i++){
+    fpts.push({
+      x:Math.random()*cv.width, y:Math.random()*cv.height,
+      vx:(Math.random()-.5)*0.5, vy:(Math.random()-.5)*0.5,
+      r:Math.random()*1.5+0.5,
+      col:Math.random()>0.5?'rgba(0,212,255,':'rgba(129,140,248,'
+    });
+  }
+
+  // ── Scanline effect ──
+  function drawScanlines(alpha){
+    ctx.fillStyle=`rgba(0,0,0,${alpha*0.03})`;
+    for(let y=0;y<cv.height;y+=4){
+      ctx.fillRect(0,y,cv.width,1);
+    }
+  }
+
+  // ── Glitch rect ──
+  function glitch(t){
+    if(Math.random()>0.85){
+      const y=Math.random()*cv.height;
+      const h=Math.random()*10+2;
+      const shift=(Math.random()-0.5)*30;
+      ctx.drawImage(cv, 0,y,cv.width,h, shift,y,cv.width,h);
+    }
+  }
+
+  const T=10000; // total duration ms
+  let t0=performance.now();
+
+  function frame(now){
+    const elapsed=now-t0;
+    const prog=Math.min(elapsed/T,1);
+    const cw=cv.width, ch=cv.height, cx=cw/2, cy=ch/2;
+
+    // === CLEAR ===
+    const trailAlpha = elapsed<2500 ? 0.12 : (elapsed<4000 ? 0.25 : 0.18);
+    ctx.fillStyle=`rgba(0,0,15,${trailAlpha})`;
+    ctx.fillRect(0,0,cw,ch);
+
+    // =========================================================
+    // PHASE 1 (0-2.5s): HYPERSPACE WARP
+    // =========================================================
+    if(elapsed<3000){
+      const warpProg=Math.min(elapsed/2500,1);
+      stars.forEach(s=>{
+        s.dist += s.speed * (1+warpProg*12) * 0.35;
+        if(s.dist>s.maxDist){ s.dist=Math.random()*50; }
+        const x1=cx+Math.cos(s.angle)*(s.dist*0.7);
+        const y1=cy+Math.sin(s.angle)*(s.dist*0.7);
+        const x2=cx+Math.cos(s.angle)*(s.dist*0.7+s.speed*(1+warpProg*8));
+        const y2=cy+Math.sin(s.angle)*(s.dist*0.7+s.speed*(1+warpProg*8));
+        const a=Math.min(s.dist/(s.maxDist*0.5),1)*0.9;
+        const grad=ctx.createLinearGradient(x1,y1,x2,y2);
+        grad.addColorStop(0,`hsla(${s.hue},100%,80%,0)`);
+        grad.addColorStop(1,`hsla(${s.hue},100%,90%,${a})`);
+        ctx.beginPath();
+        ctx.moveTo(x1,y1); ctx.lineTo(x2,y2);
+        ctx.strokeStyle=grad;
+        ctx.lineWidth=s.size*(0.5+warpProg);
+        ctx.stroke();
+      });
+    }
+
+    // =========================================================
+    // PHASE 2 (2.5-10s): HEX GRID + FLOATING PARTICLES
+    // =========================================================
+    if(elapsed>2000){
+      const hexAlpha=Math.min((elapsed-2000)/1000,1);
+      drawHexGrid(hexAlpha);
+
+      fpts.forEach(p=>{
+        p.x+=p.vx; p.y+=p.vy;
+        if(p.x<0||p.x>cw) p.vx*=-1;
+        if(p.y<0||p.y>ch) p.vy*=-1;
+        ctx.beginPath();
+        ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+        ctx.fillStyle=p.col+`${hexAlpha*0.7})`;
+        ctx.fill();
+      });
+
+      // Synapse connections between nearby particles
+      for(let i=0;i<fpts.length;i++){
+        for(let j=i+1;j<fpts.length;j++){
+          const d=Math.hypot(fpts[i].x-fpts[j].x,fpts[i].y-fpts[j].y);
+          if(d<120){
+            ctx.beginPath();
+            ctx.moveTo(fpts[i].x,fpts[i].y);
+            ctx.lineTo(fpts[j].x,fpts[j].y);
+            ctx.strokeStyle=fpts[i].col+((1-d/120)*0.15*hexAlpha)+')';
+            ctx.lineWidth=0.6; ctx.stroke();
+          }
+        }
+      }
+    }
+
+    // Scanlines always
+    drawScanlines(1);
+
+    // =========================================================
+    // PHASE 3 (3.5-5s): TITLE MATERIALISE
+    // =========================================================
+    if(elapsed>3200){
+      const tAlpha=Math.min((elapsed-3200)/800,1);
+      titleWrap.style.opacity=tAlpha;
+      titleWrap.style.transform=`translateY(${(1-tAlpha)*30}px)`;
+      if(elapsed>3200 && elapsed<5500) glitch(elapsed);
+    }
+
+    // =========================================================
+    // PHASE 4 (4.5-6s): HACKATHON BADGE
+    // =========================================================
+    if(elapsed>4200){
+      hackBadge.style.opacity=Math.min((elapsed-4200)/600,1);
+    }
+
+    // =========================================================
+    // PHASE 5 (5.5-7s): AGENT NODES ROW
+    // =========================================================
+    if(elapsed>5500){
+      agentRow.style.opacity=Math.min((elapsed-5500)/700,1);
+    }
+
+    // =========================================================
+    // PHASE 6 (6.5-8s): CREATOR CREDIT
+    // =========================================================
+    if(elapsed>6500){
+      const cAlpha=Math.min((elapsed-6500)/700,1);
+      creatorWrap.style.opacity=cAlpha;
+      creatorWrap.style.transform=`translateX(${(1-cAlpha)*40}px)`;
+    }
+
+    // =========================================================
+    // PHASE 7 (7.5-9.5s): PROGRESS BAR
+    // =========================================================
+    if(elapsed>7500){
+      progressWrap.style.opacity=Math.min((elapsed-7500)/400,1);
+      const barProg=Math.min((elapsed-7500)/2000,1);
+      progressBar.style.width=(barProg*100)+'%';
+      const pctEl=pDoc.getElementById('vm-pct');
+      if(pctEl) pctEl.textContent=Math.floor(barProg*100)+'%';
+    }
+
+    // =========================================================
+    // PHASE 8 (9.5-10s): FADE OUT
+    // =========================================================
+    if(elapsed>9000){
+      const fadeAlpha=Math.min((elapsed-9000)/700,1);
+      ov.style.opacity=1-fadeAlpha;
+    }
+
+    if(elapsed<T){
+      requestAnimationFrame(frame);
+    } else {
+      ov.style.transition='opacity 0.3s ease';
+      ov.style.opacity='0';
+      setTimeout(()=>{ try{ov.remove();}catch(e){} }, 400);
+    }
+  }
+
+  requestAnimationFrame(frame);
+})();
+</script></body></html>
+"""
+components.html(SPLASH_HTML, height=1)
+
+# ──────────────────────────────────────────────────────────────────────────────
 # FULL-SCREEN BACKGROUND NEURAL CANVAS INJECTOR (Distinct Multi-Layer AI Engine)
 # ──────────────────────────────────────────────────────────────────────────────
 FULL_PAGE_NEURAL_BG_HTML = """
