@@ -296,8 +296,7 @@ SPLASH_HTML = """
   const pDoc = pWin.document;
 
   // ── Show only once per browser session ──
-  if (pWin.sessionStorage.getItem('vm_splash_v2')) return;
-  pWin.sessionStorage.setItem('vm_splash_v2','1');
+  // Always play on every page load — no session cache
 
   // ── Create full-screen overlay ──
   const ov = pDoc.createElement('div');
@@ -500,7 +499,7 @@ SPLASH_HTML = """
     }
   }
 
-  const T=10000; // total duration ms
+  const T=18000; // total duration ms — 18 seconds
   let t0=performance.now();
 
   function frame(now){
@@ -509,15 +508,15 @@ SPLASH_HTML = """
     const cw=cv.width, ch=cv.height, cx=cw/2, cy=ch/2;
 
     // === CLEAR ===
-    const trailAlpha = elapsed<2500 ? 0.12 : (elapsed<4000 ? 0.25 : 0.18);
+    const trailAlpha = elapsed<4000 ? 0.12 : (elapsed<6000 ? 0.25 : 0.18);
     ctx.fillStyle=`rgba(0,0,15,${trailAlpha})`;
     ctx.fillRect(0,0,cw,ch);
 
     // =========================================================
-    // PHASE 1 (0-2.5s): HYPERSPACE WARP
+    // PHASE 1 (0-4s): HYPERSPACE WARP
     // =========================================================
-    if(elapsed<3000){
-      const warpProg=Math.min(elapsed/2500,1);
+    if(elapsed<5000){
+      const warpProg=Math.min(elapsed/4000,1);
       stars.forEach(s=>{
         s.dist += s.speed * (1+warpProg*12) * 0.35;
         if(s.dist>s.maxDist){ s.dist=Math.random()*50; }
@@ -538,10 +537,10 @@ SPLASH_HTML = """
     }
 
     // =========================================================
-    // PHASE 2 (2.5-10s): HEX GRID + FLOATING PARTICLES
+    // PHASE 2 (3s-18s): HEX GRID + FLOATING PARTICLES
     // =========================================================
-    if(elapsed>2000){
-      const hexAlpha=Math.min((elapsed-2000)/1000,1);
+    if(elapsed>3000){
+      const hexAlpha=Math.min((elapsed-3000)/1500,1);
       drawHexGrid(hexAlpha);
 
       fpts.forEach(p=>{
@@ -573,54 +572,54 @@ SPLASH_HTML = """
     drawScanlines(1);
 
     // =========================================================
-    // PHASE 3 (3.5-5s): TITLE MATERIALISE
+    // PHASE 3 (5s-7s): TITLE MATERIALISE
     // =========================================================
-    if(elapsed>3200){
-      const tAlpha=Math.min((elapsed-3200)/800,1);
+    if(elapsed>5000){
+      const tAlpha=Math.min((elapsed-5000)/1200,1);
       titleWrap.style.opacity=tAlpha;
       titleWrap.style.transform=`translateY(${(1-tAlpha)*30}px)`;
-      if(elapsed>3200 && elapsed<5500) glitch(elapsed);
+      if(elapsed>5000 && elapsed<9000) glitch(elapsed);
     }
 
     // =========================================================
-    // PHASE 4 (4.5-6s): HACKATHON BADGE
+    // PHASE 4 (7s): HACKATHON BADGE
     // =========================================================
-    if(elapsed>4200){
-      hackBadge.style.opacity=Math.min((elapsed-4200)/600,1);
+    if(elapsed>7000){
+      hackBadge.style.opacity=Math.min((elapsed-7000)/900,1);
     }
 
     // =========================================================
-    // PHASE 5 (5.5-7s): AGENT NODES ROW
+    // PHASE 5 (9s): AGENT NODES ROW
     // =========================================================
-    if(elapsed>5500){
-      agentRow.style.opacity=Math.min((elapsed-5500)/700,1);
+    if(elapsed>9000){
+      agentRow.style.opacity=Math.min((elapsed-9000)/1000,1);
     }
 
     // =========================================================
-    // PHASE 6 (6.5-8s): CREATOR CREDIT
+    // PHASE 6 (11s): CREATOR CREDIT
     // =========================================================
-    if(elapsed>6500){
-      const cAlpha=Math.min((elapsed-6500)/700,1);
+    if(elapsed>11000){
+      const cAlpha=Math.min((elapsed-11000)/1000,1);
       creatorWrap.style.opacity=cAlpha;
       creatorWrap.style.transform=`translateX(${(1-cAlpha)*40}px)`;
     }
 
     // =========================================================
-    // PHASE 7 (7.5-9.5s): PROGRESS BAR
+    // PHASE 7 (12.5s-17.5s): PROGRESS BAR
     // =========================================================
-    if(elapsed>7500){
-      progressWrap.style.opacity=Math.min((elapsed-7500)/400,1);
-      const barProg=Math.min((elapsed-7500)/2000,1);
+    if(elapsed>12500){
+      progressWrap.style.opacity=Math.min((elapsed-12500)/600,1);
+      const barProg=Math.min((elapsed-12500)/4500,1);
       progressBar.style.width=(barProg*100)+'%';
       const pctEl=pDoc.getElementById('vm-pct');
       if(pctEl) pctEl.textContent=Math.floor(barProg*100)+'%';
     }
 
     // =========================================================
-    // PHASE 8 (9.5-10s): FADE OUT
+    // PHASE 8 (17s-18s): FADE OUT
     // =========================================================
-    if(elapsed>9000){
-      const fadeAlpha=Math.min((elapsed-9000)/700,1);
+    if(elapsed>16500){
+      const fadeAlpha=Math.min((elapsed-16500)/1000,1);
       ov.style.opacity=1-fadeAlpha;
     }
 
