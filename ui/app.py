@@ -324,46 +324,46 @@ SPLASH_HTML = """
   }
 
   const hackBadge = el('div',
-    'font-family:JetBrains Mono,monospace;font-size:0.72rem;font-weight:800;letter-spacing:0.22em;text-transform:uppercase;color:#00D4FF;opacity:0;transition:opacity 1s ease;margin-bottom:18px;text-shadow:0 0 20px rgba(0,212,255,0.8);',
+    'font-family:JetBrains Mono,monospace;font-size:0.85rem;font-weight:800;letter-spacing:0.24em;text-transform:uppercase;color:#00D4FF;opacity:0;transition:opacity 1s ease;margin-bottom:20px;text-shadow:0 0 24px rgba(0,212,255,0.85);',
     '⚡ &nbsp; HiDevs  ·  AI Agent Builder Series 2026  —  National Finale &nbsp; ⚡');
 
-  const titleWrap = el('div','position:relative;text-align:center;margin-bottom:12px;opacity:0;transition:opacity 0.8s ease,transform 0.8s ease;transform:translateY(30px);','');
+  const titleWrap = el('div','position:relative;text-align:center;margin-bottom:14px;opacity:0;transition:opacity 0.8s ease,transform 0.8s ease;transform:translateY(30px);','');
   const titleMain = el('div',
-    'font-family:Space Grotesk,sans-serif;font-size:clamp(3rem,8vw,7rem);font-weight:900;letter-spacing:-0.03em;line-height:1;background:linear-gradient(135deg,#ffffff 0%,#a5f3fc 30%,#00D4FF 55%,#818CF8 80%,#C084FC 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 40px rgba(0,212,255,0.6));',
+    'font-family:Space Grotesk,sans-serif;font-size:clamp(3.8rem,9.5vw,8.5rem);font-weight:900;letter-spacing:-0.03em;line-height:1;background:linear-gradient(135deg,#ffffff 0%,#a5f3fc 30%,#00D4FF 55%,#818CF8 80%,#C084FC 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 50px rgba(0,212,255,0.7));',
     'VendorMind AI');
   const titleSub = el('div',
-    'font-family:JetBrains Mono,monospace;font-size:clamp(0.75rem,1.5vw,1.1rem);font-weight:600;color:#A5B4FC;letter-spacing:0.18em;text-transform:uppercase;margin-top:12px;',
+    'font-family:JetBrains Mono,monospace;font-size:clamp(0.88rem,1.8vw,1.3rem);font-weight:700;color:#A5B4FC;letter-spacing:0.2em;text-transform:uppercase;margin-top:14px;',
     'Agentic Procurement Intelligence  ·  8-Node LangGraph Pipeline');
   titleWrap.appendChild(titleMain);
   titleWrap.appendChild(titleSub);
 
   const agentRow = el('div',
-    'display:flex;align-items:center;gap:8px;margin:22px 0;opacity:0;transition:opacity 0.8s ease;',
+    'display:flex;align-items:center;gap:10px;margin:26px 0;opacity:0;transition:opacity 0.8s ease;',
     '');
   const agentColors=['#00D4FF','#00D4FF','#818CF8','#818CF8','#F59E0B','#F59E0B','#34D399','#34D399'];
   for(let i=0;i<8;i++){
     const nd=el('div',
-      `width:32px;height:32px;border-radius:50%;border:2px solid ${agentColors[i]};color:${agentColors[i]};font-size:0.7rem;font-weight:800;display:flex;align-items:center;justify-content:center;font-family:JetBrains Mono,monospace;box-shadow:0 0 12px ${agentColors[i]}66;`,
+      `width:36px;height:36px;border-radius:50%;border:2px solid ${agentColors[i]};color:${agentColors[i]};font-size:0.8rem;font-weight:800;display:flex;align-items:center;justify-content:center;font-family:JetBrains Mono,monospace;box-shadow:0 0 16px ${agentColors[i]}77;`,
       `${i+1}`);
     agentRow.appendChild(nd);
     if(i<7){
-      const ln=el('div',`width:20px;height:2px;background:linear-gradient(90deg,${agentColors[i]},${agentColors[i+1]});opacity:0.5;`,'');
+      const ln=el('div',`width:24px;height:2.5px;background:linear-gradient(90deg,${agentColors[i]},${agentColors[i+1]});opacity:0.6;`,'');
       agentRow.appendChild(ln);
     }
   }
 
-  const creatorWrap = el('div','opacity:0;transition:opacity 0.8s ease;transform:translateX(40px);transition:opacity 0.8s ease,transform 0.8s ease;margin-top:8px;text-align:center;','');
+  const creatorWrap = el('div','opacity:0;transition:opacity 0.8s ease;transform:translateX(40px);transition:opacity 0.8s ease,transform 0.8s ease;margin-top:10px;text-align:center;','');
   const creatorLine = el('div',
-    'font-family:JetBrains Mono,monospace;font-size:0.75rem;color:#475569;letter-spacing:0.1em;margin-bottom:4px;',
+    'font-family:JetBrains Mono,monospace;font-size:0.82rem;color:#64748B;letter-spacing:0.12em;margin-bottom:4px;font-weight:700;',
     'DEVELOPED BY');
   const creatorName = el('div',
-    'font-family:Space Grotesk,sans-serif;font-size:clamp(1.2rem,2.5vw,1.8rem);font-weight:800;color:#F1F5F9;letter-spacing:0.04em;text-shadow:0 0 30px rgba(129,140,248,0.6);',
+    'font-family:Space Grotesk,sans-serif;font-size:clamp(1.5rem,3.2vw,2.4rem);font-weight:800;color:#F1F5F9;letter-spacing:0.04em;text-shadow:0 0 35px rgba(129,140,248,0.7);',
     'Vinay Babannavar');
   creatorWrap.appendChild(creatorLine);
   creatorWrap.appendChild(creatorName);
 
-  const progressWrap = el('div','width:min(480px,70vw);margin-top:32px;opacity:0;transition:opacity 0.6s ease;','');
-  const progressLabel = el('div','font-family:JetBrains Mono,monospace;font-size:0.68rem;color:#00D4FF;letter-spacing:0.12em;margin-bottom:8px;display:flex;justify-content:space-between;',
+  const progressWrap = el('div','width:min(540px,75vw);margin-top:36px;opacity:0;transition:opacity 0.6s ease;','');
+  const progressLabel = el('div','font-family:JetBrains Mono,monospace;font-size:0.75rem;color:#00D4FF;letter-spacing:0.14em;margin-bottom:10px;display:flex;justify-content:space-between;font-weight:700;',
     '<span>INITIALIZING 8-AGENT PIPELINE...</span><span id="vm-pct">0%</span>');
   const progressBg = el('div','height:3px;background:rgba(0,212,255,0.12);border-radius:3px;overflow:hidden;','');
   const progressBar = el('div','height:100%;width:0%;background:linear-gradient(90deg,#00D4FF,#818CF8,#34D399);border-radius:3px;transition:width 0.1s ease;box-shadow:0 0 12px rgba(0,212,255,0.5);','');
@@ -499,7 +499,7 @@ SPLASH_HTML = """
     }
   }
 
-  const T=18000; // total duration ms — 18 seconds
+  const T=23000; // total duration ms — 23 seconds
   let t0=performance.now();
 
   function frame(now){
@@ -605,21 +605,21 @@ SPLASH_HTML = """
     }
 
     // =========================================================
-    // PHASE 7 (12.5s-17.5s): PROGRESS BAR
+    // PHASE 7 (14s-22s): PROGRESS BAR
     // =========================================================
-    if(elapsed>12500){
-      progressWrap.style.opacity=Math.min((elapsed-12500)/600,1);
-      const barProg=Math.min((elapsed-12500)/4500,1);
+    if(elapsed>14000){
+      progressWrap.style.opacity=Math.min((elapsed-14000)/700,1);
+      const barProg=Math.min((elapsed-14000)/8000,1);
       progressBar.style.width=(barProg*100)+'%';
       const pctEl=pDoc.getElementById('vm-pct');
       if(pctEl) pctEl.textContent=Math.floor(barProg*100)+'%';
     }
 
     // =========================================================
-    // PHASE 8 (17s-18s): FADE OUT
+    // PHASE 8 (21.5s-23s): FADE OUT
     // =========================================================
-    if(elapsed>16500){
-      const fadeAlpha=Math.min((elapsed-16500)/1000,1);
+    if(elapsed>21500){
+      const fadeAlpha=Math.min((elapsed-21500)/1200,1);
       ov.style.opacity=1-fadeAlpha;
     }
 
