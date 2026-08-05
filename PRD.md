@@ -1,112 +1,109 @@
 # Product Requirements Document (PRD): VendorMind AI
-## IEEE 830 SRS Standard · Enterprise Procurement Intelligence Platform
-
----
 
 ## 1. Executive Summary
-VendorMind AI is a production-grade, enterprise procurement intelligence platform designed for the HiDevs National AI Hackathon. The system automates end-to-end Request for Proposal (RFP) evaluations using an 8-node stateful multi-agent pipeline orchestrated via LangGraph, decoupled Cloud Run microservices communicating asynchronously over Cloud Pub/Sub, and Gemini 1.5 Pro reasoning paired with Gemma 3 27B-IT edge PII scrubbing.
-
----
+VendorMind AI is a production-grade, enterprise-ready procurement intelligence platform designed for the HiDevs National AI Hackathon. The system automates the end-to-end evaluation of vendor Request for Proposal (RFP) submissions. By utilizing a stateful, 8-node multi-agent pipeline orchestrated via LangGraph and Google Cloud, VendorMind AI replaces manual, spreadsheet-based comparisons with an explainable, multi-signal scoring engine that prioritizes security, fairness (EEOC), and privacy (GDPR).
 
 ## 2. Problem Statement
-Procurement teams evaluate vendor bids manually in spreadsheets:
-* **Slow & Costly:** Evaluation cycles take 3–6 weeks per RFP.
-* **Subjective Bias:** Evaluators apply non-standardized criteria, risking EEOC compliance.
-* **Opaque & Unauditable:** Lacks verifiable audit trails justifying decision rationale.
-* **Privacy Risks:** Uploading vendor proposals to cloud LLMs violates GDPR Article 5 without edge PII scrubbing.
+Procurement teams at mid-to-large organizations face significant bottlenecks when evaluating vendor proposals. Manual processes are:
+*   **Slow and Inefficient:** Comparing dozens of vendors against complex RFP criteria takes weeks.
+*   **Inconsistent:** Human evaluators apply criteria subjectively, leading to bias.
+*   **Opaque:** Lack of a clear audit trail for why a specific vendor was selected or rejected.
+*   **Compliance Risky:** Handling PII and ensuring EEOC fairness (4/5ths rule) is difficult to manage manually at scale.
 
----
+## 3. Goals & Objectives
+*   **Automate Evaluation:** Reduce manual evaluation time by at least 75% through agentic automation.
+*   **Ensure Explainability:** Provide human-readable justifications for every score, compliant with EU AI Act Article 13.
+*   **Guarantee Privacy:** Implement edge-based PII scrubbing using Gemma 3 27B-IT to ensure GDPR Article 5 compliance.
+*   **Enforce Fairness:** Use an automated Agent-to-Agent (A2A) protocol to monitor and adjust for EEOC adverse impact.
+*   **Maintain Control:** Keep a "Human-in-the-Loop" (HITL) for final approval and selection.
 
-## 3. Goals & Key Performance Indicators
-* **KPI-1 (Speed):** Reduce RFP evaluation cycle time from 3 weeks to < 2 minutes (95% reduction).
-* **KPI-2 (Explainability):** 100% of generated scores accompanied by EU AI Act Article 13 compliant justifications.
-* **KPI-3 (Fairness):** 100% of vendor comparisons pass the automated EEOC 4/5ths Rule via A2A negotiation.
-* **KPI-4 (Privacy):** Zero PII unscrubbed before cloud LLM transmission (GDPR Article 5 & 13/14 compliance).
-* **KPI-5 (Security):** 100% OWASP Top 10 API coverage with OAuth2/JWT authentication and TLS 1.3/AES-256 encryption.
+## 4. Target Users / Stakeholders
+*   **Procurement Managers:** Primary users who upload RFPs and review ranked shortlists.
+*   **Business Operations Teams:** Stakeholders involved in vendor selection and contract management.
+*   **Compliance & Legal Officers:** Users who monitor the audit trail for regulatory adherence (GDPR, EEOC).
+*   **Vendors:** Data subjects whose proposals are being evaluated.
 
----
+## 5. Functional Requirements
+| Req ID | Component | Description |
+| :--- | :--- | :--- |
+| **FR-101** | Intake Agent | Ingests RFP/Proposals; uses Gemma 3 27B-IT to redact PII before cloud egress. |
+| **FR-102** | Consent Service | Captures explicit vendor opt-in (GDPR Art. 13) and sends DPO notifications (Art. 14). |
+| **FR-103** | Criteria Extraction | Extracts explicit/implicit criteria via Gemini 1.5 Pro; flags potential bias in RFP language. |
+| **FR-104** | Profile Retrieval | Performs semantic search over historical vendor data using Vertex AI Vector Search. |
+| **FR-105** | Scoring Agent | Computes 4-signal composite scores (Cost, Compliance, Semantic, Timeline). |
+| **FR-106** | A2A Protocol | Executes a 3-step handshake (score_draft -> risk_veto -> score_final) between Scoring and Risk agents. |
+| **FR-107** | Risk & Bias Agent | Monitors EEOC 4/5ths rule; uses Enkrypt AI to scan risk narratives for toxicity/bias. |
+| **FR-108** | Explanation Gen | Generates 3-sentence justifications per vendor citing specific evidence. |
+| **FR-109** | Comparison Agent | Generates a side-by-side ranked matrix using Pandas. |
+| **FR-110** | HITL Dashboard | Streamlit interface for human approval, rejection, and voice-enabled executive briefings. |
 
-## 4. Formal Functional Requirements (IEEE 830 Standard)
+## 6. Non-Functional Requirements
+| Req ID | Category | Requirement |
+| :--- | :--- | :--- |
+| **NFR-201** | Security | OAuth2/JWT Auth, TLS 1.3 in transit, AES-256 at rest. |
+| **NFR-202** | Performance | End-to-end evaluation of 10 vendors in < 45 seconds. |
+| **NFR-203** | Scalability | Stateless microservices on Cloud Run; auto-scaling from 0 to 50 concurrent requests. |
+| **NFR-204** | Reliability | 12-Factor App compliance; asynchronous communication via Cloud Pub/Sub. |
+| **NFR-205** | Observability | OpenTelemetry tracing; per-node latency and token usage tracking. |
+| **NFR-206** | Compliance | GDPR Art. 17 data retention (90-day TTL in BigQuery). |
 
-| Req ID | Component / Node | Functional Description | Acceptance Criteria |
-|---|---|---|---|
-| **FR-101** | Node 1: Intake Agent | Gemma 3 27B-IT edge PII detection & redaction (Names, Emails, SSNs, Aadhaar). | 100% of detected PII replaced with `[TYPE_REDACTED]` prior to cloud API calls. |
-| **FR-102** | Node 2: Criteria Extraction | Gemini 1.5 Pro + MCP extracts explicit & implicit criteria into structured JSON. | Valid JSON containing `cost_weight`, `compliance_requirements`, `timeline_days`, `technical_specs`. |
-| **FR-103** | Node 3: Profile Retrieval | Semantic vector search over historical vendor performance via Vertex AI Vector Search / Qdrant. | Top-5 relevant historical records retrieved with similarity score > 0.65. |
-| **FR-104** | Node 4: Multi-Signal Scoring | 4-signal composite scoring: Cost (40%), Compliance (36%), Semantic (24%), Timeline. | Composite score bounded strictly `[0.0, 1.0]`, normalized against benchmark. |
-| **FR-105** | Node 5: Risk & Bias Detection | EEOC 4/5ths Adverse Impact Ratio monitoring via Scoring-to-Risk A2A handshake. | If AIR < 0.80, `risk_veto` issued; fairness floor applied; logged in `state["a2a_log"]`. |
-| **FR-106** | Node 6: Explanation Gen | Gemini 1.5 Pro generates 3-sentence justification per vendor (CRISPE prompt). | Justification cites cost, compliance, semantic fit, and risk flags in < 150 words. |
-| **FR-107** | Node 7: Comparison Agent | Ranked Pandas comparison matrix generated with rank order and composite score. | Matrix sorted descending by `composite_score`; ranks assigned `1..N`. |
-| **FR-108** | Node 8: Output & HITL | Streamlit dashboard HITL approval gate; generates Executive Audit Report HTML. | Approval status (`approved`/`rejected`) & note persisted to BigQuery audit store. |
-| **FR-109** | GDPR Consent Engine | Captures explicit consent (Art. 13) & sends automated transparency notice (Art. 14). | Vendor consent captured via `/v1/consent` & notice dispatched via Pub/Sub. |
-| **FR-110** | Event Bus Decoupler | Heavy agents (Intake, Risk) run as independent Cloud Run microservices on Cloud Pub/Sub. | Asynchronous event dispatch on `vendormind.rfp.ingested` and `vendormind.score.draft`. |
+## 7. System Architecture Overview
+The system follows a **Decoupled Microservices Architecture** orchestrated by **LangGraph**.
+1.  **Client Tier:** Streamlit Dashboard for user interaction.
+2.  **Gateway Tier:** FastAPI Gateway managing authentication and the GDPR Consent Service.
+3.  **Event Bus:** Cloud Pub/Sub handles asynchronous communication between nodes.
+4.  **Agentic Pipeline:** 8 specialized agents (Intake, Criteria, Retrieval, Scoring, Risk, Explanation, Comparison, Output).
+5.  **AI Tier:** Gemini 1.5 Pro (Reasoning), Gemma 3 27B-IT (Edge Privacy), Enkrypt AI (Guardrails).
+6.  **Storage Tier:** BigQuery (Audit), Vertex AI Vector Search (Knowledge Base), GCS (Documents).
 
----
+## 8. Tech Stack
+*   **LLM & Reasoning:** Gemini 1.5 Pro (via Google AI Studio), Gemma 3 27B-IT (Vertex AI).
+*   **Orchestration:** LangGraph, Antigravity (AGY), Google ADK.
+*   **Protocols:** MCP (Model Context Protocol), A2A (Agent-to-Agent).
+*   **Backend:** FastAPI, Python, Cloud Pub/Sub.
+*   **Frontend:** Streamlit, Web Speech API.
+*   **Infrastructure:** Cloud Run, Google Cloud Build (CI/CD).
+*   **Data/Vector:** BigQuery, Vertex AI Vector Search, Qdrant.
 
-## 5. Non-Functional Requirements & Security Specifications
+## 9. Data Requirements
+*   **Input Data:** PDF/Text RFPs and Vendor Proposals.
+*   **State Management:** LangGraph state stores `parsed_rfp`, `criteria_dict`, `vendor_context`, `final_scores`, and `a2a_log`.
+*   **Audit Logs:** Every A2A message, HITL decision, and LLM token count is persisted to BigQuery.
+*   **Retention:** 90-day TTL on all evaluation data to satisfy GDPR "Right to Erasure."
 
-| NFR ID | Category | Specification | Measurable Target |
-|---|---|---|---|
-| **NFR-201** | Security (OWASP A01) | OAuth2 Bearer / JWT token authentication enforced on API gateway. | 401 Unauthorized returned for unauthenticated API access requests. |
-| **NFR-202** | Security (OWASP A02) | Transport & At-Rest Encryption standards across all GCP services. | TLS 1.3 enforced in transit; AES-256 enforced at rest in BigQuery & Cloud Storage. |
-| **NFR-203** | Security (OWASP A07) | API Rate Limiting to prevent denial of service and brute force. | Max 100 requests per minute per IP; HTTP 429 status returned on breach. |
-| **NFR-204** | Privacy (GDPR Art. 17) | Right to Erasure & Data Retention policy in BigQuery state store. | Evaluation data auto-purged after 90-day TTL; manual erasure endpoint supported. |
-| **NFR-205** | Observability (OTel) | Structured OpenTelemetry latency, token counts, and trace logging. | Latency per node in ms & trace ID exposed via `/evaluation/{id}/telemetry`. |
-| **NFR-206** | Deployment (12-Factor) | Stateless Cloud Run microservices deployment with env var configuration. | 100% stateless execution; zero local disk reliance; environment secrets. |
+## 10. API Specifications
+*   `POST /v1/token`: OAuth2/JWT authentication.
+*   `POST /v1/consent`: GDPR Article 13/14 consent capture.
+*   `POST /v1/evaluate`: Initiates the 8-node agentic pipeline.
+*   `GET /v1/evaluation/{id}/status`: Polls the current state of the LangGraph.
+*   `GET /v1/evaluation/{id}/telemetry`: Returns OpenTelemetry-compatible latency and token usage data.
+*   `POST /v1/evaluation/{id}/approve`: Submits HITL approval and triggers final report generation.
 
----
+## 11. Security Requirements
+*   **PII Redaction:** Gemma 3 27B-IT must scrub all PII at Node 1 before any data reaches external LLM APIs.
+*   **Input Validation:** Pydantic v2 schema enforcement on all API inputs to prevent injection (OWASP A03).
+*   **Rate Limiting:** 100 requests/min per IP to prevent DoS (OWASP A07).
+*   **Encryption:** Mandatory TLS 1.3 for all endpoints; AES-256 for data at rest in BigQuery and GCS.
 
-## 6. IEEE 830 Traceability Matrix
+## 12. Deployment & Infrastructure
+*   **Containerization:** All services packaged as Docker containers following 12-Factor App standards.
+*   **Hosting:** Serverless deployment on Google Cloud Run.
+*   **CI/CD:** Automated pipeline via Cloud Build with blue/green deployment strategy.
+*   **Environment Management:** All secrets managed via Secret Manager; configuration via environment variables.
 
-| Requirement ID | Architectural Component | Implementation File / Service | Verification Command / Metric |
-|---|---|---|---|
-| **FR-101** | Node 1 (Intake) | `pipeline/gemma_filter.py` | Unit test: `gemma_preprocess()` scrubs SSN/Email |
-| **FR-102** | Node 2 (Criteria) | `pipeline/criteria_agent.py` | MCP JSON schema validation test |
-| **FR-103** | Node 3 (Retrieval) | `pipeline/retrieval_agent.py` | Qdrant / Vertex Vector Search top-k test |
-| **FR-104, FR-105** | Nodes 4 & 5 (Scoring/Risk) | `pipeline/a2a_protocol.py` | A2A handshake test: AIR < 0.80 triggers veto |
-| **FR-106** | Node 6 (Explanation) | `pipeline/explanation_agent.py` | CRISPE output structure & length check |
-| **FR-107** | Node 7 (Comparison) | `pipeline/comparison_agent.py` | Pandas DataFrame sort & rank test |
-| **FR-108** | Node 8 (HITL) | `api/main.py` (`/evaluation/approve`) | POST request records approval in BigQuery |
-| **FR-109** | GDPR Consent | `pipeline/gdpr_consent.py` | POST `/v1/consent` records Art 13/14 log |
-| **FR-110** | Event Bus Decoupler | `pipeline/pubsub_eventbus.py` | Cloud Pub/Sub message publish test |
-| **NFR-201** | Security (Auth) | `api/main.py` (`verify_token`) | OAuth2 Bearer token validation check |
-| **NFR-202** | Security (Crypto) | GCP Cloud Run / BigQuery | TLS 1.3 / AES-256 header verification |
-| **NFR-203** | Security (Rate Limit)| `api/main.py` (`security_headers`) | 101st request returns HTTP 429 |
-| **NFR-205** | Observability | `api/main.py` (`/telemetry`) | GET `/telemetry` returns latency_ms dict |
+## 13. Success Metrics
+*   **Efficiency:** Average time from RFP upload to ranked shortlist < 1 minute.
+*   **Accuracy:** >95% recall in identifying mandatory compliance certifications.
+*   **Fairness:** 0% EEOC violations in final reports (enforced by A2A veto).
+*   **User Trust:** >4.5/5 rating on explanation clarity in user feedback loops.
 
----
+## 14. Timeline & Milestones
+*   **Phase 1 (Foundation):** Setup Cloud Run, FastAPI Gateway, and Gemma 3 PII scrubbing.
+*   **Phase 2 (Intelligence):** Implement Criteria Extraction, Vector Retrieval, and Gemini-based scoring.
+*   **Phase 3 (Compliance):** Integrate A2A Protocol for EEOC monitoring and Enkrypt AI guardrails.
+*   **Phase 4 (Interface):** Build Streamlit Dashboard, HITL loop, and BigQuery audit reporting.
 
-## 7. Decoupled Microservices Architecture (Cloud Pub/Sub)
-
-```
-[Procurement Dashboard - Streamlit]
-               │
-               ▼  (HTTPS / TLS 1.3 / OAuth2 JWT)
-[VendorMind API Gateway - Cloud Run / FastAPI]
-               │
-               ├───► Publish: vendormind.rfp.ingested
-               │
-               ▼
-┌────────────────────────────────────────────────────────────────────────┐
-│                   CLOUD PUB/SUB ASYNCHRONOUS EVENT BUS                 │
-└──────┬──────────────────────┬───────────────────┬──────────────────────┘
-       │                      │                   │
-       ▼                      ▼                   ▼
-┌──────────────┐      ┌──────────────┐    ┌──────────────┐
-│ INTAKE SERVICE│      │RISK SERVICE  │    │CONSENT SERVICE│
-│ (Cloud Run)  │      │ (Cloud Run)  │    │ (Cloud Run)  │
-│ Gemma 3 27B  │      │ Gemini 1.5   │    │ GDPR Art 13/14│
-└──────────────┘      └──────────────┘    └──────────────┘
-```
-
----
-
-## 8. Technology Stack & Mandatory Cloud Components
-* **LLM & Reasoning:** Gemini 1.5 Pro (Google AI Studio / Vertex AI).
-* **Edge Privacy Gate:** Gemma 3 27B-IT (Vertex AI / local on-device).
-* **Agentic Orchestration:** LangGraph, Antigravity (AGY), Google ADK.
-* **Context & Communication:** MCP (Model Context Protocol), A2A Protocol.
-* **Event Bus Decoupling:** Google Cloud Pub/Sub.
-* **Security & Auth:** OAuth2 / JWT, Pydantic v2, SlowAPI Rate Limiting.
-* **Audit & Storage:** BigQuery (Audit/State), Vertex AI Vector Search / Qdrant.
-* **Deployment:** Google Cloud Run (12-Factor App stateless containers).
+## 15. Open Questions & Risks
+*   **Latency:** The 3-step A2A handshake between Scoring and Risk agents may add latency; requires optimization of Pub/Sub triggers.
+*   **Implicit Criteria:** The accuracy of Gemini 1.5 Pro in identifying "implicit" criteria needs rigorous testing against diverse RFP formats.
+*   **Model Availability:** Dependency on Google AI Studio/Vertex AI availability for Gemini 1.5 Pro.
