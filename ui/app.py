@@ -989,14 +989,20 @@ with st.sidebar:
     # ── ② RFP Requirements ──
     sb_label("②", "RFP Requirements")
     rfp_file = st.file_uploader("📂 Upload RFP File (PDF/TXT)", type=["pdf", "txt", "docx", "json", "md"], key="rfp_file")
+    parsed_rfp_text = ""
     if rfp_file:
-        parsed_rfp = parse_uploaded_file(rfp_file)
-        if parsed_rfp:
-            default_rfp = parsed_rfp
+        parsed_rfp_text = parse_uploaded_file(rfp_file)
+        if parsed_rfp_text and not parsed_rfp_text.startswith("["):
             st.sidebar.caption(f"✓ Extracted text from {rfp_file.name}")
+            if "_last_rfp_file" not in st.session_state or st.session_state["_last_rfp_file"] != rfp_file.name:
+                st.session_state["_r"] = parsed_rfp_text
+                st.session_state["_last_rfp_file"] = rfp_file.name
 
-    rfp_input = st.text_area("_r", value=default_rfp, height=160, label_visibility="collapsed",
+    rfp_val = default_rfp if default_rfp else parsed_rfp_text
+    rfp_input = st.text_area("_r", value=rfp_val, height=160, label_visibility="collapsed",
                               placeholder="Paste RFP requirements or upload PDF file above...")
+    if not rfp_input.strip() and parsed_rfp_text and not parsed_rfp_text.startswith("["):
+        rfp_input = parsed_rfp_text
 
     # ── ③ Vendor Submissions ──
     sb_label("③", "Vendor Submissions")
@@ -1007,13 +1013,20 @@ with st.sidebar:
         with st.expander(f"🏢  {v.get('vendor_name','')}", expanded=(i==0)):
             vname = st.text_input("Name", value=v.get("vendor_name",""), key=f"vn_{i}")
             vfile = st.file_uploader(f"📂 Upload Proposal File", type=["pdf", "txt", "docx", "json", "md"], key=f"vf_{i}")
-            v_val_text = v.get("raw_text","").strip()
+            parsed_vtext = ""
             if vfile:
                 parsed_vtext = parse_uploaded_file(vfile)
-                if parsed_vtext:
-                    v_val_text = parsed_vtext
+                if parsed_vtext and not parsed_vtext.startswith("["):
                     st.caption(f"✓ Parsed {vfile.name}")
-            vtext = st.text_area("Proposal", value=v_val_text, key=f"vt_{i}", height=100, label_visibility="collapsed", placeholder="Proposal text, pricing, certs...")
+                    file_key = f"_last_vf_{i}"
+                    if file_key not in st.session_state or st.session_state.get(file_key) != vfile.name:
+                        st.session_state[f"vt_{i}"] = parsed_vtext
+                        st.session_state[file_key] = vfile.name
+
+            v_val = parsed_vtext if parsed_vtext else v.get("raw_text","").strip()
+            vtext = st.text_area("Proposal", value=v_val, key=f"vt_{i}", height=100, label_visibility="collapsed", placeholder="Proposal text, pricing, certs...")
+            if not vtext.strip() and parsed_vtext and not parsed_vtext.startswith("["):
+                vtext = parsed_vtext
             vendor_inputs.append({"vendor_id":f"vendor_{i+1}","vendor_name":vname,"raw_text":vtext})
 
     # ── Run Button ──
