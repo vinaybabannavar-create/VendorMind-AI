@@ -107,45 +107,79 @@ html, body {
     background: transparent !important;
 }
 
-/* ── Sidebar: AI Neural Glass ── */
+/* ── Sidebar: Ultra-Modern Glassmorphic AI Control Center ── */
 section[data-testid="stSidebar"] {
-    background: linear-gradient(180deg, rgba(2,6,18,0.98) 0%, rgba(5,3,20,0.98) 100%) !important;
-    border-right: 1.5px solid rgba(0,212,255,0.3) !important;
-    backdrop-filter: blur(24px);
-    box-shadow: 4px 0 40px rgba(0,212,255,0.08) !important;
+    background: linear-gradient(180deg, rgba(3, 8, 22, 0.98) 0%, rgba(8, 12, 30, 0.98) 50%, rgba(4, 7, 20, 0.99) 100%) !important;
+    border-right: 1px solid rgba(0, 212, 255, 0.25) !important;
+    backdrop-filter: blur(30px) saturate(180%);
+    box-shadow: 8px 0 50px rgba(0, 212, 255, 0.12), inset -1px 0 0 rgba(255, 255, 255, 0.05) !important;
 }
 /* Sidebar scrollbar */
-section[data-testid="stSidebar"]::-webkit-scrollbar { width: 4px; }
-section[data-testid="stSidebar"]::-webkit-scrollbar-track { background: transparent; }
-section[data-testid="stSidebar"]::-webkit-scrollbar-thumb { background: rgba(0,212,255,0.3); border-radius: 4px; }
+section[data-testid="stSidebar"]::-webkit-scrollbar { width: 5px; }
+section[data-testid="stSidebar"]::-webkit-scrollbar-track { background: rgba(2, 6, 18, 0.5); }
+section[data-testid="stSidebar"]::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, rgba(0,212,255,0.5), rgba(139,92,246,0.5));
+    border-radius: 6px;
+}
 /* Sidebar inner padding */
 section[data-testid="stSidebar"] > div:first-child { padding: 0 !important; }
-section[data-testid="stSidebar"] .block-container { padding: 0 14px 20px 14px !important; }
-/* Sidebar labels */
+section[data-testid="stSidebar"] .block-container { padding: 0 16px 24px 16px !important; }
+
+/* Sidebar labels & headers */
 section[data-testid="stSidebar"] label {
-    color: #7DD3FA !important; font-weight: 700 !important; font-size: 0.8rem !important;
-    letter-spacing: 0.04em !important;
+    color: #94A3B8 !important; font-weight: 700 !important; font-size: 0.78rem !important;
+    letter-spacing: 0.06em !important; text-transform: uppercase !important;
 }
-/* Sidebar expander */
+
+/* Sidebar expander cards */
 section[data-testid="stSidebar"] details {
-    background: rgba(0,212,255,0.04) !important;
-    border: 1px solid rgba(0,212,255,0.18) !important;
-    border-radius: 12px !important; margin-bottom: 8px !important;
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.6) 0%, rgba(30, 41, 59, 0.4) 100%) !important;
+    border: 1px solid rgba(0, 212, 255, 0.2) !important;
+    border-radius: 14px !important; margin-bottom: 10px !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+section[data-testid="stSidebar"] details:hover {
+    border-color: rgba(0, 212, 255, 0.45) !important;
+    box-shadow: 0 6px 24px rgba(0, 212, 255, 0.15), inset 0 1px 0 rgba(0, 212, 255, 0.2) !important;
 }
 section[data-testid="stSidebar"] summary {
-    color: #00D4FF !important; font-weight: 700 !important; font-size: 0.85rem !important;
-    padding: 10px 14px !important;
+    color: #38BDF8 !important; font-weight: 700 !important; font-size: 0.85rem !important;
+    padding: 11px 15px !important; letter-spacing: 0.02em !important;
 }
 section[data-testid="stSidebar"] summary:hover {
-    background: rgba(0,212,255,0.08) !important; border-radius: 11px !important;
+    color: #00D4FF !important;
+    background: rgba(0, 212, 255, 0.08) !important; border-radius: 13px !important;
 }
-/* Number input */
+
+/* Number input buttons */
 section[data-testid="stSidebar"] div[data-testid="stNumberInput"] button {
-    background: rgba(0,212,255,0.12) !important; border-color: rgba(0,212,255,0.3) !important;
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.15), rgba(124, 58, 237, 0.15)) !important;
+    border: 1px solid rgba(0, 212, 255, 0.35) !important;
     color: #00D4FF !important; border-radius: 8px !important; font-weight: 800 !important;
+    transition: all 0.2s ease !important;
 }
 section[data-testid="stSidebar"] div[data-testid="stNumberInput"] button:hover {
-    background: rgba(0,212,255,0.25) !important; box-shadow: 0 0 12px rgba(0,212,255,0.3) !important;
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.35), rgba(124, 58, 237, 0.35)) !important;
+    box-shadow: 0 0 16px rgba(0, 212, 255, 0.4) !important;
+}
+
+/* File Uploader in Sidebar */
+section[data-testid="stSidebar"] div[data-testid="stFileUploader"] {
+    background: rgba(15, 23, 42, 0.5) !important;
+    border: 1.5px dashed rgba(0, 212, 255, 0.3) !important;
+    border-radius: 12px !important; padding: 10px !important;
+    transition: all 0.3s ease !important;
+}
+section[data-testid="stSidebar"] div[data-testid="stFileUploader"]:hover {
+    border-color: #00D4FF !important;
+    background: rgba(0, 212, 255, 0.06) !important;
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.15) !important;
+}
+section[data-testid="stSidebar"] div[data-testid="stFileUploader"] button {
+    background: linear-gradient(135deg, rgba(0,212,255,0.2), rgba(99,102,241,0.2)) !important;
+    border: 1px solid rgba(0,212,255,0.4) !important;
+    color: #00D4FF !important; border-radius: 8px !important; font-weight: 700 !important;
 }
 
 /* Glow Inputs */
@@ -153,30 +187,35 @@ div[data-testid="stTextArea"] textarea,
 div[data-testid="stSelectbox"] > div > div,
 div[data-testid="stTextInput"] input,
 div[data-testid="stNumberInput"] input {
-    background: rgba(0,212,255,0.05) !important;
-    border: 1px solid rgba(0,212,255,0.3) !important;
-    border-radius: 10px !important;
-    color: #F1F5F9 !important;
+    background: rgba(15, 23, 42, 0.7) !important;
+    border: 1px solid rgba(0, 212, 255, 0.25) !important;
+    border-radius: 11px !important;
+    color: #F8FAFC !important;
     font-weight: 500 !important;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.3) !important;
+    transition: all 0.25s ease !important;
 }
 div[data-testid="stTextArea"] textarea:focus,
-div[data-testid="stTextInput"] input:focus {
+div[data-testid="stTextInput"] input:focus,
+div[data-testid="stSelectbox"] > div > div:focus-within {
     border-color: #00D4FF !important;
-    box-shadow: 0 0 20px rgba(0,212,255,0.25) !important;
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.3), inset 0 1px 2px rgba(0,0,0,0.4) !important;
+    background: rgba(15, 23, 42, 0.9) !important;
 }
 
 /* Primary Button */
 .stButton > button[kind="primary"] {
-    background: linear-gradient(135deg, #00D4FF 0%, #7C3AED 100%) !important;
-    border: none !important; border-radius: 12px !important;
-    color: #000 !important; font-weight: 800 !important; font-size: 0.9rem !important;
-    letter-spacing: 0.08em !important; padding: 0.75rem 1.6rem !important;
-    box-shadow: 0 0 25px rgba(0,212,255,0.4), 0 4px 20px rgba(124,58,237,0.3) !important;
-    transition: all 0.3s ease !important; text-transform: uppercase !important;
+    background: linear-gradient(135deg, #00D4FF 0%, #3B82F6 40%, #8B5CF6 100%) !important;
+    border: none !important; border-radius: 14px !important;
+    color: #030712 !important; font-weight: 800 !important; font-size: 0.92rem !important;
+    letter-spacing: 0.09em !important; padding: 0.85rem 1.8rem !important;
+    box-shadow: 0 0 30px rgba(0,212,255,0.45), 0 4px 25px rgba(139,92,246,0.35) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important; text-transform: uppercase !important;
 }
 .stButton > button[kind="primary"]:hover {
-    box-shadow: 0 0 45px rgba(0,212,255,0.7), 0 8px 45px rgba(124,58,237,0.5) !important;
+    box-shadow: 0 0 50px rgba(0,212,255,0.8), 0 8px 45px rgba(139,92,246,0.6) !important;
     transform: translateY(-2px) scale(1.02) !important;
+    color: #FFFFFF !important;
 }
 
 /* Tabs */
@@ -844,77 +883,80 @@ SIDEBAR_HEADER_HTML = """
 <head>
 <meta charset="utf-8">
 <style>
-  * { margin:0; padding:0; box-sizing:border-box; font-family:'Space Grotesk',system-ui,sans-serif; }
+  @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@600;700;800&family=JetBrains+Mono:wght@700&display=swap');
+  * { margin:0; padding:0; box-sizing:border-box; font-family:'Space Grotesk', system-ui, sans-serif; }
   body { background:transparent; overflow:hidden; }
   .sb-wrap {
-    position:relative; width:100%; height:185px; overflow:hidden;
-    background: linear-gradient(135deg, rgba(0,6,18,0.98), rgba(8,2,22,0.98));
-    border-radius: 0 0 20px 20px;
-    border-bottom: 1.5px solid rgba(0,212,255,0.35);
-    border-left: none; border-right: none;
-    box-shadow: 0 10px 40px rgba(0,212,255,0.1), inset 0 -1px 30px rgba(124,58,237,0.08);
+    position:relative; width:100%; height:195px; overflow:hidden;
+    background: linear-gradient(135deg, rgba(2,8,24,0.98), rgba(12,6,32,0.98));
+    border-radius: 0 0 22px 22px;
+    border-bottom: 1.5px solid rgba(0,212,255,0.4);
+    box-shadow: 0 12px 45px rgba(0,212,255,0.15), inset 0 -1px 30px rgba(139,92,246,0.12);
   }
   canvas { position:absolute; top:0; left:0; width:100%; height:100%; z-index:1; }
   .sb-content {
-    position:relative; z-index:2; padding:18px 16px 14px;
+    position:relative; z-index:2; padding:16px 16px 12px;
     display:flex; flex-direction:column; height:100%;
   }
-  .sb-logo-row { display:flex; align-items:center; gap:10px; margin-bottom:8px; }
+  .sb-logo-row { display:flex; align-items:center; gap:12px; margin-bottom:6px; }
   .sb-orb {
-    width:44px; height:44px; border-radius:12px; flex-shrink:0;
-    background: linear-gradient(135deg,rgba(0,212,255,0.3),rgba(124,58,237,0.4));
-    border: 1.5px solid rgba(0,212,255,0.7);
-    display:flex; align-items:center; justify-content:center; font-size:1.4rem;
-    box-shadow: 0 0 20px rgba(0,212,255,0.5);
+    width:46px; height:46px; border-radius:14px; flex-shrink:0;
+    background: linear-gradient(135deg, rgba(0,212,255,0.4), rgba(139,92,246,0.5));
+    border: 1.5px solid rgba(0,212,255,0.8);
+    display:flex; align-items:center; justify-content:center; font-size:1.5rem;
+    box-shadow: 0 0 25px rgba(0,212,255,0.6);
     animation: orbPulse 2.5s ease-in-out infinite;
   }
   @keyframes orbPulse {
     0%,100% { box-shadow:0 0 15px rgba(0,212,255,0.4); }
-    50% { box-shadow:0 0 35px rgba(0,212,255,0.9),0 0 55px rgba(124,58,237,0.5); }
+    50% { box-shadow:0 0 40px rgba(0,212,255,0.95), 0 0 60px rgba(139,92,246,0.6); }
   }
   .sb-brand { }
   .sb-name {
-    font-size:1.25rem; font-weight:800; line-height:1.1;
-    background: linear-gradient(90deg,#00D4FF,#A78BFA,#34D399);
+    font-family: 'Outfit', sans-serif;
+    font-size:1.3rem; font-weight:800; line-height:1.1;
+    background: linear-gradient(90deg, #00D4FF 0%, #A78BFA 50%, #34D399 100%);
     -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+    letter-spacing: -0.01em;
   }
   .sb-sub {
     font-size:0.58rem; font-family:'JetBrains Mono',monospace; font-weight:700;
-    color:#4B5563; letter-spacing:0.12em; text-transform:uppercase; margin-top:1px;
+    color:#94A3B8; letter-spacing:0.1em; text-transform:uppercase; margin-top:2px;
   }
-  .sb-nodes { display:flex; align-items:center; gap:4px; margin:8px 0; flex-wrap:nowrap; }
+  .sb-nodes { display:flex; align-items:center; gap:3.5px; margin:8px 0; flex-wrap:nowrap; }
   .sn {
-    width:22px; height:22px; border-radius:50%;
-    background:rgba(0,212,255,0.12); border:1.2px solid rgba(0,212,255,0.4);
+    width:21px; height:21px; border-radius:50%;
+    background:rgba(0,212,255,0.14); border:1.2px solid rgba(0,212,255,0.5);
     color:#00D4FF; font-size:0.6rem; font-weight:800;
     display:flex; align-items:center; justify-content:center;
     animation: nodeGlow 2s ease-in-out infinite;
     flex-shrink:0;
   }
-  .sn:last-child { border-color:rgba(52,211,153,0.6); color:#34D399; box-shadow:0 0 8px rgba(52,211,153,0.5); }
+  .sn:last-child { border-color:rgba(52,211,153,0.7); color:#34D399; box-shadow:0 0 10px rgba(52,211,153,0.6); }
   @keyframes nodeGlow {
-    0%,100% { opacity:0.6; } 50% { opacity:1; box-shadow:0 0 10px rgba(0,212,255,0.5); }
+    0%,100% { opacity:0.6; } 50% { opacity:1; box-shadow:0 0 12px rgba(0,212,255,0.6); }
   }
   .sn:nth-child(odd)  { animation-delay: 0.2s; }
   .sn:nth-child(even) { animation-delay: 0.8s; }
-  .sl { width:10px; height:1.5px; background:linear-gradient(90deg,rgba(0,212,255,0.4),rgba(124,58,237,0.4)); flex-shrink:0; }
-  .sb-stats { display:flex; gap:10px; margin-top:auto; }
+  .sl { width:9px; height:1.5px; background:linear-gradient(90deg,rgba(0,212,255,0.5),rgba(139,92,246,0.5)); flex-shrink:0; }
+  .sb-stats { display:flex; gap:6px; margin-top:auto; }
   .sbst {
-    flex:1; background:rgba(0,212,255,0.07); border:1px solid rgba(0,212,255,0.18);
-    border-radius:8px; padding:5px 6px; text-align:center;
+    flex:1; background:rgba(15,23,42,0.65); border:1px solid rgba(0,212,255,0.22);
+    border-radius:10px; padding:6px 4px; text-align:center;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
   }
-  .sbst-v { font-size:1rem; font-weight:800; font-family:'JetBrains Mono',monospace; }
+  .sbst-v { font-size:0.88rem; font-weight:800; font-family:'JetBrains Mono',monospace; }
   .sbst-v.cy { color:#00D4FF; } .sbst-v.pu { color:#A78BFA; } .sbst-v.gr { color:#34D399; }
-  .sbst-l { font-size:0.55rem; font-weight:700; color:#374151; text-transform:uppercase; letter-spacing:0.06em; margin-top:1px; }
+  .sbst-l { font-size:0.52rem; font-weight:700; color:#64748B; text-transform:uppercase; letter-spacing:0.06em; margin-top:2px; }
   .live-dot {
     display:inline-block; width:6px; height:6px; border-radius:50%;
-    background:#34D399; margin-right:5px;
-    animation: liveBlink 1s ease-in-out infinite;
+    background:#34D399; margin-right:6px; box-shadow:0 0 8px #34D399;
+    animation: liveBlink 1.2s ease-in-out infinite;
   }
   @keyframes liveBlink { 0%,100%{opacity:1;} 50%{opacity:0.2;} }
   .sb-status {
-    font-size:0.62rem; font-weight:700; color:#34D399; letter-spacing:0.06em;
-    display:flex; align-items:center; margin-bottom:4px;
+    font-size:0.6rem; font-weight:800; color:#34D399; letter-spacing:0.08em;
+    display:flex; align-items:center; margin-bottom:4px; font-family:'JetBrains Mono',monospace;
   }
 </style>
 </head>
@@ -922,12 +964,12 @@ SIDEBAR_HEADER_HTML = """
 <div class="sb-wrap">
   <canvas id="sbCanvas"></canvas>
   <div class="sb-content">
-    <div class="sb-status"><span class="live-dot"></span>VENDORMIND AI · READY</div>
+    <div class="sb-status"><span class="live-dot"></span>SYSTEM ONLINE · READY</div>
     <div class="sb-logo-row">
       <div class="sb-orb">🧠</div>
       <div class="sb-brand">
         <div class="sb-name">VendorMind AI</div>
-        <div class="sb-sub">Agentic Procurement · LangGraph</div>
+        <div class="sb-sub">LangGraph · Gemma 3 · A2A</div>
       </div>
     </div>
     <div class="sb-nodes">
@@ -938,15 +980,16 @@ SIDEBAR_HEADER_HTML = """
       <div class="sn">5</div><div class="sl"></div>
       <div class="sn">6</div><div class="sl"></div>
       <div class="sn">7</div><div class="sl"></div>
-      <div class="sn" style="border-color:rgba(52,211,153,0.6);color:#34D399">8</div>
+      <div class="sn" style="border-color:rgba(52,211,153,0.7);color:#34D399">8</div>
     </div>
     <div class="sb-stats">
       <div class="sbst"><div class="sbst-v cy">8</div><div class="sbst-l">Agents</div></div>
-      <div class="sbst"><div class="sbst-v pu">Gemini</div><div class="sbst-l">2.0 Flash</div></div>
-      <div class="sbst"><div class="sbst-v gr">HITL</div><div class="sbst-l">Gated</div></div>
+      <div class="sbst"><div class="sbst-v pu">Gemma 3</div><div class="sbst-l">27B Gate</div></div>
+      <div class="sbst"><div class="sbst-v gr">A2A</div><div class="sbst-l">EEOC Mesh</div></div>
     </div>
   </div>
 </div>
+
 <script>
 const c=document.getElementById('sbCanvas'),x=c.getContext('2d');
 function rsz(){c.width=c.offsetWidth;c.height=c.offsetHeight;}rsz();
@@ -981,12 +1024,12 @@ with st.sidebar:
     # ── Section label helper ──
     def sb_label(num, txt):
         st.markdown(f"""
-        <div style='display:flex;align-items:center;gap:8px;margin:14px 0 6px'>
-          <div style='width:22px;height:22px;border-radius:50%;background:rgba(0,212,255,0.15);
-            border:1px solid rgba(0,212,255,0.5);display:flex;align-items:center;justify-content:center;
-            color:#00D4FF;font-size:0.65rem;font-weight:800;flex-shrink:0'>{num}</div>
-          <span style='color:#00D4FF;font-size:0.68rem;font-weight:800;text-transform:uppercase;
-            letter-spacing:0.14em'>{txt}</span>
+        <div style='display:flex;align-items:center;gap:10px;margin:16px 0 8px;padding-bottom:4px;border-bottom:1px solid rgba(0,212,255,0.12)'>
+          <div style='width:24px;height:24px;border-radius:8px;background:linear-gradient(135deg, rgba(0,212,255,0.2), rgba(139,92,246,0.25));
+            border:1px solid rgba(0,212,255,0.6);display:flex;align-items:center;justify-content:center;
+            color:#00D4FF;font-size:0.68rem;font-weight:800;flex-shrink:0;box-shadow:0 0 10px rgba(0,212,255,0.25)'>{num}</div>
+          <span style='color:#38BDF8;font-size:0.75rem;font-weight:800;text-transform:uppercase;
+            letter-spacing:0.1em'>{txt}</span>
         </div>""", unsafe_allow_html=True)
 
     # ── ① Preset RFP ──
@@ -1041,14 +1084,15 @@ with st.sidebar:
 
     # ── Run Button ──
     st.markdown("""
-    <div style='margin:16px 0 4px'>
-      <div style='height:1px;background:linear-gradient(90deg,transparent,rgba(0,212,255,0.4),rgba(124,58,237,0.4),transparent);margin-bottom:14px'></div>
+    <div style='margin:18px 0 6px'>
+      <div style='height:1px;background:linear-gradient(90deg,transparent,rgba(0,212,255,0.5),rgba(139,92,246,0.5),transparent);margin-bottom:16px'></div>
     </div>""", unsafe_allow_html=True)
     run_btn = st.button("⚡  RUN  8-AGENT  PIPELINE", type="primary", use_container_width=True)
     st.markdown("""
-    <div style='text-align:center;margin-top:8px'>
-      <span style='font-size:0.6rem;color:#1E3A5F;font-weight:700;letter-spacing:0.08em;text-transform:uppercase'>Powered by LangGraph · Gemini 2.0 · ChromaDB</span>
+    <div style='text-align:center;margin-top:10px'>
+      <span style='font-size:0.62rem;color:#64748B;font-weight:700;letter-spacing:0.09em;text-transform:uppercase'>POWERED BY GEMMA 3 27B · GEMINI 1.5 PRO · A2A PROTOCOL</span>
     </div>""", unsafe_allow_html=True)
+
 
 # ──────────────────────────────────────────────────────────────────────────────
 # HERO CANVAS (Framed with padding & clear top border)
