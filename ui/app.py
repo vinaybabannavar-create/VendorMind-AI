@@ -30,8 +30,16 @@ def parse_uploaded_file(uploaded_file) -> str:
     """Extract raw text from PDF, TXT, DOCX, JSON, or MD files cleanly."""
     if uploaded_file is None:
         return ""
+    
+    # Check cache first to avoid stream re-reading issues
+    cache_key = f"parsed_file_cache_{uploaded_file.name}_{uploaded_file.size}"
+    if cache_key in st.session_state:
+        return st.session_state[cache_key]
+
     fname = uploaded_file.name.lower()
+    extracted = ""
     try:
+        uploaded_file.seek(0)
         if fname.endswith(".pdf"):
             try:
                 import pypdf
@@ -41,13 +49,16 @@ def parse_uploaded_file(uploaded_file) -> str:
                     t = page.extract_text()
                     if t:
                         text.append(t)
-                return "\n".join(text).strip()
+                extracted = "\n".join(text).strip()
             except Exception as e:
-                return f"[PDF parsing fallback error: {e}]"
+                extracted = f"[PDF parsing fallback error: {e}]"
         else:
-            return uploaded_file.read().decode("utf-8", errors="ignore").strip()
+            extracted = uploaded_file.read().decode("utf-8", errors="ignore").strip()
     except Exception as e:
-        return f"[File reading error: {e}]"
+        extracted = f"[File reading error: {e}]"
+
+    st.session_state[cache_key] = extracted
+    return extracted
 
 # ──────────────────────────────────────────────────────────────────────────────
 # SCORE ANALYSIS LOGIC
@@ -993,12 +1004,12 @@ with st.sidebar:
     if rfp_file:
         parsed_rfp_text = parse_uploaded_file(rfp_file)
         if parsed_rfp_text and not parsed_rfp_text.startswith("["):
-            st.sidebar.caption(f"✓ Extracted text from {rfp_file.name}")
-            if "_last_rfp_file" not in st.session_state or st.session_state["_last_rfp_file"] != rfp_file.name:
-                st.session_state["_r"] = parsed_rfp_text
-                st.session_state["_last_rfp_file"] = rfp_file.name
+            st.sidebar.caption(f"✓ Extracted {len(parsed_rfp_text)} chars from {rfp_file.name}")
+            st.session_state["_r"] = parsed_rfp_text
+        elif parsed_rfp_text.startswith("["):
+            st.sidebar.error(parsed_rfp_text)
 
-    rfp_val = default_rfp if default_rfp else parsed_rfp_text
+    rfp_val = default_rfp if default_rfp else st.session_state.get("_r", parsed_rfp_text)
     rfp_input = st.text_area("_r", value=rfp_val, height=160, label_visibility="collapsed",
                               placeholder="Paste RFP requirements or upload PDF file above...")
     if not rfp_input.strip() and parsed_rfp_text and not parsed_rfp_text.startswith("["):
@@ -1017,13 +1028,12 @@ with st.sidebar:
             if vfile:
                 parsed_vtext = parse_uploaded_file(vfile)
                 if parsed_vtext and not parsed_vtext.startswith("["):
-                    st.caption(f"✓ Parsed {vfile.name}")
-                    file_key = f"_last_vf_{i}"
-                    if file_key not in st.session_state or st.session_state.get(file_key) != vfile.name:
-                        st.session_state[f"vt_{i}"] = parsed_vtext
-                        st.session_state[file_key] = vfile.name
+                    st.caption(f"✓ Parsed {len(parsed_vtext)} chars from {vfile.name}")
+                    st.session_state[f"vt_{i}"] = parsed_vtext
+                elif parsed_vtext.startswith("["):
+                    st.error(parsed_vtext)
 
-            v_val = parsed_vtext if parsed_vtext else v.get("raw_text","").strip()
+            v_val = parsed_vtext if parsed_vtext else st.session_state.get(f"vt_{i}", v.get("raw_text","").strip())
             vtext = st.text_area("Proposal", value=v_val, key=f"vt_{i}", height=100, label_visibility="collapsed", placeholder="Proposal text, pricing, certs...")
             if not vtext.strip() and parsed_vtext and not parsed_vtext.startswith("["):
                 vtext = parsed_vtext
