@@ -5,12 +5,21 @@ Node 4 — Multi-Signal Scoring Agent
 Computes a composite score per vendor combining structured signals
 (cost, compliance completeness, delivery timeline fit) with the
 semantic retrieval score from the Vendor Profile Retrieval Agent.
-Tech: Python, Gemini 1.5 Pro (for qualitative signal), NumPy-free scoring
+
+Enhanced with A2A Protocol:
+  - After computing draft scores, submits them to the Risk & Bias Agent
+    via Agent-to-Agent (A2A) negotiation for EEOC adverse impact vetting.
+  - If the Risk Agent issues a veto (adverse impact ratio < 0.80), the
+    fairness floor adjustment is automatically applied before final scores
+    are written to state.
+Tech: Python, Gemini 1.5 Pro (for qualitative signal), A2A Protocol
 """
 
 import re
+import time
 from typing import Dict, Any
 from pipeline.state import VendorMindState
+from pipeline.a2a_protocol import scoring_to_risk_handshake
 
 
 def _extract_price(text: str) -> float:
@@ -31,6 +40,8 @@ def _compliance_score(vendor_certs: list, required_certs: list) -> float:
 
 
 def run_scoring_agent(state: VendorMindState) -> VendorMindState:
+    t0 = time.monotonic()
+
     parsed_vendors = state.get("parsed_vendors", [])
     criteria = state.get("criteria", {})
     vendor_context = state.get("vendor_context", {})
@@ -42,7 +53,8 @@ def run_scoring_agent(state: VendorMindState) -> VendorMindState:
     cost_weight = float(criteria.get("cost_weight", 0.4) or 0.4)
     required_certs = criteria.get("compliance_requirements", [])
 
-    scores: Dict[str, Any] = {}
+    # ── Step 1: Compute draft scores ─────────────────────────────────────────
+    draft_scores: Dict[str, Any] = {}
     for v in parsed_vendors:
         vid = v["vendor_id"]
         price = prices[vid]
@@ -68,12 +80,38 @@ def run_scoring_agent(state: VendorMindState) -> VendorMindState:
             + (remaining * 0.4) * semantic
         )
 
-        scores[vid] = {
+        draft_scores[vid] = {
             "cost_score": round(cost_score, 3),
             "compliance_score": round(compliance, 3),
             "semantic_score": round(semantic, 3),
             "composite_score": round(composite, 3),
         }
 
-    state["scores"] = scores
+    # ── Step 2: A2A Handshake with Risk Agent (EEOC Fairness Vetting) ────────
+    # Scoring Agent submits draft scores to Risk Agent via A2A protocol.
+    # Risk Agent checks EEOC adverse impact ratios and may veto/adjust scores.
+    # Final scores are returned after any fairness floor adjustments.
+    final_scores = scoring_to_risk_handshake(state, draft_scores)
+
+    # Build EEOC report for UI display
+    top = max((s.get("composite_score", 0) for s in final_scores.values()), default=1.0)
+    eeoc_report = {}
+    for vid, s in final_scores.items():
+        ratio = round(s.get("composite_score", 0) / top, 3) if top > 0 else 1.0
+        eeoc_report[vid] = {
+            "adverse_impact_ratio": ratio,
+            "passes_4_5ths_rule": ratio >= 0.80,
+            "eeoc_adjusted": s.get("eeoc_adjusted", False),
+        }
+
+    state["scores"] = final_scores
+    state["eeoc_report"] = eeoc_report
+
+    # OpenTelemetry latency tracking
+    elapsed = round((time.monotonic() - t0) * 1000, 2)
+    latency = state.get("latency_ms", {})
+    latency["scoring"] = elapsed
+    state["latency_ms"] = latency
+
     return state
+

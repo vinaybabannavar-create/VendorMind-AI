@@ -5,6 +5,12 @@ Shared state object passed between every node in the LangGraph pipeline.
 Each agent reads what it needs and writes its own output key — nothing
 is overwritten, so the full audit trail survives to the Output & HITL
 Agent (and from there, to the Audit & State Store).
+
+Extended with:
+  - Gemma PII filter results (GDPR data minimisation at intake boundary)
+  - A2A Protocol log (Google A2A spec, Scoring <-> Risk negotiation)
+  - EEOC fairness telemetry (adverse impact ratios)
+  - OpenTelemetry trace IDs and token usage (LLM observability)
 """
 
 from typing import TypedDict, List, Dict, Any, Optional
@@ -47,5 +53,28 @@ class VendorMindState(TypedDict, total=False):
     final_report: Dict[str, Any]
     hitl_approved: Optional[bool]
 
+    # --- Gemma PII Filter output (Intake pre-processing) ---
+    # Populated by pipeline/gemma_filter.py BEFORE any Gemini API call.
+    # Ensures GDPR Article 5 data minimisation at the system boundary.
+    gemma_pii_results: List[Dict[str, Any]]   # per-vendor Gemma scan result
+    gemma_rfp_result: Dict[str, Any]          # RFP Gemma scan result
+
+    # --- A2A Protocol log (Scoring <-> Risk negotiation) ---
+    # Full audit trail of Agent-to-Agent messages (Google A2A spec).
+    # Messages are exchanged between scoring_agent and risk_agent during
+    # the EEOC fairness vetting handshake.
+    a2a_log: List[Dict[str, Any]]
+
+    # --- EEOC / Fairness Telemetry ---
+    # Adverse impact ratios computed during A2A handshake.
+    eeoc_report: Dict[str, Any]               # adverse impact ratios per vendor
+
+    # --- OpenTelemetry Observability ---
+    # Trace IDs and token counts for LLM observability dashboards.
+    otel_trace_id: Optional[str]
+    token_usage: Dict[str, Any]               # node_name -> {prompt_tokens, completion_tokens}
+    latency_ms: Dict[str, float]              # node_name -> elapsed milliseconds
+
     # --- bookkeeping ---
     errors: List[str]
+    _enkrypt_guardrail: Dict[str, Any]        # Enkrypt AI guardrail result (risk_agent)

@@ -1,110 +1,124 @@
 # Product Requirements Document (PRD): VendorMind AI
 
 ## 1. Executive Summary
-VendorMind AI is an agentic AI system designed to automate the complex, manual process of vendor evaluation for procurement teams. By utilizing a stateful, multi-node agent pipeline, the system transforms raw RFP (Request for Proposal) requirements and vendor submissions into structured, explainable, and risk-aware rankings. Unlike "black-box" scoring systems, VendorMind AI prioritizes transparency, providing human-readable justifications for every decision and maintaining a critical human-in-the-loop (HITL) approval step.
+VendorMind AI is a production-grade, enterprise procurement intelligence platform designed for the HiDevs National AI Hackathon. The system automates the end-to-end evaluation of vendor Request for Proposal (RFP) submissions using a stateful, 8-node multi-agent pipeline. By leveraging Gemini 1.5 Pro for reasoning and Gemma 3 27B-IT for privacy-preserving edge processing, VendorMind AI transforms slow, manual spreadsheet comparisons into an explainable, compliant, and multi-signal scoring engine.
 
 ## 2. Problem Statement
-Procurement teams at mid-to-large organizations currently face a bottleneck in vendor selection. The process is:
-*   **Slow:** Manually cross-referencing dozens of proposals against complex RFP criteria.
-*   **Inconsistent:** Subjective scoring leads to different results across different evaluators.
-*   **Opaque:** Lack of a clear audit trail or documented reasoning for why a specific vendor was selected or rejected.
-*   **Risk-Prone:** Difficulty in identifying subtle risks like single-vendor dependency or "dumping" (unusually low bids).
+Procurement teams at mid-to-large organizations face significant bottlenecks when evaluating vendor proposals. The current manual process is:
+*   **Slow:** Cross-checking dozens of proposals against complex RFP criteria takes weeks.
+*   **Inconsistent:** Human evaluators apply criteria subjectively, leading to potential bias.
+*   **Opaque:** There is often no clear audit trail justifying why one vendor was selected over another, creating compliance risks.
+*   **Privacy-Risky:** Handling PII within vendor documents often violates GDPR/internal policies when sent to cloud LLMs without redaction.
 
 ## 3. Goals & Objectives
-*   **Efficiency:** Reduce manual evaluation time from weeks/days to minutes.
-*   **Explainability:** Ensure every score is backed by a natural language justification citing specific evidence.
-*   **Objectivity:** Standardize scoring logic across all vendors using a multi-signal approach.
-*   **Risk Mitigation:** Automatically flag compliance gaps and market risks.
-*   **Control:** Maintain human oversight through a dedicated approval interface.
+*   **Automate Evaluation:** Reduce manual evaluation time by at least 70%.
+*   **Ensure Explainability:** Provide human-readable justifications for every score (EU AI Act Art. 13 compliant).
+*   **Enforce Fairness:** Implement automated EEOC 4/5ths rule monitoring via Agent-to-Agent (A2A) negotiation.
+*   **Privacy First:** Redact PII at the intake boundary using local/on-device models (Gemma 3).
+*   **Human-in-the-Loop:** Maintain human oversight with a mandatory approval stage before final selection.
 
 ## 4. Target Users / Stakeholders
-*   **Procurement Managers:** Primary users who upload RFPs and review final shortlists.
-*   **Business Operations Teams:** Stakeholders involved in vendor due diligence and compliance.
-*   **Compliance Officers:** Users requiring an audit trail of the selection process.
+*   **Procurement Managers:** Primary users who upload RFPs and review rankings.
+*   **Compliance/Legal Officers:** Stakeholders who audit the evaluation process for fairness and GDPR compliance.
+*   **Business Operations Teams:** Users who define the technical and financial requirements for vendor selection.
 
 ## 5. Functional Requirements
+The system is structured as a stateful directed graph (LangGraph) consisting of 8 specialized nodes:
 
-### 5.1. Document Ingestion & Parsing
-*   **Intake Agent:** Must ingest and normalize RFP documents and vendor submissions (PDFs, pricing sheets, certificates).
-*   **Criteria Extraction:** Must use LLM reasoning to identify both explicit (e.g., "Must be ISO certified") and implicit (e.g., "Demonstrated experience in scaling") criteria.
+### 5.1. Intake & Privacy (Node 1)
+*   **Requirement:** Ingest RFP and vendor documents (PDF/Text).
+*   **Capability:** Use **Gemma 3 27B-IT** to detect and redact PII (Names, Emails, Phones) before data leaves the local environment/boundary.
+*   **Output:** PII-scrubbed `parsed_rfp` and `parsed_vendors` state.
 
-### 5.2. Contextual Retrieval
-*   **Vendor Profile Retrieval:** Must perform semantic vector searches against a historical knowledge base to include past performance and existing certifications in the current evaluation.
+### 5.2. Criteria Extraction (Node 2)
+*   **Requirement:** Extract explicit and implicit evaluation criteria.
+*   **Capability:** Use **Gemini 1.5 Pro** with **MCP (Model Context Protocol)** to inject vendor knowledge base context.
+*   **Output:** Structured JSON containing weights for cost, compliance, and technical specs.
 
-### 5.3. Multi-Signal Scoring
-*   **Composite Scoring:** The system must compute scores based on:
-    *   **Structured Signals:** Cost, compliance status, and delivery timelines.
-    *   **Semantic Similarity:** Alignment between vendor capabilities and RFP requirements.
-    *   **Historical Reliability:** Past performance data.
+### 5.3. Contextual Retrieval (Node 3)
+*   **Requirement:** Retrieve historical vendor performance data.
+*   **Capability:** Perform semantic search using **Vertex AI Vector Search** (fallback to Qdrant).
+*   **Output:** `vendor_context` including past scores and reliability metrics.
 
-### 5.4. Risk & Bias Detection
-*   **Automated Flagging:** Identify unusually low bids, missing documentation, or criteria that unfairly disadvantage specific vendor types (e.g., SMEs).
+### 5.4. Multi-Signal Scoring & A2A Fairness (Nodes 4 & 5)
+*   **Requirement:** Compute composite scores and vet for bias.
+*   **Capability:** 
+    *   **Node 4 (Scoring):** Computes draft scores (Cost 40%, Compliance 36%, Semantic 24%).
+    *   **Node 5 (Risk):** Monitors EEOC Adverse Impact Ratio (4/5ths rule).
+    *   **A2A Protocol:** Scoring Agent sends `score_draft` to Risk Agent; Risk Agent issues `risk_veto` if AIR < 0.80, forcing a fairness-floor adjustment.
 
-### 5.5. Reporting & Comparison
-*   **Explanation Generation:** Generate human-readable "justification strings" for every rank.
-*   **Side-by-Side Comparison:** Produce a structured grid comparing the top-N vendors across all extracted dimensions.
+### 5.5. Explainability & Comparison (Nodes 6 & 7)
+*   **Requirement:** Generate justifications and side-by-side views.
+*   **Capability:** 
+    *   **Node 6:** Uses Gemini 1.5 Pro (CRISPE prompt) to write 3-sentence justifications citing specific evidence.
+    *   **Node 7:** Generates a ranked Pandas-based comparison matrix.
 
-### 5.6. Human-in-the-Loop (HITL)
-*   **Approval Workflow:** The system must present the final ranked shortlist to the user for a "Go/No-Go" decision before finalizing the report.
+### 5.6. Output & HITL (Node 8)
+*   **Requirement:** Final report generation and human approval.
+*   **Capability:** Streamlit-based interface for "Approve/Reject" decisions. Persist all decisions and A2A logs to **BigQuery**.
 
 ## 6. Non-Functional Requirements
-*   **Performance:** Evaluation of a single vendor should complete within a few seconds.
-*   **Scalability:** Support simultaneous comparison of 10–20 vendors per RFP.
-*   **Auditability:** Every step of the agentic reasoning must be logged for compliance.
-*   **Usability:** Dashboard must be intuitive for non-technical procurement staff.
+*   **Performance:** Response latency under 10 seconds for the full pipeline per vendor.
+*   **Scalability:** Support 10–20 vendor proposals per RFP evaluation.
+*   **Reliability:** 12-Factor App compliant; stateless execution on Cloud Run.
+*   **Auditability:** 100% of agent communications (A2A) and LLM prompts must be logged for compliance.
+*   **Security:** OWASP Top 10 compliance, specifically focusing on A01 (Access Control) and A02 (Cryptographic Failures).
 
 ## 7. System Architecture Overview
-The system follows a vertical, stateful pipeline orchestrated by a directed graph:
-1.  **Frontend:** Streamlit-based dashboard for user interaction.
-2.  **API Layer:** FastAPI gateway managing requests.
-3.  **Orchestration:** LangGraph managing the state and transitions between 8 specialized agents.
-4.  **Agent Tier:** Sequential processing from Intake to Output.
-5.  **Data/LLM Tier:** Foundational layer providing reasoning (Gemini), semantic memory (Vector DB), and persistence (BigQuery/GCS).
+The system follows a **Stateful Multi-Agent Orchestration** pattern:
+1.  **Client Layer:** Streamlit Dashboard for user interaction.
+2.  **API Layer:** FastAPI Gateway hosted on Cloud Run.
+3.  **Orchestration Layer:** LangGraph managed by **Antigravity (AGY)** for lifecycle and state transitions.
+4.  **Agent Pipeline:** 8-node sequential and bidirectional (A2A) flow.
+5.  **Service/Storage Layer:** Google AI Studio (Gemini), Vertex AI (Gemma/Vector Search), BigQuery (Audit), and Cloud Storage (Docs).
 
 ## 8. Tech Stack
-*   **LLM & Reasoning:** Gemini 1.5 Pro (Vertex AI).
-*   **Agent Orchestration:** LangGraph, Agent Development Kit (ADK).
-*   **Backend:** FastAPI, Python, Cloud Run.
+*   **LLM & Reasoning:** Gemini 1.5 Pro (Google AI Studio), Gemma 3 27B-IT (Vertex AI).
+*   **Orchestration:** LangGraph, Antigravity (AGY), Google ADK.
+*   **Context & Tools:** MCP (Model Context Protocol), A2A Protocol.
+*   **Backend:** FastAPI, Python, Pandas, NumPy.
 *   **Frontend:** Streamlit.
-*   **Vector Search:** Vertex AI Vector Search / ChromaDB.
-*   **Storage:** Google Cloud Storage (Documents), BigQuery (Audit/Logs), Cloud SQL (State).
-*   **Tooling:** Model Context Protocol (MCP) for structured tool calls.
+*   **Data/Storage:** BigQuery (Audit/State), Vertex AI Vector Search / Qdrant (Vector DB), Google Cloud Storage.
+*   **Deployment:** Cloud Run, Docker (12-Factor App).
+*   **Guardrails:** Enkrypt AI (Bias/Toxicity scanning).
 
 ## 9. Data Requirements
-*   **Unstructured Data:** RFP PDFs, Vendor Proposals, Compliance Certificates.
-*   **Structured Data:** Extracted criteria schemas, scoring weights, and vendor metadata.
-*   **Vector Data:** Embeddings of vendor historical performance and profiles.
-*   **Audit Logs:** Full trace of agent decisions and LLM prompts/responses.
+*   **Data Minimization:** Gemma 3 must redact PII before any cloud API calls (GDPR Art. 5).
+*   **Retention:** BigQuery TTL set to 90 days for evaluation logs.
+*   **State Management:** LangGraph `StateGraph` persists the `parsed_rfp`, `criteria_dict`, `final_scores`, and `a2a_log`.
 
 ## 10. API Specifications
-*   `POST /v1/evaluate`: Upload RFP and vendor docs to initiate the pipeline.
-*   `GET /v1/status/{job_id}`: Poll for the current state of the agentic graph.
-*   `GET /v1/comparison/{job_id}`: Retrieve the side-by-side analysis.
-*   `POST /v1/approve`: Submit the final human decision back to the system.
+*   `POST /v1/evaluate`: Ingests RFP and Vendor docs; returns `evaluation_id`.
+*   `GET /v1/status/{id}`: Returns current node execution status and latency.
+*   `POST /v1/approve`: Submits HITL approval and triggers final report generation.
+*   `GET /v1/telemetry/{id}`: Returns OpenTelemetry-compatible trace and token usage data.
 
 ## 11. Security Requirements
-*   **Authentication:** Secure login for Procurement Managers.
-*   **Data Isolation:** Ensure vendor documents from one RFP are not leaked into the evaluation of another.
-*   **Data Protection:** Encryption at rest for all documents in GCS and BigQuery.
+*   **PII Redaction:** Mandatory Gemma-based scrubbing at Node 1.
+*   **Input Validation:** Pydantic v2 schema enforcement on all API inputs.
+*   **Rate Limiting:** 100 requests/min/IP enforced at the FastAPI gateway.
+*   **Audit Trail:** Every A2A message and HITL decision must include a timestamp and `messageId` in BigQuery.
 
 ## 12. Deployment & Infrastructure
-*   **Containerization:** All services deployed as Docker containers.
-*   **Cloud Provider:** Google Cloud Platform (GCP).
-*   **Compute:** Serverless execution via Cloud Run for the API and Agents.
-*   **CI/CD:** Automated pipeline for testing agent logic and prompt performance.
+*   **Containerization:** All components containerized via Docker.
+*   **Hosting:** Google Cloud Run (Serverless).
+*   **CI/CD:** Google Cloud Build with Blue/Green deployment strategy.
+*   **Environment:** All secrets managed via Environment Variables (12-Factor App).
 
 ## 13. Success Metrics
-*   **Time Savings:** % reduction in time spent per vendor evaluation.
-*   **Scoring Variance:** Reduction in score deviation between different human evaluators when assisted by the AI.
-*   **User Trust:** Qualitative feedback on the helpfulness and accuracy of the "Explanation Generation" node.
+*   **Efficiency:** Time from upload to ranked shortlist < 2 minutes.
+*   **Fairness:** 100% of evaluations pass the automated EEOC 4/5ths rule check.
+*   **Accuracy:** > 90% user acceptance rate of AI-generated explanations.
+*   **Compliance:** Zero PII leaked to Gemini API logs (verified by Gemma audit).
 
 ## 14. Timeline & Milestones
-*   **Phase 1 (MVP):** Intake, Criteria Extraction, and Basic Scoring (4 weeks).
-*   **Phase 2 (Intelligence):** Vector Retrieval and Risk/Bias Detection (3 weeks).
-*   **Phase 3 (UI/UX):** Streamlit Dashboard and HITL Approval Loop (3 weeks).
-*   **Phase 4 (Compliance):** Audit logging and BigQuery integration (2 weeks).
+*   **Milestone 1:** Intake & Extraction (Nodes 1-2) with Gemma PII scrubbing.
+*   **Milestone 2:** Retrieval & Scoring (Nodes 3-4) with Vertex AI Vector Search.
+*   **Milestone 3:** Risk & A2A (Node 5) implementation of the 4/5ths rule handshake.
+*   **Milestone 4:** Explanation & HITL (Nodes 6-8) with Streamlit dashboard integration.
+*   **Milestone 5:** Final Audit & 12-Factor App deployment on Cloud Run.
 
 ## 15. Open Questions & Risks
-*   **Hallucination Risk:** How does the system handle LLM hallucinations in pricing extraction? (Mitigation: Use structured parsing and MCP tool calls).
-*   **Data Privacy:** Handling sensitive vendor financial data.
-*   **Integration:** Future requirements for connecting directly to ERP systems (e.g., SAP, Oracle).
+*   **Risk:** Latency of the 8-node chain might exceed user expectations if LLM cold starts occur.
+*   **Risk:** Accuracy of Gemma 3 in redacting highly nested tabular PII in complex PDFs.
+*   **Question:** Should the system support multi-language RFPs, or is it restricted to English for the hackathon? (Current Scope: English).

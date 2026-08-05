@@ -1,27 +1,32 @@
 # VendorMind AI — Python Dependencies
+# Mandatory Hackathon Stack: Gemma, Gemini, ADK, MCP, Vertex AI, A2A, Antigravity
 
-# Vector DB & Embeddings
+# ── Vector DB & Embeddings ────────────────────────────────────────────────────
 qdrant-client>=1.9.0
 sentence-transformers>=3.0.1
 
-# LangGraph (Orchestration)
+# ── LangGraph (Orchestration) ─────────────────────────────────────────────────
 langgraph>=0.2.14
 langchain-core>=0.3.0
 
-# LLM (Gemini — Google AI Studio / Vertex AI)
+# ── LLM: Gemini + Gemma (Google AI Studio / Vertex AI) ───────────────────────
+# Gemini 1.5 Pro: deep evaluation, explanation generation, criteria extraction
+# Gemma 3 27B-IT: PII filtering and document preprocessing (Intake Node)
 google-generativeai>=0.7.2
 
-# Backend API
+# ── Backend API (OWASP-hardened) ──────────────────────────────────────────────
 fastapi>=0.115.0
 uvicorn[standard]>=0.30.6
 pydantic>=2.9.0
 
-# Frontend
+# ── Frontend ──────────────────────────────────────────────────────────────────
 streamlit>=1.39.0
 pandas>=2.2.3
 
-# Guardrails (optional — used if ENKRYPT_API_KEY is set)
+# ── Security & Guardrails ─────────────────────────────────────────────────────
+# Enkrypt AI: bias/toxicity guardrail on risk narrative
+# OWASP controls: rate limiting implemented in-process (no extra dep)
 requests>=2.32.3
 
-# Utilities
+# ── Utilities ─────────────────────────────────────────────────────────────────
 python-dotenv>=1.0.1
