@@ -1114,60 +1114,61 @@ NEURAL_HERO_HTML = """
 <meta charset="utf-8">
 <style>
   * { margin:0; padding:0; box-sizing:border-box; font-family:'Space Grotesk', system-ui, sans-serif; }
-  body { background: transparent; overflow: hidden; padding: 12px 6px 6px 6px; }
+  body { background: transparent; overflow: hidden; padding: 4px; }
   .canvas-container {
-    position: relative; width: 100%; height: 215px; border-radius: 20px;
+    position: relative; width: 100%; height: 200px; border-radius: 20px;
     background: linear-gradient(135deg, rgba(2,8,22,0.96), rgba(15,10,35,0.94));
-    border: 2px solid rgba(0,212,255,0.5);
-    box-shadow: 0 0 45px rgba(0,212,255,0.25), inset 0 0 30px rgba(0,212,255,0.08);
+    border: 1.5px solid rgba(0,212,255,0.45);
+    box-shadow: 0 0 40px rgba(0,212,255,0.2), inset 0 0 30px rgba(0,212,255,0.06);
     overflow: hidden;
   }
   canvas { position: absolute; top:0; left:0; width:100%; height:100%; z-index:1; }
   .hero-content {
-    position: relative; z-index: 2; height: 100%; padding: 22px 32px;
+    position: relative; z-index: 2; height: 100%; padding: 16px 24px;
     display: flex; align-items: center; justify-content: space-between;
-    pointer-events: none;
+    pointer-events: none; gap: 20px;
   }
-  .hero-left { display: flex; align-items: center; gap: 20px; }
+  .hero-left { display: flex; align-items: center; gap: 18px; flex: 1; min-width: 0; }
   .brain-orb {
-    width: 65px; height: 65px; border-radius: 18px;
+    width: 54px; height: 54px; border-radius: 16px; flex-shrink: 0;
     background: linear-gradient(135deg, rgba(0,212,255,0.25), rgba(124,58,237,0.35));
     border: 1.5px solid rgba(0,212,255,0.6);
-    display: flex; align-items: center; justify-content: center; font-size: 2.2rem;
-    box-shadow: 0 0 30px rgba(0,212,255,0.4);
+    display: flex; align-items: center; justify-content: center; font-size: 1.8rem;
+    box-shadow: 0 0 25px rgba(0,212,255,0.4);
     animation: orbGlow 3s ease-in-out infinite;
   }
   @keyframes orbGlow {
     0%, 100% { box-shadow: 0 0 20px rgba(0,212,255,0.4); }
-    50% { box-shadow: 0 0 45px rgba(0,212,255,0.8), 0 0 70px rgba(124,58,237,0.5); }
+    50% { box-shadow: 0 0 40px rgba(0,212,255,0.8), 0 0 60px rgba(124,58,237,0.5); }
   }
   .title-text {
-    font-size: 2.5rem; font-weight: 800; margin: 0; line-height: 1.1;
+    font-size: 2.1rem; font-weight: 800; margin: 0; line-height: 1.1;
     background: linear-gradient(90deg, #00D4FF 0%, #818CF8 40%, #C084FC 70%, #34D399 100%);
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     letter-spacing: -0.02em;
   }
   .sub-text {
-    color: #A5B4FC; font-size: 0.88rem; font-weight: 600; margin-top: 4px; letter-spacing: 0.02em;
+    color: #A5B4FC; font-size: 0.8rem; font-weight: 600; margin-top: 3px; letter-spacing: 0.02em;
   }
-  .badges-row { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+  .badges-row { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
   .badge {
-    background: rgba(0,212,255,0.14); border: 1px solid rgba(0,212,255,0.4);
-    color: #00D4FF; border-radius: 6px; font-size: 0.68rem; font-weight: 700;
-    padding: 3px 9px; text-transform: uppercase; letter-spacing: 0.06em;
+    background: rgba(0,212,255,0.12); border: 1px solid rgba(0,212,255,0.35);
+    color: #00D4FF; border-radius: 6px; font-size: 0.64rem; font-weight: 700;
+    padding: 2.5px 8px; text-transform: uppercase; letter-spacing: 0.05em; font-family:'JetBrains Mono',monospace;
   }
-  .badge.purple { background: rgba(124,58,237,0.18); border-color: rgba(124,58,237,0.5); color: #C084FC; }
-  .badge.green  { background: rgba(16,185,129,0.18); border-color: rgba(16,185,129,0.5); color: #34D399; }
+  .badge.purple { background: rgba(124,58,237,0.16); border-color: rgba(124,58,237,0.45); color: #C084FC; }
+  .badge.green  { background: rgba(16,185,129,0.16); border-color: rgba(16,185,129,0.45); color: #34D399; }
   
-  .topology-map { display: flex; gap: 6px; align-items: center; pointer-events: auto; }
+  .topology-wrap { flex-shrink: 0; text-align: right; }
+  .topology-map { display: flex; gap: 5px; align-items: center; pointer-events: auto; }
   .node-dot {
-    width: 24px; height: 24px; border-radius: 50%; background: rgba(0,212,255,0.2);
-    border: 1.5px solid rgba(0,212,255,0.5); color: #00D4FF; font-size: 0.65rem; font-weight: 800;
-    display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 0 10px rgba(0,212,255,0.3); transition: all 0.3s;
+    width: 22px; height: 22px; border-radius: 50%; background: rgba(0,212,255,0.18);
+    border: 1.3px solid rgba(0,212,255,0.5); color: #00D4FF; font-size: 0.62rem; font-weight: 800;
+    display: flex; align-items: center; justify-content: center; font-family:'JetBrains Mono',monospace;
+    box-shadow: 0 0 10px rgba(0,212,255,0.25); transition: all 0.3s;
   }
-  .node-dot:hover { transform: scale(1.3); background: #00D4FF; color: #000; box-shadow: 0 0 20px #00D4FF; }
-  .node-line { width: 14px; height: 2px; background: linear-gradient(90deg, rgba(0,212,255,0.5), rgba(124,58,237,0.5)); }
+  .node-dot:hover { transform: scale(1.25); background: #00D4FF; color: #000; box-shadow: 0 0 18px #00D4FF; }
+  .node-line { width: 10px; height: 2px; background: linear-gradient(90deg, rgba(0,212,255,0.5), rgba(124,58,237,0.5)); }
 </style>
 </head>
 <body>
@@ -1180,20 +1181,20 @@ NEURAL_HERO_HTML = """
         <h1 class="title-text">VendorMind AI</h1>
         <div class="sub-text">Agentic Procurement Intelligence • 8-Node LangGraph Pipeline • National Finale 2026</div>
         <div class="badges-row">
-          <span class="badge">⚡ LangGraph 8-Agent</span>
-          <span class="badge">🤖 Gemini 1.5 Pro</span>
-          <span class="badge purple">🔑 Gemma 3 27B PII Gate</span>
-          <span class="badge purple">🔗 A2A EEOC Protocol</span>
-          <span class="badge green">🛡️ Enkrypt AI Guardrails</span>
-          <span class="badge green">✅ HITL Gate</span>
-          <span class="badge">📡 Correlation Tracing</span>
-          <span class="badge purple">🧪 Prompt Hash Audit</span>
-          <span class="badge green">🔄 Vector Write-Through</span>
+          <span class="badge">⚡ LANGGRAPH 8-AGENT</span>
+          <span class="badge">🤖 GEMINI 1.5 PRO</span>
+          <span class="badge purple">🔑 GEMMA 3 27B PII GATE</span>
+          <span class="badge purple">🔗 A2A EEOC PROTOCOL</span>
+          <span class="badge green">🛡️ ENKRYPT AI GUARDRAILS</span>
+          <span class="badge green">✅ HITL GATE</span>
+          <span class="badge">📡 CORRELATION TRACING</span>
+          <span class="badge purple">🧪 PROMPT HASH AUDIT</span>
+          <span class="badge green">🔄 VECTOR WRITE-THROUGH</span>
         </div>
       </div>
     </div>
-    <div style="text-align:right">
-      <div style="color:#A5B4FC;font-size:0.65rem;font-weight:800;letter-spacing:0.1em;margin-bottom:6px">LIVE AGENT TOPOLOGY</div>
+    <div class="topology-wrap">
+      <div style="color:#A5B4FC;font-size:0.62rem;font-weight:800;letter-spacing:0.1em;margin-bottom:6px;font-family:'JetBrains Mono',monospace">LIVE AGENT TOPOLOGY</div>
       <div class="topology-map">
         <div class="node-dot" title="1. Intake">1</div><div class="node-line"></div>
         <div class="node-dot" title="2. Criteria">2</div><div class="node-line"></div>
@@ -1220,15 +1221,15 @@ resize();
 window.addEventListener('resize', resize);
 
 const particles = [];
-const numParticles = 48;
+const numParticles = 40;
 
 for (let i = 0; i < numParticles; i++) {
   particles.push({
     x: Math.random() * canvas.width,
     y: Math.random() * canvas.height,
-    vx: (Math.random() - 0.5) * 0.9,
-    vy: (Math.random() - 0.5) * 0.9,
-    radius: Math.random() * 2.2 + 1,
+    vx: (Math.random() - 0.5) * 0.8,
+    vy: (Math.random() - 0.5) * 0.8,
+    radius: Math.random() * 2 + 1,
     color: Math.random() > 0.4 ? 'rgba(0,212,255,' : 'rgba(167,139,250,'
   });
 }
@@ -1246,7 +1247,7 @@ function animate() {
     
     ctx.beginPath();
     ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-    ctx.fillStyle = p.color + '0.85)';
+    ctx.fillStyle = p.color + '0.8)';
     ctx.fill();
     
     for (let j = i + 1; j < particles.length; j++) {
@@ -1255,13 +1256,13 @@ function animate() {
       let dy = p.y - p2.y;
       let dist = Math.sqrt(dx * dx + dy * dy);
       
-      if (dist < 115) {
+      if (dist < 110) {
         ctx.beginPath();
         ctx.moveTo(p.x, p.y);
         ctx.lineTo(p2.x, p2.y);
-        let alpha = (1 - dist / 115) * 0.3;
+        let alpha = (1 - dist / 110) * 0.25;
         ctx.strokeStyle = p.color + alpha + ')';
-        ctx.lineWidth = 0.9;
+        ctx.lineWidth = 0.8;
         ctx.stroke();
       }
     }
@@ -1274,7 +1275,7 @@ animate();
 </html>
 """
 
-components.html(NEURAL_HERO_HTML, height=252)
+components.html(NEURAL_HERO_HTML, height=215)
 
 # ──────────────────────────────────────────────────────────────────────────────
 # AGENTS CONFIG
