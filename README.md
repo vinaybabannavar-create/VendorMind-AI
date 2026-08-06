@@ -1,13 +1,8 @@
 <div align="center">
 
-<img src="https://img.shields.io/badge/-VendorMind%20AI-0F172A?style=for-the-badge&labelColor=0F172A" height="46" alt="VendorMind AI"/>
+<img src="./assets/banner.svg" alt="VendorMind AI — Enterprise Procurement Intelligence Platform" width="100%"/>
 
-# VendorMind AI
-### Enterprise Procurement Intelligence Platform
-
-**Stateful 8-Agent LangGraph Pipeline · Gemma 3 27B-IT Edge Privacy Gate · Google A2A Protocol · Decoupled Cloud Pub/Sub Microservices**
-
-<br/>
+<br/><br/>
 
 [![Hackathon](https://img.shields.io/badge/HiDevs-National%20Finale%202026-00D4FF?style=for-the-badge&logo=googlecloud&logoColor=white)](https://hidevs.ai)
 [![Track](https://img.shields.io/badge/Track-Vendor%20Evaluation-8B5CF6?style=for-the-badge)](https://hidevs.ai)
@@ -82,66 +77,44 @@ Engineered with an **8-node stateful agentic graph (LangGraph)**, **Google Cloud
 
 ## 📐 System Architecture Diagram
 
+<div align="center">
+<img src="./assets/architecture.svg" alt="VendorMind AI five-tier system architecture" width="850"/>
+</div>
+
+<details>
+<summary><b>▸ Live pipeline flow (renders natively on GitHub)</b></summary>
+
+```mermaid
+flowchart LR
+    A["1· Intake & Privacy\nGemma 3 27B-IT"] --> B["2· Criteria Extraction\nGemini 1.5 Pro + MCP"]
+    B --> C["3· Profile Retrieval\nVertex AI Vector Search"]
+    C --> D["4· Multi-Signal Scoring\nCost · Compliance · Fit · Timeline"]
+    D <-->|A2A handshake\nscore_draft ⇄ risk_veto| E["5· Risk & Bias Detection\nEnkrypt AI · EEOC 4/5ths"]
+    E --> F["6· Explanation Generation\nGemini 1.5 Pro CRISPE"]
+    F --> G["7· Comparison Agent\nPandas ranked matrix"]
+    G --> H["8· Output & HITL\nOfficer approval"]
+
+    classDef node fill:#0F1B2E,stroke:#38BDF8,stroke-width:1.5px,color:#F1F5F9;
+    class A,B,C,D,E,F,G,H node;
 ```
-┌─────────────────────────────────────────────────────────────────────────────────────────┐
-│ TIER 1 — CLIENT & UI (Streamlit Dashboard)                                              │
-│   • Neural Glassmorphic Dashboard (Port 8516)                                           │
-│   • GDPR Article 13/14 Vendor Consent Capture Checkbox                                   │
-│   • 1-v-1 Cyber Duel Matrix · Enkrypt AI Telemetry Badges · Web Speech API Audio Engine │
-└───────────────────────────────────────────┬─────────────────────────────────────────────┘
-                                            │ (HTTPS / TLS 1.3 / OAuth2 Bearer JWT)
-                                            ▼
-┌─────────────────────────────────────────────────────────────────────────────────────────┐
-│ TIER 2 — SECURITY GATEWAY & CONSENT ENGINE (FastAPI / Cloud Run)                        │
-│   • OAuth2 Bearer / JWT Token Authentication (`POST /token`)                            │
-│   • GDPR Art. 13 Consent Capture & Art. 14 Transparency Disclosure (`POST /v1/consent`) │
-│   • OWASP A03 Input Validation (Pydantic v2) & OWASP A07 Rate Limiting (100 req/min/IP)    │
-└───────────────────────────────────────────┬─────────────────────────────────────────────┘
-                                            │
-                                            ▼
-┌─────────────────────────────────────────────────────────────────────────────────────────┐
-│ TIER 3 — EVENT BUS & DECOUPLED MICROSERVICES (Google Cloud Pub/Sub)                    │
-│   Topics: `vendormind.rfp.ingested` · `vendormind.score.draft` · `vendormind.consent`   │
-└───────────────────────────────────────────┬─────────────────────────────────────────────┘
-                                            │
-                                            ▼
-┌─────────────────────────────────────────────────────────────────────────────────────────┐
-│ TIER 4 — 8-NODE STATEFUL AGENTIC PIPELINE (LangGraph / AGY / ADK)                        │
-│                                                                                         │
-│   [Node 1: Intake & Privacy Agent]  ◄── Gemma 3 27B-IT Edge PII Scrubbing (GDPR Art. 5)│
-│                 │                                                                       │
-│                 ▼                                                                       │
-│   [Node 2: Criteria Extraction]    ◄── Gemini 1.5 Pro + MCP Context Injection           │
-│                 │                                                                       │
-│                 ▼                                                                       │
-│   [Node 3: Profile Retrieval]      ◄── Vertex AI Vector Search / Qdrant                   │
-│                 │                                                                       │
-│                 ▼                                                                       │
-│   [Node 4: Multi-Signal Scoring]   ◄── 4-Signal Composite Scoring (Cost/Compliance/Fit)   │
-│                 │                                                                       │
-│                 │  ◄═════════════════════════════════════════════════════════════════►  │
-│                 │  A2A PROTOCOL HANDSHAKE (Score Draft ⇄ EEOC Adverse Impact Veto)      │
-│                 │  ◄═════════════════════════════════════════════════════════════════►  │
-│                 ▼                                                                       │
-│   [Node 5: Risk & Bias Agent]      ◄── Gemini 1.5 Pro + Enkrypt AI Toxicity Scan         │
-│                 │                                                                       │
-│                 ▼                                                                       │
-│   [Node 6: Explanation Gen]        ◄── Gemini 1.5 Pro (EU AI Act Art. 13 CRISPE Prompt)  │
-│                 │                                                                       │
-│                 ▼                                                                       │
-│   [Node 7: Comparison Agent]       ◄── Side-by-Side Ranked Pandas Matrix                  │
-│                 │                                                                       │
-│                 ▼                                                                       │
-│   [Node 8: Output & HITL Agent]    ◄── Procurement Officer Approval + Web Speech Briefing  │
-└───────────────────────────────────────────┬─────────────────────────────────────────────┘
-                                            │
-                                            ▼
-┌─────────────────────────────────────────────────────────────────────────────────────────┐
-│ TIER 5 — DATA, STORAGE & OBSERVABILITY                                                  │
-│   • BigQuery Audit Store (90-Day Retention TTL, Immutable Event Logs)                  │
-│   • Google Cloud Storage (Doc Storage) · OpenTelemetry Latency/Token Telemetry Endpoint     │
-└─────────────────────────────────────────────────────────────────────────────────────────┘
+
+</details>
+
+<details>
+<summary><b>▸ Request path across all five tiers</b></summary>
+
+```mermaid
+flowchart TD
+    UI["Tier 1 — Streamlit Dashboard\nport 8516"] -->|HTTPS · TLS 1.3 · OAuth2 JWT| GW["Tier 2 — FastAPI Gateway\nCloud Run"]
+    GW --> BUS["Tier 3 — Cloud Pub/Sub\nrfp.ingested · score.draft · consent"]
+    BUS --> PIPE["Tier 4 — 8-Node LangGraph Pipeline"]
+    PIPE --> DATA["Tier 5 — BigQuery · Cloud Storage · OpenTelemetry"]
+
+    classDef tier fill:#0F1B2E,stroke:#8B5CF6,stroke-width:1.5px,color:#F1F5F9;
+    class UI,GW,BUS,PIPE,DATA tier;
 ```
+
+</details>
 
 ---
 
