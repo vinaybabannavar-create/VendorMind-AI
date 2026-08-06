@@ -400,49 +400,49 @@ SPLASH_HTML = """
   }
 
   const hackBadge = el('div',
-    'font-family:JetBrains Mono,monospace;font-size:0.85rem;font-weight:800;letter-spacing:0.24em;text-transform:uppercase;color:#00D4FF;opacity:0;transition:opacity 1s ease;margin-bottom:20px;text-shadow:0 0 24px rgba(0,212,255,0.85);',
-    '⚡ &nbsp; HiDevs  ·  AI Agent Builder Series 2026  —  National Finale &nbsp; ⚡');
+    'font-family:JetBrains Mono,monospace;font-size:0.88rem;font-weight:800;letter-spacing:0.26em;text-transform:uppercase;color:#00D4FF;opacity:0;transition:opacity 1s ease;margin-bottom:22px;padding:6px 20px;border-radius:30px;background:linear-gradient(135deg,rgba(0,212,255,0.12),rgba(124,58,237,0.15));border:1.5px solid rgba(0,212,255,0.4);box-shadow:0 0 30px rgba(0,212,255,0.35);',
+    '⚡ &nbsp; HIDEVS  ·  NATIONAL AI HACKATHON 2026  —  NATIONAL FINALE &nbsp; ⚡');
 
-  const titleWrap = el('div','position:relative;text-align:center;margin-bottom:14px;opacity:0;transition:opacity 0.8s ease,transform 0.8s ease;transform:translateY(30px);','');
+  const titleWrap = el('div','position:relative;text-align:center;margin-bottom:16px;opacity:0;transition:opacity 0.8s ease,transform 0.8s ease;transform:translateY(30px);','');
   const titleMain = el('div',
-    'font-family:Space Grotesk,sans-serif;font-size:clamp(3.8rem,9.5vw,8.5rem);font-weight:900;letter-spacing:-0.03em;line-height:1;background:linear-gradient(135deg,#ffffff 0%,#a5f3fc 30%,#00D4FF 55%,#818CF8 80%,#C084FC 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 50px rgba(0,212,255,0.7));',
+    'font-family:Space Grotesk,sans-serif;font-size:clamp(4rem,9.8vw,9rem);font-weight:900;letter-spacing:-0.03em;line-height:1;background:linear-gradient(135deg,#ffffff 0%,#a5f3fc 25%,#00D4FF 50%,#818CF8 75%,#C084FC 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 60px rgba(0,212,255,0.85));',
     'VendorMind AI');
   const titleSub = el('div',
-    'font-family:JetBrains Mono,monospace;font-size:clamp(0.88rem,1.8vw,1.3rem);font-weight:700;color:#A5B4FC;letter-spacing:0.2em;text-transform:uppercase;margin-top:14px;',
+    'font-family:JetBrains Mono,monospace;font-size:clamp(0.9rem,1.9vw,1.35rem);font-weight:700;color:#A5B4FC;letter-spacing:0.22em;text-transform:uppercase;margin-top:16px;text-shadow:0 0 20px rgba(165,180,252,0.6);',
     'Agentic Procurement Intelligence  ·  8-Node LangGraph Pipeline');
   titleWrap.appendChild(titleMain);
   titleWrap.appendChild(titleSub);
 
   const agentRow = el('div',
-    'display:flex;align-items:center;gap:10px;margin:26px 0;opacity:0;transition:opacity 0.8s ease;',
+    'display:flex;align-items:center;gap:12px;margin:28px 0;opacity:0;transition:opacity 0.8s ease;',
     '');
   const agentColors=['#00D4FF','#00D4FF','#818CF8','#818CF8','#F59E0B','#F59E0B','#34D399','#34D399'];
   for(let i=0;i<8;i++){
     const nd=el('div',
-      `width:36px;height:36px;border-radius:50%;border:2px solid ${agentColors[i]};color:${agentColors[i]};font-size:0.8rem;font-weight:800;display:flex;align-items:center;justify-content:center;font-family:JetBrains Mono,monospace;box-shadow:0 0 16px ${agentColors[i]}77;`,
+      `width:40px;height:40px;border-radius:50%;border:2px solid ${agentColors[i]};color:${agentColors[i]};font-size:0.85rem;font-weight:800;display:flex;align-items:center;justify-content:center;font-family:JetBrains Mono,monospace;box-shadow:0 0 20px ${agentColors[i]}99;background:rgba(2,8,22,0.6);`,
       `${i+1}`);
     agentRow.appendChild(nd);
     if(i<7){
-      const ln=el('div',`width:24px;height:2.5px;background:linear-gradient(90deg,${agentColors[i]},${agentColors[i+1]});opacity:0.6;`,'');
+      const ln=el('div',`width:26px;height:3px;background:linear-gradient(90deg,${agentColors[i]},${agentColors[i+1]});opacity:0.8;box-shadow:0 0 10px ${agentColors[i]};`,'');
       agentRow.appendChild(ln);
     }
   }
 
-  const creatorWrap = el('div','opacity:0;transition:opacity 0.8s ease;transform:translateX(40px);transition:opacity 0.8s ease,transform 0.8s ease;margin-top:10px;text-align:center;','');
-  const creatorLine = el('div',
-    'font-family:JetBrains Mono,monospace;font-size:0.82rem;color:#64748B;letter-spacing:0.12em;margin-bottom:4px;font-weight:700;',
-    'DEVELOPED BY');
-  const creatorName = el('div',
-    'font-family:Space Grotesk,sans-serif;font-size:clamp(1.5rem,3.2vw,2.4rem);font-weight:800;color:#F1F5F9;letter-spacing:0.04em;text-shadow:0 0 35px rgba(129,140,248,0.7);',
-    'Vinay Babannavar');
-  creatorWrap.appendChild(creatorLine);
-  creatorWrap.appendChild(creatorName);
+  const creatorWrap = el('div','opacity:0;transition:opacity 0.8s ease,transform 0.8s ease;transform:translateY(20px);margin-top:12px;text-align:center;','');
+  const creatorCard = el('div',
+    'display:inline-flex;align-items:center;gap:14px;padding:12px 30px;border-radius:50px;background:linear-gradient(135deg,rgba(3,12,32,0.92) 0%,rgba(15,8,40,0.92) 100%);border:1.8px solid #00D4FF;box-shadow:0 0 45px rgba(0,212,255,0.45), inset 0 0 25px rgba(124,58,237,0.3);backdrop-filter:blur(16px);',
+    '<span style="font-size:1.4rem">👑</span>' +
+    '<div>' +
+      '<div style="font-family:JetBrains Mono,monospace;font-size:0.68rem;color:#00D4FF;letter-spacing:0.18em;font-weight:800;text-transform:uppercase">CREATED & DEVELOPED BY</div>' +
+      '<div style="font-family:Space Grotesk,sans-serif;font-size:clamp(1.4rem,3vw,2.2rem);font-weight:900;background:linear-gradient(90deg,#FFFFFF,#A5F3FC,#00D4FF,#34D399);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:0.03em;filter:drop-shadow(0 0 20px rgba(0,212,255,0.6))">Vinay Babannavar</div>' +
+    '</div>');
+  creatorWrap.appendChild(creatorCard);
 
-  const progressWrap = el('div','width:min(540px,75vw);margin-top:36px;opacity:0;transition:opacity 0.6s ease;','');
-  const progressLabel = el('div','font-family:JetBrains Mono,monospace;font-size:0.75rem;color:#00D4FF;letter-spacing:0.14em;margin-bottom:10px;display:flex;justify-content:space-between;font-weight:700;',
-    '<span>INITIALIZING 8-AGENT PIPELINE...</span><span id="vm-pct">0%</span>');
-  const progressBg = el('div','height:3px;background:rgba(0,212,255,0.12);border-radius:3px;overflow:hidden;','');
-  const progressBar = el('div','height:100%;width:0%;background:linear-gradient(90deg,#00D4FF,#818CF8,#34D399);border-radius:3px;transition:width 0.1s ease;box-shadow:0 0 12px rgba(0,212,255,0.5);','');
+  const progressWrap = el('div','width:min(580px,80vw);margin-top:34px;opacity:0;transition:opacity 0.6s ease;','');
+  const progressLabel = el('div','font-family:JetBrains Mono,monospace;font-size:0.78rem;color:#00D4FF;letter-spacing:0.16em;margin-bottom:10px;display:flex;justify-content:space-between;font-weight:800;text-shadow:0 0 10px rgba(0,212,255,0.6);',
+    '<span>INITIALIZING 8-NODE LANGGRAPH AGENT GRAPH...</span><span id="vm-pct">0%</span>');
+  const progressBg = el('div','height:4px;background:rgba(0,212,255,0.15);border-radius:4px;overflow:hidden;box-shadow:inset 0 0 8px rgba(0,0,0,0.8);','');
+  const progressBar = el('div','height:100%;width:0%;background:linear-gradient(90deg,#00D4FF,#818CF8,#34D399);border-radius:4px;transition:width 0.1s ease;box-shadow:0 0 16px rgba(0,212,255,0.8);','');
   progressBg.appendChild(progressBar);
   progressWrap.appendChild(progressLabel);
   progressWrap.appendChild(progressBg);
@@ -614,10 +614,39 @@ SPLASH_HTML = """
     }
 
     // =========================================================
-    // PHASE 2 (1.5s+): FLOATING SYNAPSE PARTICLES + HYPERSPACE
+    // PHASE 2 (1.5s+): 3D SPINNER CYBER RINGS + DYNAMIC NEON MESH
     // =========================================================
     if(elapsed>1500){
       const hexAlpha=Math.min((elapsed-1500)/1000,1);
+      rotY += 0.008;
+
+      // ── 3D Spinning Cyber Energy Rings Behind Text ──
+      const splashRings = [
+        { r: Math.min(cw, ch) * 0.35, tilt: 0.45, speed: rotY * 0.8, color: '#00D4FF' },
+        { r: Math.min(cw, ch) * 0.42, tilt: -0.65, speed: -rotY * 0.6, color: '#A78BFA' },
+        { r: Math.min(cw, ch) * 0.48, tilt: 1.15, speed: rotY * 0.4, color: '#34D399' }
+      ];
+
+      splashRings.forEach(ring => {
+        ctx.beginPath();
+        for (let s = 0; s <= 120; s++) {
+          const angle = (s / 120) * Math.PI * 2 + ring.speed;
+          const px = cx + ring.r * Math.cos(angle) * Math.cos(ring.tilt);
+          const py = cy + ring.r * Math.sin(angle) * 0.38 - ring.r * Math.cos(angle) * Math.sin(ring.tilt) * 0.4;
+          s === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+        }
+        ctx.strokeStyle = ring.color + '44';
+        ctx.lineWidth = 1.4;
+        ctx.stroke();
+
+        // Pulsing Orbital Light Dot
+        const da = ring.speed * 2;
+        const dx = cx + ring.r * Math.cos(da) * Math.cos(ring.tilt);
+        const dy = cy + ring.r * Math.sin(da) * 0.38 - ring.r * Math.cos(da) * Math.sin(ring.tilt) * 0.4;
+        ctx.beginPath(); ctx.arc(dx, dy, 5, 0, Math.PI * 2);
+        ctx.fillStyle = ring.color; ctx.shadowBlur = 15; ctx.shadowColor = ring.color;
+        ctx.fill(); ctx.shadowBlur = 0;
+      });
 
       fpts.forEach(p=>{
         p.x+=p.vx; p.y+=p.vy;
