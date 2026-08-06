@@ -473,8 +473,11 @@ components.html(FULL_PAGE_NEURAL_BG_HTML, height=1)
 # ──────────────────────────────────────────────────────────────────────────────
 # SESSION STATE INITIALIZATION
 # ──────────────────────────────────────────────────────────────────────────────
+_PRESET_KEYS = list(PRESET_RFPS.keys())
+_FIRST_KEY   = _PRESET_KEYS[0]
+
 if "rfp_text" not in st.session_state:
-    st.session_state.rfp_text = PRESET_RFPS[0]["text"]
+    st.session_state.rfp_text = PRESET_RFPS[_FIRST_KEY]["rfp_text"]
 if "vendors" not in st.session_state:
     st.session_state.vendors = [dict(v) for v in SAMPLE_VENDORS]
 if "pipeline_state" not in st.session_state:
@@ -519,14 +522,15 @@ with st.sidebar:
     st.markdown("##### 📄 Load RFP Preset")
     preset_choice = st.selectbox(
         "Select Demo Scenario",
-        options=[p["label"] for p in PRESET_RFPS],
+        options=[PRESET_RFPS[k].get("title", k) for k in _PRESET_KEYS],
         index=0,
         label_visibility="collapsed"
     )
     if st.button("📥 Load Selected RFP Preset", use_container_width=True):
-        sel_preset = next(p for p in PRESET_RFPS if p["label"] == preset_choice)
-        st.session_state.rfp_text = sel_preset["text"]
-        st.session_state.vendors = [dict(v) for v in sel_preset["vendors"]]
+        sel_key = _PRESET_KEYS[[PRESET_RFPS[k].get("title", k) for k in _PRESET_KEYS].index(preset_choice)]
+        sel_preset = PRESET_RFPS[sel_key]
+        st.session_state.rfp_text = sel_preset.get("rfp_text", sel_preset.get("text", ""))
+        st.session_state.vendors  = [dict(v) for v in sel_preset.get("vendors", SAMPLE_VENDORS)]
         st.session_state.pipeline_state = "idle"
         st.session_state.result = None
         st.rerun()
