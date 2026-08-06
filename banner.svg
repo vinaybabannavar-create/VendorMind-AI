@@ -1,0 +1,63 @@
+<svg viewBox="0 0 1600 420" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1600" y2="420" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#060B14"/>
+      <stop offset="55%" stop-color="#0B1220"/>
+      <stop offset="100%" stop-color="#0F1B2E"/>
+    </linearGradient>
+    <linearGradient id="pathGrad" x1="0" y1="0" x2="1600" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#38BDF8"/>
+      <stop offset="50%" stop-color="#8B5CF6"/>
+      <stop offset="100%" stop-color="#34D399"/>
+    </linearGradient>
+    <radialGradient id="nodeGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#7DD3FC" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#7DD3FC" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="soft" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="10"/>
+    </filter>
+  </defs>
+
+  <rect width="1600" height="420" fill="url(#bg)"/>
+
+  <!-- faint circuit grid -->
+  <g stroke="#1E293B" stroke-width="1" opacity="0.5">
+    <path d="M0,60 H1600 M0,140 H1600 M0,340 H1600 M0,380 H1600" />
+    <path d="M120,0 V420 M420,0 V420 M980,0 V420 M1280,0 V420 M1480,0 V420" />
+  </g>
+
+  <!-- agent graph path: the literal 8-node pipeline, as the banner's signature -->
+  <g>
+    <path d="M110,230 C220,150 300,310 400,230 C500,150 580,310 680,230
+             C780,150 860,310 960,230 C1060,150 1140,310 1240,230
+             C1320,170 1400,290 1480,230"
+          fill="none" stroke="url(#pathGrad)" stroke-width="3" opacity="0.85"/>
+
+    <g id="nodes">
+      <g transform="translate(110,230)"><circle r="26" fill="url(#nodeGlow)" filter="url(#soft)"/><circle r="7" fill="#38BDF8"/></g>
+      <g transform="translate(255,193)"><circle r="20" fill="url(#nodeGlow)" filter="url(#soft)"/><circle r="6" fill="#38BDF8"/></g>
+      <g transform="translate(400,230)"><circle r="20" fill="url(#nodeGlow)" filter="url(#soft)"/><circle r="6" fill="#5EEAD4"/></g>
+      <g transform="translate(545,193)"><circle r="20" fill="url(#nodeGlow)" filter="url(#soft)"/><circle r="6" fill="#8B5CF6"/></g>
+      <g transform="translate(680,230)"><circle r="20" fill="url(#nodeGlow)" filter="url(#soft)"/><circle r="6" fill="#8B5CF6"/></g>
+      <g transform="translate(825,193)"><circle r="20" fill="url(#nodeGlow)" filter="url(#soft)"/><circle r="6" fill="#A78BFA"/></g>
+      <g transform="translate(960,230)"><circle r="20" fill="url(#nodeGlow)" filter="url(#soft)"/><circle r="6" fill="#34D399"/></g>
+      <g transform="translate(1240,230)"><circle r="26" fill="url(#nodeGlow)" filter="url(#soft)"/><circle r="7" fill="#34D399"/></g>
+    </g>
+  </g>
+
+  <!-- wordmark -->
+  <text x="110" y="130" font-family="Arial, Helvetica, sans-serif" font-weight="800" font-size="72" letter-spacing="1" fill="#F1F5F9">VendorMind <tspan fill="#38BDF8">AI</tspan></text>
+  <text x="112" y="172" font-family="Arial, Helvetica, sans-serif" font-weight="400" font-size="21" letter-spacing="0.5" fill="#94A3B8">Enterprise Procurement Intelligence · Stateful 8-Agent LangGraph Pipeline</text>
+
+  <!-- stack pills, bottom -->
+  <g font-family="Consolas, Menlo, monospace" font-size="15" fill="#0B1220" font-weight="700">
+    <g transform="translate(110,362)"><rect width="118" height="34" rx="17" fill="#38BDF8"/><text x="59" y="22" text-anchor="middle">GEMINI 1.5</text></g>
+    <g transform="translate(240,362)"><rect width="118" height="34" rx="17" fill="#5EEAD4"/><text x="59" y="22" text-anchor="middle">GEMMA 3</text></g>
+    <g transform="translate(370,362)"><rect width="132" height="34" rx="17" fill="#8B5CF6"/><text x="66" y="22" text-anchor="middle" fill="#F5F3FF">LANGGRAPH</text></g>
+    <g transform="translate(514,362)"><rect width="110" height="34" rx="17" fill="#A78BFA"/><text x="55" y="22" text-anchor="middle" fill="#F5F3FF">A2A</text></g>
+    <g transform="translate(636,362)"><rect width="136" height="34" rx="17" fill="#34D399"/><text x="68" y="22" text-anchor="middle">CLOUD RUN</text></g>
+  </g>
+
+  <text x="1490" y="384" text-anchor="end" font-family="Consolas, Menlo, monospace" font-size="14" fill="#475569">HiDevs × AI House · National Finale 2026</text>
+</svg>
