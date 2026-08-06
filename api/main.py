@@ -383,6 +383,8 @@ def get_telemetry(evaluation_id: str):
 
     return {
         "evaluation_id": evaluation_id,
+        "correlation_id": result.get("correlation_id", result.get("otel_trace_id")),
+        "llm_invocation_audit": llm_invocations,
         # ── Distributed Tracing (HIGH-priority fix) ──────────────────────
         "distributed_trace": distributed_trace,
         # ── LLM Drift Audit Log (MEDIUM-priority fix) ────────────────────
