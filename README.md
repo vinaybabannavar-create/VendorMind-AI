@@ -1,9 +1,8 @@
 <div align="center">
 
-# 🧠 VendorMind AI
-### Enterprise Procurement Intelligence Platform
+<img src="./assets/banner.svg" alt="VendorMind AI — Enterprise Procurement Intelligence Platform" width="100%"/>
 
-**Stateful 8-Agent LangGraph Pipeline · Gemma 3 27B-IT Edge Privacy Gate · Google A2A Protocol · Decoupled Cloud Pub/Sub Microservices**
+<br/><br/>
 
 [![Hackathon](https://img.shields.io/badge/HiDevs-National%20Finale%202026-00D4FF?style=for-the-badge&logo=googlecloud&logoColor=white)](https://hidevs.ai)
 [![Track](https://img.shields.io/badge/Track-Vendor%20Evaluation-8B5CF6?style=for-the-badge)](https://hidevs.ai)
