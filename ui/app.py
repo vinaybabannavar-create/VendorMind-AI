@@ -575,8 +575,9 @@ SPLASH_HTML = """
     }
   }
 
-  const T=23000; // total duration ms — 23 seconds
+  const T=16000; // 16s entrance splash
   let t0=performance.now();
+  let rotY=0;
 
   function frame(now){
     const elapsed=now-t0;
@@ -613,35 +614,95 @@ SPLASH_HTML = """
     }
 
     // =========================================================
-    // PHASE 2 (3s-18s): HEX GRID + FLOATING PARTICLES
+    // PHASE 2 (1.5s+): 3D ROTATING GLOBE + ORBITAL AGENT NODES
     // =========================================================
-    if(elapsed>3000){
-      const hexAlpha=Math.min((elapsed-3000)/1500,1);
-      drawHexGrid(hexAlpha);
+    if(elapsed>1500){
+      const gAlpha=Math.min((elapsed-1500)/1000,1);
+      const globR = Math.min(cw, ch) * 0.22;
+      rotY += 0.008;
 
-      fpts.forEach(p=>{
-        p.x+=p.vx; p.y+=p.vy;
-        if(p.x<0||p.x>cw) p.vx*=-1;
-        if(p.y<0||p.y>ch) p.vy*=-1;
+      // ── Globe Core Glow ──
+      const grad = ctx.createRadialGradient(cx, cy, globR*0.2, cx, cy, globR*1.1);
+      grad.addColorStop(0, `rgba(0,212,255,${0.15*gAlpha})`);
+      grad.addColorStop(0.7, `rgba(124,58,237,${0.08*gAlpha})`);
+      grad.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.beginPath(); ctx.arc(cx, cy, globR*1.1, 0, Math.PI*2);
+      ctx.fillStyle = grad; ctx.fill();
+
+      // ── Globe Wireframe Latitude/Longitude ──
+      ctx.lineWidth = 0.8;
+      for (let lat = -60; lat <= 60; lat += 20) {
+        const la = lat * Math.PI / 180;
+        const r2 = Math.abs(globR * Math.cos(la));
+        const yy = cy - globR * Math.sin(la);
         ctx.beginPath();
-        ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-        ctx.fillStyle=p.col+`${hexAlpha*0.7})`;
-        ctx.fill();
-      });
-
-      // Synapse connections between nearby particles
-      for(let i=0;i<fpts.length;i++){
-        for(let j=i+1;j<fpts.length;j++){
-          const d=Math.hypot(fpts[i].x-fpts[j].x,fpts[i].y-fpts[j].y);
-          if(d<120){
-            ctx.beginPath();
-            ctx.moveTo(fpts[i].x,fpts[i].y);
-            ctx.lineTo(fpts[j].x,fpts[j].y);
-            ctx.strokeStyle=fpts[i].col+((1-d/120)*0.15*hexAlpha)+')';
-            ctx.lineWidth=0.6; ctx.stroke();
-          }
-        }
+        ctx.ellipse(cx, yy, r2, r2 * 0.22, 0, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(0,212,255,${0.18*gAlpha})`;
+        ctx.stroke();
       }
+
+      for (let lng = 0; lng < 180; lng += 30) {
+        const lo = lng * Math.PI / 180;
+        ctx.beginPath();
+        for (let la = -90; la <= 90; la += 10) {
+          const rad = la * Math.PI / 180;
+          const x0 = globR * Math.cos(rad) * Math.sin(lo + rotY);
+          const y0 = globR * Math.sin(rad);
+          const px = cx + x0; const py = cy - y0;
+          if (la === -90) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+        }
+        ctx.strokeStyle = `rgba(0,212,255,${0.12*gAlpha})`;
+        ctx.stroke();
+      }
+
+      // ── Orbital Rings & Orbiting Agent Nodes ──
+      const splashRings = [
+        { r: globR * 1.35, tilt: 0.35, speed: 0.015, phase: elapsed*0.0015, label: "Node 1 Intake", icon: "📥", border: "#00D4FF" },
+        { r: globR * 1.6,  tilt: 1.1,  speed: -0.01, phase: elapsed*0.001 + 2, label: "Node 4 Scoring", icon: "📊", border: "#A78BFA" },
+        { r: globR * 1.85, tilt: 0.6,  speed: 0.008, phase: elapsed*0.0008 + 4, label: "Node 5 Risk Audit", icon: "🛡️", border: "#F87171" },
+        { r: globR * 2.1,  tilt: -0.4, speed: -0.012, phase: elapsed*0.0012 + 1, label: "Node 8 HITL Approve", icon: "✅", border: "#34D399" }
+      ];
+
+      splashRings.forEach(ring => {
+        const steps = 120;
+        ctx.beginPath();
+        for (let s = 0; s <= steps; s++) {
+          const angle = (s / steps) * Math.PI * 2;
+          const px = cx + ring.r * Math.cos(angle) * Math.cos(ring.tilt);
+          const py = cy + ring.r * Math.sin(angle) * 0.35 - ring.r * Math.cos(angle) * Math.sin(ring.tilt) * 0.4;
+          s === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+        }
+        ctx.strokeStyle = ring.border + '55';
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
+
+        // Orbiting Dot
+        const da = ring.phase;
+        const dx = cx + ring.r * Math.cos(da) * Math.cos(ring.tilt);
+        const dy = cy + ring.r * Math.sin(da) * 0.35 - ring.r * Math.cos(da) * Math.sin(ring.tilt) * 0.4;
+
+        ctx.beginPath(); ctx.arc(dx, dy, 6, 0, Math.PI * 2);
+        ctx.fillStyle = ring.border;
+        ctx.shadowBlur = 18; ctx.shadowColor = ring.border;
+        ctx.fill(); ctx.shadowBlur = 0;
+
+        // Floating Node Badge
+        ctx.save();
+        ctx.font = "800 11px 'JetBrains Mono', monospace";
+        const textWidth = ctx.measureText(ring.label).width;
+        const boxW = textWidth + 28; const boxH = 24;
+        const bx = dx - boxW / 2; const by = dy - 34;
+
+        ctx.fillStyle = "rgba(2, 8, 22, 0.9)";
+        ctx.strokeStyle = ring.border;
+        ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.roundRect(bx, by, boxW, boxH, 8);
+        ctx.fill(); ctx.stroke();
+
+        ctx.fillStyle = ring.border;
+        ctx.fillText(ring.icon + " " + ring.label, bx + 8, by + 16);
+        ctx.restore();
+      });
     }
 
     // Scanlines always
