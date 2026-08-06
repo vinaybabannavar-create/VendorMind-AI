@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="./assets/banner.svg" alt="VendorMind AI — Enterprise Procurement Intelligence Platform" width="100%"/>
+<img src="./assets/banner.jpeg" alt="VendorMind AI — Enterprise Procurement Intelligence Platform" width="100%"/>
 
 <br/><br/>
 
