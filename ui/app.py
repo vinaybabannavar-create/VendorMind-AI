@@ -2072,11 +2072,14 @@ else:
 <div class="welcome-wrap">
   <canvas id="globeCanvas"></canvas>
   <div class="ui-layer">
-    <div class="agent-title">⚡ VendorMind AI — Agentic Procurement Intelligence</div>
+    <div style="background:rgba(0,212,255,0.12);border:1px solid rgba(0,212,255,0.4);color:#00D4FF;padding:4px 14px;border-radius:20px;font-size:0.68rem;font-weight:800;letter-spacing:0.16em;text-transform:uppercase;margin-bottom:0.6rem;font-family:'JetBrains Mono',monospace">
+      🏆 HiDevs National AI Hackathon 2026  ·  National Finale
+    </div>
+    <div class="agent-title">⚡ VendorMind AI — Enterprise Procurement Intelligence</div>
     <div class="main-title">Ready to Evaluate<br>Your Vendors</div>
     <div class="sub-text">
-      Configure your RFP requirements in the sidebar and add vendor proposals.<br>
-      Then click <b>⚡ Run 8-Agent Pipeline</b> to start the LangGraph evaluation.
+      Developed by <b>Vinay Babannavar</b> · 8-Node LangGraph Microservices Architecture.<br>
+      Configure your RFP requirements in the sidebar and click <b>⚡ Run 8-Agent Pipeline</b>.
     </div>
     <div class="step-row">
       <div class="step"><span class="step-icon">📥</span><span class="step-num">Node 1</span><span class="step-lbl">Intake</span></div>
@@ -2295,8 +2298,9 @@ function draw() {
     }
   }
 
-  // Orbital rings
-  for (const ring of rings) {
+  // Orbital rings with Labeled Agent Nodes
+  for (let idx = 0; idx < rings.length; idx++) {
+    const ring = rings[idx];
     ring.phase += ring.speed;
     const steps = 180;
     ctx.beginPath();
@@ -2307,20 +2311,49 @@ function draw() {
       s === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
     }
     ctx.strokeStyle = ring.color;
-    ctx.lineWidth = 1;
+    ctx.lineWidth = 1.2;
     ctx.stroke();
 
-    // Orbital dot
+    // Orbital dot & Floating Node Badge
     const da = ring.phase;
     const dx = cx() + ring.r * Math.cos(da) * Math.cos(ring.tilt);
     const dy = cy() + ring.r * Math.sin(da) * 0.35 - ring.r * Math.cos(da) * Math.sin(ring.tilt) * 0.4;
+
     ctx.beginPath();
-    ctx.arc(dx, dy, 5, 0, Math.PI * 2);
+    ctx.arc(dx, dy, 6, 0, Math.PI * 2);
     ctx.fillStyle = ring.dot;
-    ctx.shadowBlur = 15;
+    ctx.shadowBlur = 18;
     ctx.shadowColor = ring.dot;
     ctx.fill();
     ctx.shadowBlur = 0;
+
+    // Draw Node Pill Badge on Orbit
+    const nodeLabels = [
+      { text: "Node 1 Intake", icon: "📥", bg: "rgba(0,212,255,0.18)", border: "#00D4FF" },
+      { text: "Node 4 Scoring", icon: "📊", bg: "rgba(167,139,250,0.18)", border: "#A78BFA" },
+      { text: "Node 8 HITL Approve", icon: "✅", bg: "rgba(52,211,153,0.18)", border: "#34D399" }
+    ];
+    const nl = nodeLabels[idx % nodeLabels.length];
+    
+    ctx.save();
+    ctx.font = "bold 10px 'JetBrains Mono', monospace";
+    const textWidth = ctx.measureText(nl.text).width;
+    const boxW = textWidth + 30;
+    const boxH = 22;
+    const bx = dx - boxW / 2;
+    const by = dy - 32;
+
+    ctx.fillStyle = "rgba(3, 9, 24, 0.85)";
+    ctx.strokeStyle = nl.border;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.roundRect(bx, by, boxW, boxH, 6);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = nl.border;
+    ctx.fillText(nl.icon + " " + nl.text, bx + 8, by + 14);
+    ctx.restore();
   }
 
   rotY += 0.005;
