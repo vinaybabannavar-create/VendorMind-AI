@@ -1,298 +1,282 @@
 <div align="center">
 
-![VendorMind AI Enterprise Banner](./assets/banner.jpg)
+<img src="https://img.shields.io/badge/-VendorMind%20AI-0F172A?style=for-the-badge&labelColor=0F172A" height="46" alt="VendorMind AI"/>
 
-# 🧠 VendorMind AI
-### **Production-Grade Enterprise Procurement Intelligence Platform**
-*Stateful 8-Agent LangGraph Graph · Gemma 3 27B-IT Edge Privacy Gate · Google A2A Protocol · Cloud Pub/Sub Decoupled Event Bus*
+# VendorMind AI
+### Enterprise Procurement Intelligence Platform
+
+**Stateful 8-Agent LangGraph Pipeline · Gemma 3 27B-IT Edge Privacy Gate · Google A2A Protocol · Decoupled Cloud Pub/Sub Microservices**
+
+<br/>
+
+[![Hackathon](https://img.shields.io/badge/HiDevs-National%20Finale%202026-00D4FF?style=for-the-badge&logo=googlecloud&logoColor=white)](https://hidevs.ai)
+[![Track](https://img.shields.io/badge/Track-Vendor%20Evaluation-8B5CF6?style=for-the-badge)](https://hidevs.ai)
+[![Stack](https://img.shields.io/badge/Google%20Stack-10%2F10%20Met-34D399?style=for-the-badge&logo=google)](https://github.com/vinaybabannavar-create/VendorMind-AI)
+[![License](https://img.shields.io/badge/License-MIT-F59E0B?style=for-the-badge)](./LICENSE)
 
 <br/>
 
-[![Status](https://img.shields.io/badge/STATUS-NATIONAL%20FINALE%20SUBMISSION-00D4FF?style=for-the-badge&logo=googlecloud&logoColor=white)](https://hidevs.ai)
-[![Track](https://img.shields.io/badge/TRACK-VENDOR%20EVALUATION-8B5CF6?style=for-the-badge&logo=google)](https://hidevs.ai)
-[![Stack](https://img.shields.io/badge/GOOGLE%20STACK-10%2F10%20MANDATORY%20MET-34D399?style=for-the-badge&logo=google)](https://github.com/vinaybabannavar-create/VendorMind-AI)
-[![Author](https://img.shields.io/badge/AUTHOR-VINAY%20BABANNAVAR-F59E0B?style=for-the-badge&logo=github)](https://github.com/vinaybabannavar-create)
-[![License](https://img.shields.io/badge/LICENSE-MIT-6366F1?style=for-the-badge)](./LICENSE)
+[![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-Backend-009688?style=flat-square&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![Streamlit](https://img.shields.io/badge/Streamlit-Dashboard-FF4B4B?style=flat-square&logo=streamlit&logoColor=white)](https://streamlit.io/)
+[![LangGraph](https://img.shields.io/badge/LangGraph-Orchestration-1C3C3C?style=flat-square)](https://www.langchain.com/langgraph)
+[![Gemini](https://img.shields.io/badge/Gemini%201.5%20Pro-Reasoning-4285F4?style=flat-square&logo=googlegemini&logoColor=white)](https://ai.google.dev/)
+[![Cloud Run](https://img.shields.io/badge/Cloud%20Run-Deployment-4285F4?style=flat-square&logo=googlecloud&logoColor=white)](https://cloud.google.com/run)
+
+</div>
 
 <br/>
+
+---
+
+## 📑 Table of Contents
+
+- [Executive Overview](#-executive-overview)
+- [10/10 Mandatory Hackathon Stack Architecture](#-1010-mandatory-hackathon-stack-architecture)
+- [System Architecture Diagram](#-system-architecture-diagram)
+- [Detailed 8-Node Agentic Pipeline Breakdown](#-detailed-8-node-agentic-pipeline-breakdown)
+- [Security, Privacy & Regulatory Compliance](#-security-privacy--regulatory-compliance)
+- [IEEE 830 SRS Traceability Matrix](#-ieee-830-srs-traceability-matrix)
+- [UI & Dashboard Experience](#-ui--dashboard-experience)
+- [Quick Start & Local Run Guide](#-quick-start--local-run-guide)
+- [Key Project Documentation](#-key-project-documentation)
+
+---
+
+## 🚀 Executive Overview
+
+**VendorMind AI** is an enterprise-grade AI procurement platform designed to transform slow, manual, spreadsheet-based Request for Proposal (RFP) evaluations into **explainable, compliant, and multi-signal AI decisions**.
+
+Engineered with an **8-node stateful agentic graph (LangGraph)**, **Google Cloud Pub/Sub decoupled microservices**, and **Gemma 3 27B-IT edge privacy filtering**, VendorMind AI evaluates complex RFP requirements against multi-vendor proposals in **under 45 seconds** — while guaranteeing strict **GDPR Article 5/13/14 privacy**, **EEOC 4/5ths Rule bias mitigation**, and **OWASP Top 10 API security**.
 
 <div align="center">
 
-```
-┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
-│  STATUS: HACKATHON SUBMISSION  │  STACK: LANGGRAPH + GEMINI 1.5 PRO  │  SECURITY: OWASP HARDENED  │
-└──────────────────────────────────────────────────────────────────────────────────────────────────┘
-```
-
-</div>
-
-<!-- Tech Stack Icon Wall -->
-<p align="center">
-  <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python" />
-  <img src="https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white" alt="FastAPI" />
-  <img src="https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white" alt="Streamlit" />
-  <img src="https://img.shields.io/badge/Google_Cloud-4285F4?style=for-the-badge&logo=googlecloud&logoColor=white" alt="GCP" />
-  <img src="https://img.shields.io/badge/BigQuery-669DF6?style=for-the-badge&logo=googlebigquery&logoColor=white" alt="BigQuery" />
-  <img src="https://img.shields.io/badge/Cloud_Run-4285F4?style=for-the-badge&logo=googlecloud&logoColor=white" alt="Cloud Run" />
-  <img src="https://img.shields.io/badge/Cloud_Pub/Sub-4285F4?style=for-the-badge&logo=googlecloud&logoColor=white" alt="PubSub" />
-  <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker" />
-  <img src="https://img.shields.io/badge/OpenTelemetry-000000?style=for-the-badge&logo=opentelemetry&logoColor=white" alt="OTel" />
-</p>
+| ⚡ Speed | 🧠 Explainability | 🛡️ Compliance | 🔍 Fairness |
+|:---:|:---:|:---:|:---:|
+| < 45s per evaluation | 3-sentence CRISPE justification per vendor | GDPR Art. 5/13/14/17/22 | EEOC 4/5ths Rule enforced |
 
 </div>
 
 ---
 
-> [!IMPORTANT]
-> **HiDevs Evaluator Note (5 Aug 2026 Evaluation Updates Included)**:
-> All 10 mandatory stack components are **100% MET**. This release fully addresses the evaluator architectural and security recommendations:
-> 1. **Distributed Tracing Envelope**: Standardized `correlation_id`, `parent_span_id`, and `span_id` metadata envelope propagated across all Cloud Pub/Sub topics.
-> 2. **LLM Invocation Audit Logging**: OpenTelemetry schema logging SHA-256 `prompt_hash`, exact `model_version`, and `temperature` for every LLM node.
-> 3. **Vector Store Synchronization**: Write-Through + 300s Periodic Batch Reconciliation protocol between Vertex AI Vector Search and local Qdrant.
+## 🏆 10/10 Mandatory Hackathon Stack Architecture
+
+<div align="center">
+
+| Mandatory Stack Component | Architectural Role & Implementation |
+|:---|:---|
+| **Google AI Studio** | Primary API gateway endpoint for deep qualitative LLM reasoning. |
+| **Gemini 1.5 Pro** | Core reasoning LLM for Criteria Extraction, Risk Analysis, and Explanation Generation. |
+| **Gemma 3 27B-IT** | On-device lightweight model executing **edge PII redaction** at Node 1 (GDPR Article 5). |
+| **Antigravity (AGY)** | AI-assisted development layer managing stateful graph transitions & 12-Factor App standards. |
+| **Google ADK** | Agent Development Kit for structured agent scaffolding and tool registration. |
+| **MCP (Model Context Protocol)** | Context injection & tool grounding for Gemini during criteria extraction. |
+| **A2A Protocol** | Google's Agent-to-Agent spec for direct, decentralised Scoring ↔ Risk negotiation. |
+| **Vertex AI** | Managed model serving, Vertex AI Vector Search (knowledge base), and Gemma hosting. |
+| **Cloud Run** | 12-Factor App serverless container hosting for FastAPI gateway & Streamlit UI. |
+| **BigQuery** | Immutable Audit & State Store (90-day TTL, complete A2A message logs, HITL decisions). |
+
+</div>
 
 ---
 
-## ⚡ Executive Summary
+## 📐 System Architecture Diagram
 
-**VendorMind AI** is an enterprise-grade AI procurement intelligence platform built to automate complex, spreadsheet-based Request for Proposal (RFP) evaluations. Driven by an **8-node stateful LangGraph agentic pipeline**, **decoupled Cloud Run microservices**, and **Google Cloud Pub/Sub**, the platform converts unstructured multi-vendor proposal documents into **explainable, multi-signal, and risk-audited shortlists** in under **45 seconds**.
-
-### 💡 Core Value Proposition
-- ⏱️ **75% Time Reduction**: Reduces manual multi-vendor RFP evaluation from weeks to seconds.
-- 🔒 **Zero Edge Data Leakage**: On-device **Gemma 3 27B-IT** scrubs all PII before cloud egress (**GDPR Article 5**).
-- ⚖️ **Automated Fairness Floor**: Google **A2A Protocol** monitors the **EEOC 4/5ths Adverse Impact Rule** and applies score re-calibrations when AIR < 0.80.
-- 📡 **Full End-to-End Auditability**: Standardized Pub/Sub correlation ID envelopes, SHA-256 prompt hashing, and immutable BigQuery event stores.
-- 👤 **Human-in-the-Loop Control**: Procurement Officers retain final decision authority with executive audio briefings and printable audit reports.
-
----
-
-## 🏆 10/10 Mandatory Hackathon Stack Compliance
-
-| Mandatory Stack Element | Status | Architectural Role & Implementation File |
-|---|---|---|
-| **Google AI Studio** | ✅ **MET** | Primary API gateway endpoint for deep qualitative reasoning prompts. |
-| **Gemini 1.5 Pro** | ✅ **MET** | Core reasoning LLM for Criteria Extraction, Risk Auditing, & EU AI Act Explainability. |
-| **Gemma 3 27B-IT** | ✅ **MET** | On-device edge PII scrubber running at Node 1 ([`pipeline/gemma_filter.py`](./pipeline/gemma_filter.py)). |
-| **Antigravity (AGY)** | ✅ **MET** | System orchestration management for 12-Factor App microservices & graph state. |
-| **Google ADK** | ✅ **MET** | Agent Development Kit framework for structured agent worker scaffolding. |
-| **MCP (Model Context Protocol)** | ✅ **MET** | Context injection protocol grounding Gemini during criteria & RFP bias extraction. |
-| **A2A Protocol** | ✅ **MET** | Agent-to-Agent spec for Scoring ↔ Risk negotiation ([`pipeline/a2a_protocol.py`](./pipeline/a2a_protocol.py)). |
-| **Vertex AI** | ✅ **MET** | Vertex AI Vector Search hosting primary vendor knowledge base embeddings. |
-| **Cloud Run** | ✅ **MET** | Serverless 12-Factor container hosting for FastAPI Gateway & Streamlit UI. |
-| **BigQuery** | ✅ **MET** | Immutable Audit & State Store with 90-day retention TTL (GDPR Art. 17). |
-
----
-
-## 📐 System Architecture & Visual Microservice Workflow
-
-The system employs a **5-Tier Decoupled Microservices Architecture** communicating asynchronously over **Google Cloud Pub/Sub topics**:
-
-```mermaid
-flowchart TD
-    %% Custom Styling
-    classDef client fill:#0B1120,stroke:#00D4FF,stroke-width:2px,color:#00D4FF;
-    classDef gateway fill:#0F172A,stroke:#8B5CF6,stroke-width:2px,color:#C084FC;
-    classDef bus fill:#020617,stroke:#38BDF8,stroke-width:2px,color:#38BDF8;
-    classDef node fill:#1E293B,stroke:#34D399,stroke-width:2px,color:#F1F5F9;
-    classDef risk fill:#1E293B,stroke:#F87171,stroke-width:2px,color:#F87171;
-    classDef data fill:#0B1120,stroke:#F59E0B,stroke-width:2px,color:#FDE68A;
-
-    subgraph TIER1["TIER 1 & 2: CLIENT & DASHBOARD"]
-        UI["🖥️ Streamlit Neural Glassmorphic Dashboard<br/><i>(Port 8516 · 6 Interactive Tabs)</i>"]:::client
-    end
-
-    subgraph TIER2["TIER 3: OWASP GATEWAY & CONSENT ENGINE"]
-        GW["🛡️ FastAPI Security Gateway<br/><i>OAuth2 JWT · GDPR Art 13/14 Consent · Rate Limiting</i>"]:::gateway
-    end
-
-    subgraph TIER3["TIER 4: ASYNCHRONOUS EVENT BUS (Google Cloud Pub/Sub)"]
-        PUB["📡 Microservice Event Bus<br/><i>Standardized OpenTelemetry Correlation Trace Envelope</i>"]:::bus
-    end
-
-    subgraph TIER4["TIER 5: 8-NODE STATEFUL AGENTIC PIPELINE WORKERS"]
-        N1["1️⃣ Intake & Privacy Agent<br/><b>Gemma 3 27B PII Gate</b>"]:::node
-        N2["2️⃣ Criteria Extraction Agent<br/><b>Gemini 1.5 Pro + MCP</b>"]:::node
-        N3["3️⃣ Vendor Retrieval Agent<br/><b>Vertex Vector Search ↔ Qdrant</b>"]:::node
-        N4["4️⃣ Multi-Signal Scoring Agent<br/><b>4-Signal Composite Scoring</b>"]:::node
-        N5["5️⃣ Risk & Bias Agent<br/><b>A2A EEOC Adverse Impact Veto</b>"]:::risk
-        N6["6️⃣ Explanation Agent<br/><b>EU AI Act Art. 13 CRISPE</b>"]:::node
-        N7["7️⃣ Comparison Agent<br/><b>Side-by-Side Ranked Matrix</b>"]:::node
-        N8["8️⃣ Output & HITL Agent<br/><b>Procurement Officer Approval Gate</b>"]:::node
-    end
-
-    subgraph TIER5["TIER 6: DATA, STORAGE & OBSERVABILITY"]
-        BQ[("📊 BigQuery Audit Store<br/><i>90-Day Retention TTL</i>")]:::data
-        VT[("🔍 Vertex AI Vector Search<br/><i>Write-Through Sync</i>")]:::data
-        QD[("⚡ Qdrant Fallback<br/><i>300s Batch Reconcile Daemon</i>")]:::data
-    end
-
-    %% Connections
-    UI -->|HTTPS / TLS 1.3| GW
-    GW -->|Trace Envelope| PUB
-    PUB -->|vendormind.rfp.ingested| N1
-    N1 -->|Redacted Data| N2
-    N2 -->|Criteria Schema| N3
-    N3 <-->|Write-Through / Fallback| VT
-    N3 <-->|Sync Daemon| QD
-    N3 -->|Vendor Context| N4
-    N4 <==>|A2A Handshake: score_draft ⇄ risk_veto| N5
-    N5 -->|Audited Scores| N6
-    N6 -->|Justifications| N7
-    N7 -->|Comparison Table| N8
-    N8 -->|Human Decision| UI
-    N8 -->|Immutable Audit Logs| BQ
+```
+┌─────────────────────────────────────────────────────────────────────────────────────────┐
+│ TIER 1 — CLIENT & UI (Streamlit Dashboard)                                              │
+│   • Neural Glassmorphic Dashboard (Port 8516)                                           │
+│   • GDPR Article 13/14 Vendor Consent Capture Checkbox                                   │
+│   • 1-v-1 Cyber Duel Matrix · Enkrypt AI Telemetry Badges · Web Speech API Audio Engine │
+└───────────────────────────────────────────┬─────────────────────────────────────────────┘
+                                            │ (HTTPS / TLS 1.3 / OAuth2 Bearer JWT)
+                                            ▼
+┌─────────────────────────────────────────────────────────────────────────────────────────┐
+│ TIER 2 — SECURITY GATEWAY & CONSENT ENGINE (FastAPI / Cloud Run)                        │
+│   • OAuth2 Bearer / JWT Token Authentication (`POST /token`)                            │
+│   • GDPR Art. 13 Consent Capture & Art. 14 Transparency Disclosure (`POST /v1/consent`) │
+│   • OWASP A03 Input Validation (Pydantic v2) & OWASP A07 Rate Limiting (100 req/min/IP)    │
+└───────────────────────────────────────────┬─────────────────────────────────────────────┘
+                                            │
+                                            ▼
+┌─────────────────────────────────────────────────────────────────────────────────────────┐
+│ TIER 3 — EVENT BUS & DECOUPLED MICROSERVICES (Google Cloud Pub/Sub)                    │
+│   Topics: `vendormind.rfp.ingested` · `vendormind.score.draft` · `vendormind.consent`   │
+└───────────────────────────────────────────┬─────────────────────────────────────────────┘
+                                            │
+                                            ▼
+┌─────────────────────────────────────────────────────────────────────────────────────────┐
+│ TIER 4 — 8-NODE STATEFUL AGENTIC PIPELINE (LangGraph / AGY / ADK)                        │
+│                                                                                         │
+│   [Node 1: Intake & Privacy Agent]  ◄── Gemma 3 27B-IT Edge PII Scrubbing (GDPR Art. 5)│
+│                 │                                                                       │
+│                 ▼                                                                       │
+│   [Node 2: Criteria Extraction]    ◄── Gemini 1.5 Pro + MCP Context Injection           │
+│                 │                                                                       │
+│                 ▼                                                                       │
+│   [Node 3: Profile Retrieval]      ◄── Vertex AI Vector Search / Qdrant                   │
+│                 │                                                                       │
+│                 ▼                                                                       │
+│   [Node 4: Multi-Signal Scoring]   ◄── 4-Signal Composite Scoring (Cost/Compliance/Fit)   │
+│                 │                                                                       │
+│                 │  ◄═════════════════════════════════════════════════════════════════►  │
+│                 │  A2A PROTOCOL HANDSHAKE (Score Draft ⇄ EEOC Adverse Impact Veto)      │
+│                 │  ◄═════════════════════════════════════════════════════════════════►  │
+│                 ▼                                                                       │
+│   [Node 5: Risk & Bias Agent]      ◄── Gemini 1.5 Pro + Enkrypt AI Toxicity Scan         │
+│                 │                                                                       │
+│                 ▼                                                                       │
+│   [Node 6: Explanation Gen]        ◄── Gemini 1.5 Pro (EU AI Act Art. 13 CRISPE Prompt)  │
+│                 │                                                                       │
+│                 ▼                                                                       │
+│   [Node 7: Comparison Agent]       ◄── Side-by-Side Ranked Pandas Matrix                  │
+│                 │                                                                       │
+│                 ▼                                                                       │
+│   [Node 8: Output & HITL Agent]    ◄── Procurement Officer Approval + Web Speech Briefing  │
+└───────────────────────────────────────────┬─────────────────────────────────────────────┘
+                                            │
+                                            ▼
+┌─────────────────────────────────────────────────────────────────────────────────────────┐
+│ TIER 5 — DATA, STORAGE & OBSERVABILITY                                                  │
+│   • BigQuery Audit Store (90-Day Retention TTL, Immutable Event Logs)                  │
+│   • Google Cloud Storage (Doc Storage) · OpenTelemetry Latency/Token Telemetry Endpoint     │
+└─────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 🤝 Google A2A Agent Negotiation Protocol Sequence
+## 🤖 Detailed 8-Node Agentic Pipeline Breakdown
 
-When Node 4 (Scoring) computes initial draft scores, it initiates a 3-step **Agent-to-Agent (A2A) protocol sequence** over Cloud Pub/Sub with Node 5 (Risk & Bias) to enforce EEOC compliance:
+<table>
+<tr><td width="40" align="center"><b>1</b></td><td>
 
-```mermaid
-sequenceDiagram
-    autonumber
-    participant S as 4️⃣ Scoring Agent
-    participant Bus as 📡 Cloud Pub/Sub
-    participant R as 5️⃣ Risk & Bias Agent
-    participant BQ as 📊 BigQuery Audit
+**Intake & Privacy Agent** <sub>(Gemma 3 27B-IT)</sub>
+- **Function**: Ingests PDF, TXT, DOCX, and JSON RFP and vendor proposal documents.
+- **Privacy Gate**: Uses **Gemma 3 27B-IT** on-device to redact PII (SSNs, Emails, Phones, Addresses) *before* data leaves the local boundary, satisfying **GDPR Article 5 data minimisation**.
+- **Output**: `parsed_rfp` and `parsed_vendors` state keys.
 
-    Note over S,R: Step 1: Draft Score Submission
-    S->>Bus: Publish 'vendormind.score.draft' + correlation_id envelope
-    Bus->>R: Deliver Score Draft & Candidate Demographics
+</td></tr>
+<tr><td align="center"><b>2</b></td><td>
 
-    Note over R: Step 2: EEOC 4/5ths Adverse Impact Audit
-    R->>R: Calculate AIR = (Selection Rate Minority / Selection Rate Majority)
-    alt Adverse Impact Detected (AIR < 0.80)
-        R->>Bus: Publish 'vendormind.risk.vetoed' + Fairness Floor Adjustment
-        Bus->>S: Deliver Risk Veto & Recalibration Floor
-        S->>S: Re-weight Composite Score with EEOC Floor
-    else Compliant (AIR >= 0.80)
-        R->>Bus: Publish 'vendormind.risk.approved'
-        Bus->>S: Deliver Risk Approval Certificate
-    end
+**Criteria Extraction Agent** <sub>(Gemini 1.5 Pro + MCP)</sub>
+- **Function**: Uses **Gemini 1.5 Pro** and **MCP** to extract explicit and implicit RFP criteria.
+- **Bias Flagging**: Detects restrictive RFP phrasing that could create adverse impact on minority/SME vendors.
+- **Output**: Structured `criteria_dict` containing validated cost, compliance, and timeline weights.
 
-    Note over S,BQ: Step 3: Finalization & Audit Logging
-    S->>BQ: Record Complete A2A Handshake & Trace Spans in BigQuery
-```
+</td></tr>
+<tr><td align="center"><b>3</b></td><td>
 
----
+**Vendor Profile Retrieval Agent** <sub>(Vertex AI Vector Search)</sub>
+- **Function**: Queries historical vendor performance and reliability records using `sentence-transformers/all-MiniLM-L6-v2`.
+- **Output**: `vendor_context` (retrieved historical scores and reliability history).
 
-## 🤖 8-Node Agentic Pipeline Specification
+</td></tr>
+<tr><td align="center"><b>4</b></td><td>
 
-```
-┌──────────────────────────────────────────────────────────────────────────────────────────┐
-│ NODE 1: INTAKE & PRIVACY AGENT (Gemma 3 27B-IT Edge Scrubbing)                           │
-│   • Parses PDF, TXT, DOCX, and JSON files cleanly.                                        │
-│   • Executes local Gemma 3 27B-IT model to redact PII prior to cloud transmission.        │
-│   • Compliance: GDPR Article 5 (Data Minimisation).                                       │
-└──────────────────────────────────────────────────────────────────────────────────────────┘
-                                             │
-                                             ▼
-┌──────────────────────────────────────────────────────────────────────────────────────────┐
-│ NODE 2: CRITERIA EXTRACTION AGENT (Gemini 1.5 Pro + MCP Context Injection)               │
-│   • Extracts explicit criteria (cost, SLAs, timelines) and implicit criteria.            │
-│   • Uses MCP to ground prompt context and flag restrictive RFP phrasing bias.            │
-└──────────────────────────────────────────────────────────────────────────────────────────┘
-                                             │
-                                             ▼
-┌──────────────────────────────────────────────────────────────────────────────────────────┐
-│ NODE 3: VENDOR PROFILE RETRIEVAL AGENT (Vertex AI ↔ Qdrant Write-Through Sync)           │
-│   • Queries historical vendor reliability data via sentence-transformers embeddings.      │
-│   • Write-Through Protocol: Upserts to Vertex AI (primary) and mirrors to Qdrant.        │
-│   • Background Daemon: 300s batch reconciliation thread repairs data drift.              │
-└──────────────────────────────────────────────────────────────────────────────────────────┘
-                                             │
-                                             ▼
-┌──────────────────────────────────────────────────────────────────────────────────────────┐
-│ NODE 4: MULTI-SIGNAL SCORING AGENT (4-Signal Weighted Composite)                         │
-│   • Computes composite score: Cost (40%) + Compliance (36%) + Fit (24%) + Timeline.      │
-│   • Submits score_draft payload to Node 5 via A2A Protocol.                              │
-└──────────────────────────────────────────────────────────────────────────────────────────┘
-                                             │
-                                             ▼
-┌──────────────────────────────────────────────────────────────────────────────────────────┐
-│ NODE 5: RISK & BIAS DETECTION AGENT (Enkrypt AI + EEOC 4/5ths Rule Veto)                 │
-│   • Calculates Adverse Impact Ratio (AIR); issues risk_veto if AIR < 0.80.                │
-│   • Scans risk narratives using Enkrypt AI guardrails for toxicity or bias.             │
-└──────────────────────────────────────────────────────────────────────────────────────────┘
-                                             │
-                                             ▼
-┌──────────────────────────────────────────────────────────────────────────────────────────┐
-│ NODE 6: EXPLANATION GENERATION AGENT (Gemini 1.5 Pro CRISPE Prompt)                      │
-│   • Generates 3-sentence human-readable score justifications per vendor.                  │
-│   • Compliance: EU AI Act Article 13 (Explainable AI Mandate).                            │
-└──────────────────────────────────────────────────────────────────────────────────────────┘
-                                             │
-                                             ▼
-┌──────────────────────────────────────────────────────────────────────────────────────────┐
-│ NODE 7: COMPARISON AGENT (Ranked Side-by-Side Pandas Matrix)                              │
-│   • Assembles side-by-side comparison tables incorporating EEOC adjustments and flags.    │
-└──────────────────────────────────────────────────────────────────────────────────────────┘
-                                             │
-                                             ▼
-┌──────────────────────────────────────────────────────────────────────────────────────────┐
-│ NODE 8: OUTPUT & HUMAN-IN-THE-LOOP (HITL) AGENT                                          │
-│   • Presents ranked candidates to Procurement Officer for mandatory Approval/Rejection.   │
-│   • Generates printable HTML Executive Procurement Audit Reports & Web Speech Briefings.   │
-│   • Writes immutable event record to BigQuery (90-day retention TTL).                    │
-└──────────────────────────────────────────────────────────────────────────────────────────┘
-```
+**Multi-Signal Scoring Agent** <sub>(Python + A2A Protocol)</sub>
+- **Function**: Computes a 4-signal weighted composite score:
+  - 💰 **Cost Competitiveness** (40%)
+  - 🛡️ **Compliance & SLA Completeness** (36%)
+  - 🔍 **Semantic Capability Fit** (24%)
+  - ⏱️ **Delivery Timeline Alignment**
+- **A2A Initiation**: Submits `score_draft` to Node 5 via Google's A2A Protocol.
+
+</td></tr>
+<tr><td align="center"><b>5</b></td><td>
+
+**Risk & Bias Detection Agent** <sub>(Enkrypt AI + EEOC 4/5ths Rule)</sub>
+- **A2A Veto Handshake**: Monitors the **EEOC 4/5ths Adverse Impact Ratio (AIR)**. If any vendor AIR < 0.80, Node 5 issues a `risk_veto` over A2A, applying an automated fairness floor before finalization.
+- **Guardrail Layer**: Runs **Enkrypt AI** safety scanning to verify risk narratives for toxicity or bias.
+- **Output**: `risk_flags`, `eeoc_report`, and `a2a_log`.
+
+</td></tr>
+<tr><td align="center"><b>6</b></td><td>
+
+**Explanation Generation Agent** <sub>(Gemini 1.5 Pro CRISPE)</sub>
+- **Function**: Uses a CRISPE-structured prompt to generate a 3-sentence human-readable score justification per vendor.
+- **Compliance**: Meets **EU AI Act Article 13** explainability mandates.
+
+</td></tr>
+<tr><td align="center"><b>7</b></td><td>
+
+**Comparison Agent** <sub>(Python + Pandas)</sub>
+- **Function**: Assembles a side-by-side comparison matrix ranked by composite score, incorporating EEOC adjustment flags and A2A veto counts.
+- **Output**: `comparison_table` state key.
+
+</td></tr>
+<tr><td align="center"><b>8</b></td><td>
+
+**Output & Human-in-the-Loop (HITL) Agent**
+- **Function**: Presents recommendations to the Procurement Officer for mandatory approval/rejection.
+- **Deliverables**: Generates print-ready HTML Executive Procurement Audit Reports and triggers AI Voice Executive Summaries via Web Speech API.
+- **Audit Persistence**: Writes all decisions and A2A logs to BigQuery.
+
+</td></tr>
+</table>
 
 ---
 
-## 🔒 Security, Privacy & Regulatory Compliance Matrix
+## 🔒 Security, Privacy & Regulatory Compliance
 
-### 1. GDPR Regulatory Engine
-- **Article 5 (Data Minimisation)**: Edge PII scrubbing via Gemma 3 27B-IT before cloud transmission.
-- **Article 13 (Consent Capture)**: Explicit vendor opt-in captured via `/v1/consent`.
-- **Article 14 (Transparency Disclosures)**: Automated disclosure emails sent to vendor DPOs detailing Articles 15–22 data rights.
-- **Article 17 (Right to Erasure)**: BigQuery 90-day automatic data retention TTL policy.
-- **Article 22 (Automated Decision Rights)**: Human oversight preserved via Node 8 HITL approval gate.
+### 1. GDPR Compliance Engine
+- **Article 5 (Data Minimisation)** — Gemma 3 27B-IT redacts all PII prior to cloud LLM transmission.
+- **Article 13 (Consent Capture)** — Explicit opt-in consent captured via `/v1/consent`.
+- **Article 14 (Transparency Disclosures)** — Automated disclosure emails sent to vendor DPOs detailing Articles 15–22 data rights.
+- **Article 17 (Right to Erasure)** — BigQuery 90-day automatic data retention TTL policy.
+- **Article 22 (Automated Decision Rights)** — Human oversight preserved via Node 8 HITL approval gate.
 
-### 2. OWASP Top 10 API Hardening
-- **A01 Access Control**: OAuth2 Password Bearer / JWT token validation (`POST /token`).
-- **A02 Cryptography**: HSTS-enforced **TLS 1.3** in transit and **AES-256** at rest.
-- **A03 Input Validation**: Pydantic v2 strict schema enforcement preventing XSS injection.
-- **A07 Rate Limiting**: Max **100 requests/minute per IP** address to prevent DoS attacks.
+### 2. EEOC Adverse Impact Monitoring
+- **4/5ths Rule Enforcement** — Scoring ↔ Risk A2A negotiation monitors adverse impact ratios across vendors.
+- **Fairness Floor** — Automatic score re-calibration when AIR falls below 0.80.
 
-### 3. OpenTelemetry Distributed Observability
-- **Standardized Trace Envelope**: Every Pub/Sub message carries `correlation_id`, `parent_span_id`, `span_id`, and `timestamp_utc`.
-- **LLM Audit Schema**: Logs SHA-256 `prompt_hash`, exact `model_version` (e.g. `gemini-1.5-pro-002`), and `temperature` for every LLM node.
+### 3. OWASP Top 10 API Security
+- **A01 Broken Access Control** — OAuth2 Bearer / JWT token authentication (`POST /token`).
+- **A02 Cryptographic Failures** — HSTS-enforced **TLS 1.3** in transit and **AES-256** at rest across Cloud Storage & BigQuery.
+- **A03 Injection** — Pydantic v2 strict schema enforcement and XSS sanitization.
+- **A07 Rate Limiting** — In-process rate limiting enforcing a max of **100 requests/min per IP**.
+
+### 4. OpenTelemetry Observability
+- Exposes per-node latency (`latency_ms`), token counts (`token_usage`), and trace IDs via `GET /evaluation/{id}/telemetry`.
 
 ---
 
 ## 📋 IEEE 830 SRS Traceability Matrix
 
-| Requirement ID | Component | Source Module | Verification / Acceptance Criteria |
-|---|---|---|---|
-| **FR-101** | Intake Agent | [`pipeline/gemma_filter.py`](./pipeline/gemma_filter.py) | 100% PII scrubbed via Gemma 3 27B-IT before cloud egress |
-| **FR-102** | Consent Engine | [`pipeline/gdpr_consent.py`](./pipeline/gdpr_consent.py) | Consent logged via `/v1/consent` & Art. 14 notice sent |
-| **FR-103** | Criteria Extraction | [`pipeline/criteria_agent.py`](./pipeline/criteria_agent.py) | Gemini 1.5 Pro + MCP extracts validated criteria JSON |
-| **FR-104** | Vector Sync | [`pipeline/vector_sync.py`](./pipeline/vector_sync.py) | Vertex Write-Through + 300s batch reconciliation |
-| **FR-105/106** | A2A Protocol | [`pipeline/a2a_protocol.py`](./pipeline/a2a_protocol.py) | A2A 3-step handshake; AIR < 0.80 triggers veto |
-| **FR-107** | Risk & Bias | [`pipeline/risk_agent.py`](./pipeline/risk_agent.py) | Enkrypt AI toxicity scan & EEOC 4/5ths AIR monitoring |
-| **FR-108** | Explanation Gen | [`pipeline/explanation_agent.py`](./pipeline/explanation_agent.py) | EU AI Act Art. 13 compliant 3-sentence justification |
-| **FR-109** | Comparison Matrix | [`pipeline/comparison_agent.py`](./pipeline/comparison_agent.py) | Ranked side-by-side Pandas DataFrame |
-| **FR-110** | HITL Gate | [`ui/app.py`](./ui/app.py) | Human approval recorded in BigQuery audit log |
-| **FR-111** | Distributed Tracing | [`pipeline/correlation_tracing.py`](./pipeline/correlation_tracing.py) | `correlation_id` trace envelope across Pub/Sub topics |
-| **FR-112** | Event Bus Decoupler | [`pipeline/pubsub_eventbus.py`](./pipeline/pubsub_eventbus.py) | Asynchronous event dispatch across Cloud Pub/Sub topics |
+<div align="center">
+
+| Requirement ID | Component | Implementation File | Acceptance / Verification Metric |
+|:---|:---|:---|:---|
+| **FR-101** | Node 1 (Intake) | [`pipeline/gemma_filter.py`](./pipeline/gemma_filter.py) | 100% PII scrubbed via Gemma 3 27B-IT before egress |
+| **FR-102** | GDPR Consent Engine | [`pipeline/gdpr_consent.py`](./pipeline/gdpr_consent.py) | Consent logged via `/v1/consent` & Art. 14 email dispatched |
+| **FR-103** | Node 2 (Criteria) | [`pipeline/criteria_agent.py`](./pipeline/criteria_agent.py) | Gemini 1.5 Pro + MCP extracts validated criteria JSON |
+| **FR-104** | Node 3 (Retrieval) | [`pipeline/retrieval_agent.py`](./pipeline/retrieval_agent.py) | Vertex Vector Search semantic similarity > 0.65 |
+| **FR-105, 106** | Nodes 4 & 5 (A2A) | [`pipeline/a2a_protocol.py`](./pipeline/a2a_protocol.py) | A2A 3-step handshake; AIR < 0.80 triggers veto |
+| **FR-107** | Node 6 (Explanation) | [`pipeline/explanation_agent.py`](./pipeline/explanation_agent.py) | EU AI Act Art. 13 compliant 3-sentence justification |
+| **FR-108** | Node 7 (Comparison) | [`pipeline/comparison_agent.py`](./pipeline/comparison_agent.py) | Ranked side-by-side Pandas DataFrame |
+| **FR-109** | Node 8 (HITL) | [`api/main.py`](./api/main.py) | Human approval recorded in BigQuery audit log |
+| **FR-110** | Event Bus Decoupler | [`pipeline/pubsub_eventbus.py`](./pipeline/pubsub_eventbus.py) | Async event dispatch on Cloud Pub/Sub topics |
+| **NFR-201** | Security (Auth) | [`api/main.py`](./api/main.py) | OAuth2 JWT token verification on all protected routes |
+| **NFR-202** | Security (Encryption) | GCP Cloud Infrastructure | TLS 1.3 transit & AES-256 rest headers verified |
+| **NFR-203** | Rate Limiting | [`api/main.py`](./api/main.py) | 101st request per minute returns HTTP 429 |
+| **NFR-205** | Observability | `GET /evaluation/{id}/telemetry` | Returns OpenTelemetry latency & trace payload |
+
+</div>
 
 ---
 
-## 🎨 Streamlit Glassmorphic Dashboard (6 Interactive Tabs)
+## 🎨 UI & Dashboard Experience
 
-The Streamlit UI ([`ui/app.py`](./ui/app.py)) features a **Neural Cyberpunk Glassmorphic Theme**:
+VendorMind AI features a **Futuristic Glassmorphic Interface** built in Streamlit:
 
-1. 👑 **Tab 1: Multi-Signal Leaderboard** — Top-ranked vendor candidates with composite score badges.
-2. 📊 **Tab 2: AI Analysis Dashboard** — Breakdown of Cost, Compliance, Semantic Fit, and Timeline signals.
-3. 💬 **Tab 3: AI Justifications** — EU AI Act Article 13 explainable score rationales generated by Gemini 1.5 Pro.
-4. ⚔️ **Tab 4: 1-v-1 Cyber Duel** — Head-to-head comparison cards for finalist vendors.
-5. ✅ **Tab 5: Approve & Audit Exports** — Procurement Officer HITL approval gate and printable HTML audit report downloader.
-6. 🔬 **Tab 6: Distributed Trace & LLM Audit** — Real-time display of Root `correlation_id`, OpenTelemetry span chain, SHA-256 prompt hashes, exact model versions, and Vector Sync status!
+- 🟢 **Live AI Control Center** — Real-time telemetry badges for Gemma 3 27B-IT, Gemini 1.5 Pro, and A2A Protocol.
+- 🥊 **1-v-1 Cyber Duel** — Head-to-head battle card comparison tab for shortlisted candidates.
+- 🛡️ **Enkrypt AI Safety Badges** — Visual indicators for real-time toxicity and fairness auditing.
+- 🔊 **Voice Briefing Engine** — Integrated Web Speech API button generating verbal executive summaries.
+- 📄 **Executive Audit Report** — One-click download of print-ready HTML procurement audit reports.
 
 ---
 
-## ⚡ Quick Start & Local Execution
+## ⚡ Quick Start & Local Run Guide
 
 ### 1. Clone Repository & Install Dependencies
 ```bash
@@ -302,37 +286,40 @@ pip install -r requirements.txt
 ```
 
 ### 2. Configure Environment Variables
+Copy `.env.example` to `.env` and set your API keys:
 ```bash
-export GEMINI_API_KEY="your-google-ai-studio-key"
-export JWT_SECRET_KEY="vendormind-enterprise-secret-key-2026"
+GEMINI_API_KEY="your-google-ai-studio-key"
+ENKRYPT_API_KEY="your-enkrypt-key-optional"
 ```
 
-### 3. Launch FastAPI Security Gateway (Terminal 1)
+### 3. Launch FastAPI Backend Server (Terminal 1)
 ```bash
 python -m uvicorn api.main:app --host 127.0.0.1 --port 8080 --reload
 ```
-*Interactive Swagger Documentation available at: `http://127.0.0.1:8080/docs`*
+> API documentation available at: `http://127.0.0.1:8080/docs`
 
 ### 4. Launch Streamlit Dashboard (Terminal 2)
 ```bash
 $env:API_BASE_URL="http://127.0.0.1:8080"
 python -m streamlit run ui/app.py --server.port 8516
 ```
-*Open `http://localhost:8516` in your web browser.*
+> Open `http://localhost:8516` in your browser to launch VendorMind AI.
 
 ---
 
 ## 📄 Key Project Documentation
 
-- 📘 [`PRD.md`](./PRD.md) — Complete IEEE 830 SRS Product Requirements Document
-- 📐 [`ARCHITECTURE.md`](./ARCHITECTURE.md) — System Architecture Specification & Schemas
-- 📜 [`LICENSE`](./LICENSE) — MIT Open Source License
+| Document | Description |
+|:---|:---|
+| 📘 [`PRD.md`](./PRD.md) | Formal IEEE 830 SRS Product Requirements Document |
+| 📐 [`ARCHITECTURE.md`](./ARCHITECTURE.md) | Architectural Specifications & Node Contracts |
+| 📜 [`LICENSE`](./LICENSE) | MIT Open Source License |
 
 ---
 
 <div align="center">
 
-**VendorMind AI** · Built for the **HiDevs National AI Hackathon 2026**  
-*Developed by Vinay Babannavar · Powered by Google AI Studio · Gemini 1.5 Pro · Gemma 3 27B-IT · LangGraph · Cloud Pub/Sub*
+**VendorMind AI** · Built for the **HiDevs National AI Hackathon 2026**
+*Powered by Google AI Studio · Gemini 1.5 Pro · Gemma 3 27B-IT · LangGraph · Cloud Pub/Sub · Cloud Run*
 
 </div>
