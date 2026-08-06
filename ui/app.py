@@ -614,95 +614,33 @@ SPLASH_HTML = """
     }
 
     // =========================================================
-    // PHASE 2 (1.5s+): 3D ROTATING GLOBE + ORBITAL AGENT NODES
+    // PHASE 2 (1.5s+): FLOATING SYNAPSE PARTICLES + HYPERSPACE
     // =========================================================
     if(elapsed>1500){
-      const gAlpha=Math.min((elapsed-1500)/1000,1);
-      const globR = Math.min(cw, ch) * 0.22;
-      rotY += 0.008;
+      const hexAlpha=Math.min((elapsed-1500)/1000,1);
 
-      // ── Globe Core Glow ──
-      const grad = ctx.createRadialGradient(cx, cy, globR*0.2, cx, cy, globR*1.1);
-      grad.addColorStop(0, `rgba(0,212,255,${0.15*gAlpha})`);
-      grad.addColorStop(0.7, `rgba(124,58,237,${0.08*gAlpha})`);
-      grad.addColorStop(1, 'rgba(0,0,0,0)');
-      ctx.beginPath(); ctx.arc(cx, cy, globR*1.1, 0, Math.PI*2);
-      ctx.fillStyle = grad; ctx.fill();
-
-      // ── Globe Wireframe Latitude/Longitude ──
-      ctx.lineWidth = 0.8;
-      for (let lat = -60; lat <= 60; lat += 20) {
-        const la = lat * Math.PI / 180;
-        const r2 = Math.abs(globR * Math.cos(la));
-        const yy = cy - globR * Math.sin(la);
+      fpts.forEach(p=>{
+        p.x+=p.vx; p.y+=p.vy;
+        if(p.x<0||p.x>cw) p.vx*=-1;
+        if(p.y<0||p.y>ch) p.vy*=-1;
         ctx.beginPath();
-        ctx.ellipse(cx, yy, r2, r2 * 0.22, 0, 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(0,212,255,${0.18*gAlpha})`;
-        ctx.stroke();
-      }
-
-      for (let lng = 0; lng < 180; lng += 30) {
-        const lo = lng * Math.PI / 180;
-        ctx.beginPath();
-        for (let la = -90; la <= 90; la += 10) {
-          const rad = la * Math.PI / 180;
-          const x0 = globR * Math.cos(rad) * Math.sin(lo + rotY);
-          const y0 = globR * Math.sin(rad);
-          const px = cx + x0; const py = cy - y0;
-          if (la === -90) ctx.moveTo(px, py); else ctx.lineTo(px, py);
-        }
-        ctx.strokeStyle = `rgba(0,212,255,${0.12*gAlpha})`;
-        ctx.stroke();
-      }
-
-      // ── Orbital Rings & Orbiting Agent Nodes ──
-      const splashRings = [
-        { r: globR * 1.35, tilt: 0.35, speed: 0.015, phase: elapsed*0.0015, label: "Node 1 Intake", icon: "📥", border: "#00D4FF" },
-        { r: globR * 1.6,  tilt: 1.1,  speed: -0.01, phase: elapsed*0.001 + 2, label: "Node 4 Scoring", icon: "📊", border: "#A78BFA" },
-        { r: globR * 1.85, tilt: 0.6,  speed: 0.008, phase: elapsed*0.0008 + 4, label: "Node 5 Risk Audit", icon: "🛡️", border: "#F87171" },
-        { r: globR * 2.1,  tilt: -0.4, speed: -0.012, phase: elapsed*0.0012 + 1, label: "Node 8 HITL Approve", icon: "✅", border: "#34D399" }
-      ];
-
-      splashRings.forEach(ring => {
-        const steps = 120;
-        ctx.beginPath();
-        for (let s = 0; s <= steps; s++) {
-          const angle = (s / steps) * Math.PI * 2;
-          const px = cx + ring.r * Math.cos(angle) * Math.cos(ring.tilt);
-          const py = cy + ring.r * Math.sin(angle) * 0.35 - ring.r * Math.cos(angle) * Math.sin(ring.tilt) * 0.4;
-          s === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
-        }
-        ctx.strokeStyle = ring.border + '55';
-        ctx.lineWidth = 1.2;
-        ctx.stroke();
-
-        // Orbiting Dot
-        const da = ring.phase;
-        const dx = cx + ring.r * Math.cos(da) * Math.cos(ring.tilt);
-        const dy = cy + ring.r * Math.sin(da) * 0.35 - ring.r * Math.cos(da) * Math.sin(ring.tilt) * 0.4;
-
-        ctx.beginPath(); ctx.arc(dx, dy, 6, 0, Math.PI * 2);
-        ctx.fillStyle = ring.border;
-        ctx.shadowBlur = 18; ctx.shadowColor = ring.border;
-        ctx.fill(); ctx.shadowBlur = 0;
-
-        // Floating Node Badge
-        ctx.save();
-        ctx.font = "800 11px 'JetBrains Mono', monospace";
-        const textWidth = ctx.measureText(ring.label).width;
-        const boxW = textWidth + 28; const boxH = 24;
-        const bx = dx - boxW / 2; const by = dy - 34;
-
-        ctx.fillStyle = "rgba(2, 8, 22, 0.9)";
-        ctx.strokeStyle = ring.border;
-        ctx.lineWidth = 1.5;
-        ctx.beginPath(); ctx.roundRect(bx, by, boxW, boxH, 8);
-        ctx.fill(); ctx.stroke();
-
-        ctx.fillStyle = ring.border;
-        ctx.fillText(ring.icon + " " + ring.label, bx + 8, by + 16);
-        ctx.restore();
+        ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+        ctx.fillStyle=p.col+`${hexAlpha*0.7})`;
+        ctx.fill();
       });
+
+      for(let i=0;i<fpts.length;i++){
+        for(let j=i+1;j<fpts.length;j++){
+          const d=Math.hypot(fpts[i].x-fpts[j].x,fpts[i].y-fpts[j].y);
+          if(d<130){
+            ctx.beginPath();
+            ctx.moveTo(fpts[i].x,fpts[i].y);
+            ctx.lineTo(fpts[j].x,fpts[j].y);
+            ctx.strokeStyle=fpts[i].col+((1-d/130)*0.2*hexAlpha)+')';
+            ctx.lineWidth=0.7; ctx.stroke();
+          }
+        }
+      }
     }
 
     // Scanlines always
@@ -2068,7 +2006,7 @@ else:
   * { margin:0; padding:0; box-sizing:border-box; font-family:'Space Grotesk', system-ui, sans-serif; }
   body { background: transparent; overflow: hidden; padding: 6px; }
   .welcome-wrap {
-    position: relative; width: 100%; height: 520px; border-radius: 24px;
+    position: relative; width: 100%; height: 560px; border-radius: 24px;
     background: linear-gradient(135deg, rgba(2,10,26,0.97), rgba(12,4,30,0.97));
     border: 1.5px solid rgba(0,212,255,0.35);
     box-shadow: 0 0 60px rgba(0,212,255,0.12), inset 0 0 40px rgba(124,58,237,0.06);
@@ -2078,7 +2016,7 @@ else:
   .ui-layer {
     position: relative; z-index: 2; width: 100%; height: 100%;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
-    pointer-events: none; padding: 0 2rem;
+    pointer-events: none; padding: 2rem 2rem;
   }
   .agent-title {
     font-size: 0.72rem; font-weight: 800; letter-spacing: 0.2em; text-transform: uppercase;
@@ -2092,23 +2030,23 @@ else:
     margin-bottom: 0.9rem;
   }
   .sub-text {
-    color: #64748B; font-size: 0.95rem; text-align: center;
-    max-width: 520px; line-height: 1.75; font-weight: 500; margin-bottom: 2.5rem;
+    color: #94A3B8; font-size: 0.95rem; text-align: center;
+    max-width: 540px; line-height: 1.75; font-weight: 500; margin-bottom: 2rem;
   }
   .sub-text b { color: #00D4FF; }
   .step-row {
-    display: flex; align-items: center; gap: 10px; margin-bottom: 2.2rem; flex-wrap: wrap; justify-content: center;
+    display: flex; align-items: center; gap: 10px; margin-bottom: 2rem; flex-wrap: wrap; justify-content: center;
   }
   .step {
-    background: rgba(0,212,255,0.08); border: 1px solid rgba(0,212,255,0.2);
-    border-radius: 12px; padding: 8px 16px; text-align: center;
-    transition: all 0.3s;
+    background: rgba(0,212,255,0.08); border: 1px solid rgba(0,212,255,0.25);
+    border-radius: 12px; padding: 10px 18px; text-align: center;
+    transition: all 0.3s; backdrop-filter: blur(8px);
   }
   .step:hover { background: rgba(0,212,255,0.16); box-shadow: 0 0 18px rgba(0,212,255,0.2); }
   .step-icon { font-size: 1.4rem; display: block; margin-bottom: 3px; }
   .step-num { color: #00D4FF; font-size: 0.6rem; font-weight: 800; letter-spacing: 0.08em; }
   .step-lbl { color: #E2E8F0; font-size: 0.72rem; font-weight: 700; margin-top: 1px; }
-  .step-arr { color: rgba(0,212,255,0.3); font-size: 1.3rem; font-weight: 300; }
+  .step-arr { color: rgba(0,212,255,0.4); font-size: 1.3rem; font-weight: 300; }
   .cta-chip {
     background: linear-gradient(135deg, rgba(0,212,255,0.15), rgba(124,58,237,0.15));
     border: 1.5px solid rgba(0,212,255,0.4); border-radius: 14px;
@@ -2121,25 +2059,25 @@ else:
     50% { box-shadow: 0 0 35px rgba(0,212,255,0.5), 0 0 60px rgba(124,58,237,0.2); }
   }
   .stats-row {
-    display: flex; gap: 30px; margin-top: 1.8rem;
+    display: flex; gap: 35px; margin-top: 1.8rem;
   }
   .stat { text-align: center; }
   .stat-val { font-size: 1.5rem; font-weight: 800; font-family: 'JetBrains Mono', monospace; }
   .stat-val.cy { color: #00D4FF; } .stat-val.pu { color: #A78BFA; } .stat-val.gr { color: #34D399; }
-  .stat-lbl { color: #334155; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; margin-top: 2px; }
+  .stat-lbl { color: #64748B; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; margin-top: 2px; }
 </style>
 </head>
 <body>
 <div class="welcome-wrap">
   <canvas id="globeCanvas"></canvas>
   <div class="ui-layer">
-    <div style="background:rgba(0,212,255,0.12);border:1px solid rgba(0,212,255,0.4);color:#00D4FF;padding:4px 14px;border-radius:20px;font-size:0.68rem;font-weight:800;letter-spacing:0.16em;text-transform:uppercase;margin-bottom:0.6rem;font-family:'JetBrains Mono',monospace">
+    <div style="background:rgba(0,212,255,0.12);border:1px solid rgba(0,212,255,0.4);color:#00D4FF;padding:5px 16px;border-radius:20px;font-size:0.7rem;font-weight:800;letter-spacing:0.16em;text-transform:uppercase;margin-bottom:0.8rem;font-family:'JetBrains Mono',monospace">
       🏆 HiDevs National AI Hackathon 2026  ·  National Finale
     </div>
     <div class="agent-title">⚡ VendorMind AI — Enterprise Procurement Intelligence</div>
     <div class="main-title">Ready to Evaluate<br>Your Vendors</div>
     <div class="sub-text">
-      Developed by <b>Vinay Babannavar</b> · 8-Node LangGraph Microservices Architecture.<br>
+      Developed by <b style="color:#F1F5F9">Vinay Babannavar</b> · 8-Node LangGraph Microservices Architecture.<br>
       Configure your RFP requirements in the sidebar and click <b>⚡ Run 8-Agent Pipeline</b>.
     </div>
     <div class="step-row">
@@ -2151,7 +2089,7 @@ else:
       <div class="step-arr">→</div>
       <div class="step"><span class="step-icon">💬</span><span class="step-num">Node 6-7</span><span class="step-lbl">Explain & Compare</span></div>
       <div class="step-arr">→</div>
-      <div class="step" style="border-color:rgba(52,211,153,0.4);background:rgba(52,211,153,0.08)"><span class="step-icon">✅</span><span class="step-num" style="color:#34D399">Node 8</span><span class="step-lbl">HITL Approve</span></div>
+      <div class="step" style="border-color:rgba(52,211,153,0.5);background:rgba(52,211,153,0.12);box-shadow:0 0 20px rgba(52,211,153,0.2)"><span class="step-icon">✅</span><span class="step-num" style="color:#34D399">Node 8</span><span class="step-lbl" style="color:#34D399">HITL Approve</span></div>
     </div>
     <div class="cta-chip">← Configure RFP & Vendors in Sidebar, then Run Pipeline</div>
     <div class="stats-row">
@@ -2174,16 +2112,15 @@ function resize() {
 resize();
 window.addEventListener('resize', resize);
 
-// ── Globe Parameters ──
-const cx = () => canvas.width * 0.82;
+// ── Center Ambient Rotating 3D Globe ──
+const cx = () => canvas.width * 0.5;
 const cy = () => canvas.height * 0.5;
-const R  = 130;
+const R  = 200;
 let   rotY = 0;
 
-// Globe point grid
 const points = [];
-for (let lat = -80; lat <= 80; lat += 18) {
-  for (let lng = 0; lng < 360; lng += 18) {
+for (let lat = -80; lat <= 80; lat += 20) {
+  for (let lng = 0; lng < 360; lng += 20) {
     const la = lat * Math.PI / 180;
     const lo = lng * Math.PI / 180;
     points.push({ la, lo,
@@ -2191,37 +2128,21 @@ for (let lat = -80; lat <= 80; lat += 18) {
   }
 }
 
-// Orbital rings
 const rings = [
-  { r: R + 28, tilt: 0.4, speed: 0.012, phase: 0,    color: 'rgba(0,212,255,0.5)', dot: '#00D4FF' },
-  { r: R + 50, tilt: 1.1, speed: -0.008, phase: 2,   color: 'rgba(167,139,250,0.4)', dot: '#A78BFA' },
-  { r: R + 72, tilt: 0.6, speed: 0.006, phase: 4,    color: 'rgba(52,211,153,0.35)', dot: '#34D399' },
+  { r: R + 35, tilt: 0.35, speed: 0.01,  color: 'rgba(0,212,255,0.25)', dot: '#00D4FF' },
+  { r: R + 65, tilt: 1.1,  speed: -0.008, color: 'rgba(167,139,250,0.2)', dot: '#A78BFA' },
+  { r: R + 95, tilt: 0.6,  speed: 0.006, color: 'rgba(52,211,153,0.2)',  dot: '#34D399' },
 ];
 
-// Background neural particles
 const particles = [];
-for (let i = 0; i < 55; i++) {
+for (let i = 0; i < 45; i++) {
   particles.push({
-    x: Math.random() * 900,
+    x: Math.random() * 1200,
     y: Math.random() * 600,
-    vx: (Math.random() - 0.5) * 0.7,
-    vy: (Math.random() - 0.5) * 0.7,
-    r:  Math.random() * 1.8 + 0.8,
+    vx: (Math.random() - 0.5) * 0.5,
+    vy: (Math.random() - 0.5) * 0.5,
+    r:  Math.random() * 1.5 + 0.5,
     color: Math.random() > 0.5 ? 'rgba(0,212,255,' : 'rgba(167,139,250,'
-  });
-}
-
-// Data stream arcs
-const arcs = [];
-for (let i = 0; i < 6; i++) {
-  arcs.push({
-    progress: Math.random(),
-    speed: 0.003 + Math.random() * 0.004,
-    startLa: (Math.random() * 120 - 60) * Math.PI / 180,
-    startLo: Math.random() * Math.PI * 2,
-    endLa:   (Math.random() * 120 - 60) * Math.PI / 180,
-    endLo:   Math.random() * Math.PI * 2,
-    color: ['#00D4FF', '#A78BFA', '#34D399', '#FBBF24'][Math.floor(Math.random() * 4)]
   });
 }
 
@@ -2232,82 +2153,57 @@ function project3D(la, lo, rotY) {
   return { x: cx() + x0, y: cy() - y0, z: z0 };
 }
 
-function lerpLa(la1, la2, t) { return la1 + (la2 - la1) * t; }
-function lerpLo(lo1, lo2, t) {
-  let diff = lo2 - lo1;
-  while (diff >  Math.PI) diff -= 2 * Math.PI;
-  while (diff < -Math.PI) diff += 2 * Math.PI;
-  return lo1 + diff * t;
-}
-
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // Background particles + mesh
   for (let i = 0; i < particles.length; i++) {
     let p = particles[i];
     p.x += p.vx; p.y += p.vy;
     if (p.x < 0 || p.x > canvas.width)  p.vx *= -1;
     if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-    ctx.fillStyle = p.color + '0.6)';
-    ctx.fill();
+    ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    ctx.fillStyle = p.color + '0.4)'; ctx.fill();
     for (let j = i + 1; j < particles.length; j++) {
       const q = particles[j];
       const d = Math.hypot(p.x - q.x, p.y - q.y);
-      if (d < 100) {
-        ctx.beginPath();
-        ctx.moveTo(p.x, p.y);
-        ctx.lineTo(q.x, q.y);
-        ctx.strokeStyle = p.color + (0.15 * (1 - d / 100)) + ')';
-        ctx.lineWidth = 0.7;
-        ctx.stroke();
+      if (d < 90) {
+        ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y);
+        ctx.strokeStyle = p.color + (0.1 * (1 - d / 90)) + ')';
+        ctx.lineWidth = 0.6; ctx.stroke();
       }
     }
   }
 
   // Globe glow
-  const grad = ctx.createRadialGradient(cx(), cy(), R * 0.3, cx(), cy(), R);
-  grad.addColorStop(0, 'rgba(0,212,255,0.06)');
+  const grad = ctx.createRadialGradient(cx(), cy(), R * 0.2, cx(), cy(), R);
+  grad.addColorStop(0, 'rgba(0,212,255,0.04)');
   grad.addColorStop(1, 'rgba(0,212,255,0)');
-  ctx.beginPath();
-  ctx.arc(cx(), cy(), R, 0, Math.PI * 2);
-  ctx.fillStyle = grad;
-  ctx.fill();
+  ctx.beginPath(); ctx.arc(cx(), cy(), R, 0, Math.PI * 2);
+  ctx.fillStyle = grad; ctx.fill();
 
   // Globe outline
-  ctx.beginPath();
-  ctx.arc(cx(), cy(), R, 0, Math.PI * 2);
-  ctx.strokeStyle = 'rgba(0,212,255,0.25)';
-  ctx.lineWidth = 1;
-  ctx.stroke();
+  ctx.beginPath(); ctx.arc(cx(), cy(), R, 0, Math.PI * 2);
+  ctx.strokeStyle = 'rgba(0,212,255,0.12)'; ctx.lineWidth = 0.8; ctx.stroke();
 
   // Latitude lines
   for (let lat = -60; lat <= 60; lat += 30) {
     const la = lat * Math.PI / 180;
     const r2 = Math.abs(R * Math.cos(la));
     const yy = cy() - R * Math.sin(la);
-    ctx.beginPath();
-    ctx.ellipse(cx(), yy, r2, r2 * 0.18, 0, 0, Math.PI * 2);
-    ctx.strokeStyle = 'rgba(0,212,255,0.08)';
-    ctx.lineWidth = 0.8;
-    ctx.stroke();
+    ctx.beginPath(); ctx.ellipse(cx(), yy, r2, r2 * 0.18, 0, 0, Math.PI * 2);
+    ctx.strokeStyle = 'rgba(0,212,255,0.06)'; ctx.lineWidth = 0.7; ctx.stroke();
   }
 
   // Longitude lines
   for (let lng = 0; lng < 180; lng += 30) {
     const lo = lng * Math.PI / 180;
     ctx.beginPath();
-    for (let la = -90; la <= 90; la += 5) {
+    for (let la = -90; la <= 90; la += 10) {
       const rad = la * Math.PI / 180;
       const p = project3D(rad, lo, rotY);
-      if (la === -90) ctx.moveTo(p.x, p.y);
-      else ctx.lineTo(p.x, p.y);
+      if (la === -90) ctx.moveTo(p.x, p.y); else ctx.lineTo(p.x, p.y);
     }
-    ctx.strokeStyle = 'rgba(0,212,255,0.06)';
-    ctx.lineWidth = 0.8;
-    ctx.stroke();
+    ctx.strokeStyle = 'rgba(0,212,255,0.04)'; ctx.lineWidth = 0.7; ctx.stroke();
   }
 
   // Globe dots
@@ -2317,53 +2213,17 @@ function draw() {
     .sort((a, b) => a.z - b.z);
 
   for (const p of visibleDots) {
-    const alpha = 0.3 + 0.7 * (p.z / R);
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, 1.8, 0, Math.PI * 2);
+    const alpha = 0.2 + 0.4 * (p.z / R);
+    ctx.beginPath(); ctx.arc(p.x, p.y, 1.5, 0, Math.PI * 2);
     ctx.fillStyle = p.col.replace(')', `, ${alpha})`).replace('rgb', 'rgba');
     ctx.fill();
   }
 
-  // Data arc streams
-  for (const arc of arcs) {
-    arc.progress = (arc.progress + arc.speed) % 1;
-    const tail = 0.12;
-    const head = arc.progress;
-    const tailStart = Math.max(0, head - tail);
-    for (let t = tailStart; t < head; t += 0.01) {
-      const la = lerpLa(arc.startLa, arc.endLa, t);
-      const lo = lerpLo(arc.startLo, arc.endLo, t);
-      const p = project3D(la, lo, rotY);
-      if (p.z < 0) continue;
-      const alpha = ((t - tailStart) / tail) * 0.9;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
-      ctx.fillStyle = arc.color.replace(')', `, ${alpha})`).includes('rgba') ? arc.color : arc.color;
-      ctx.globalAlpha = alpha;
-      ctx.fillStyle = arc.color;
-      ctx.fill();
-      ctx.globalAlpha = 1;
-    }
-    // Head dot
-    const hla = lerpLa(arc.startLa, arc.endLa, head);
-    const hlo = lerpLo(arc.startLo, arc.endLo, head);
-    const hp = project3D(hla, hlo, rotY);
-    if (hp.z > 0) {
-      ctx.beginPath();
-      ctx.arc(hp.x, hp.y, 3.5, 0, Math.PI * 2);
-      ctx.fillStyle = arc.color;
-      ctx.shadowBlur = 12;
-      ctx.shadowColor = arc.color;
-      ctx.fill();
-      ctx.shadowBlur = 0;
-    }
-  }
-
-  // Orbital rings with Labeled Agent Nodes
+  // Orbital rings
   for (let idx = 0; idx < rings.length; idx++) {
     const ring = rings[idx];
     ring.phase += ring.speed;
-    const steps = 180;
+    const steps = 120;
     ctx.beginPath();
     for (let s = 0; s <= steps; s++) {
       const angle = (s / steps) * Math.PI * 2;
@@ -2371,53 +2231,17 @@ function draw() {
       const py = cy() + ring.r * Math.sin(angle) * 0.35 - ring.r * Math.cos(angle) * Math.sin(ring.tilt) * 0.4;
       s === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
     }
-    ctx.strokeStyle = ring.color;
-    ctx.lineWidth = 1.2;
-    ctx.stroke();
+    ctx.strokeStyle = ring.color; ctx.lineWidth = 1; ctx.stroke();
 
-    // Orbital dot & Floating Node Badge
     const da = ring.phase;
     const dx = cx() + ring.r * Math.cos(da) * Math.cos(ring.tilt);
     const dy = cy() + ring.r * Math.sin(da) * 0.35 - ring.r * Math.cos(da) * Math.sin(ring.tilt) * 0.4;
-
-    ctx.beginPath();
-    ctx.arc(dx, dy, 6, 0, Math.PI * 2);
-    ctx.fillStyle = ring.dot;
-    ctx.shadowBlur = 18;
-    ctx.shadowColor = ring.dot;
-    ctx.fill();
-    ctx.shadowBlur = 0;
-
-    // Draw Node Pill Badge on Orbit
-    const nodeLabels = [
-      { text: "Node 1 Intake", icon: "📥", bg: "rgba(0,212,255,0.18)", border: "#00D4FF" },
-      { text: "Node 4 Scoring", icon: "📊", bg: "rgba(167,139,250,0.18)", border: "#A78BFA" },
-      { text: "Node 8 HITL Approve", icon: "✅", bg: "rgba(52,211,153,0.18)", border: "#34D399" }
-    ];
-    const nl = nodeLabels[idx % nodeLabels.length];
-    
-    ctx.save();
-    ctx.font = "bold 10px 'JetBrains Mono', monospace";
-    const textWidth = ctx.measureText(nl.text).width;
-    const boxW = textWidth + 30;
-    const boxH = 22;
-    const bx = dx - boxW / 2;
-    const by = dy - 32;
-
-    ctx.fillStyle = "rgba(3, 9, 24, 0.85)";
-    ctx.strokeStyle = nl.border;
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.roundRect(bx, by, boxW, boxH, 6);
-    ctx.fill();
-    ctx.stroke();
-
-    ctx.fillStyle = nl.border;
-    ctx.fillText(nl.icon + " " + nl.text, bx + 8, by + 14);
-    ctx.restore();
+    ctx.beginPath(); ctx.arc(dx, dy, 4, 0, Math.PI * 2);
+    ctx.fillStyle = ring.dot; ctx.shadowBlur = 10; ctx.shadowColor = ring.dot;
+    ctx.fill(); ctx.shadowBlur = 0;
   }
 
-  rotY += 0.005;
+  rotY += 0.004;
   requestAnimationFrame(draw);
 }
 
@@ -2426,4 +2250,4 @@ draw();
 </body>
 </html>
 """
-        components.html(WELCOME_GLOBE_HTML, height=538)
+        components.html(WELCOME_GLOBE_HTML, height=580)
