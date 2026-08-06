@@ -65,24 +65,24 @@ Engineered with an **8-node stateful agentic graph (LangGraph)**, **Google Cloud
 
 ---
 
-## 🏆 10/10 Mandatory Hackathon Stack Architecture
+## 🏆 Mandatory Hackathon Stack — Implementation Status
 
 <div align="center">
 
-| Mandatory Stack Component | Architectural Role & Implementation |
-|:---|:---|
-| **Google AI Studio** | Primary API gateway endpoint for deep qualitative LLM reasoning. |
-| **Gemini 1.5 Pro** | Core reasoning LLM for Criteria Extraction, Risk Analysis, and Explanation Generation. |
-| **Gemma 3 27B-IT** | On-device lightweight model executing **edge PII redaction** at Node 1 (GDPR Article 5). |
-| **Antigravity (AGY)** | AI-assisted development layer managing stateful graph transitions & 12-Factor App standards. |
-| **Google ADK** | Agent Development Kit for structured agent scaffolding and tool registration. |
-| **MCP (Model Context Protocol)** | Context injection & tool grounding for Gemini during criteria extraction. |
-| **A2A Protocol** | Google's Agent-to-Agent spec for direct, decentralised Scoring ↔ Risk negotiation. |
-| **Vertex AI** | Managed model serving, Vertex AI Vector Search (knowledge base), and Gemma hosting. |
-| **Cloud Run** | 12-Factor App serverless container hosting for FastAPI gateway & Streamlit UI. |
-| **BigQuery** | Immutable Audit & State Store (90-day TTL, complete A2A message logs, HITL decisions). |
+| Mandatory Stack Component | Status | Architectural Role & Implementation |
+|:---|:---:|:---|
+| **Google AI Studio** | ✅ Implemented | Primary API gateway endpoint for Gemini LLM calls (`llm_client.py`). |
+| **Gemini 1.5 Pro** | ✅ Implemented | Core reasoning LLM for Criteria Extraction, Risk Analysis, and Explanation Generation. |
+| **Gemma 3 27B-IT** | ✅ Implemented | On-device edge PII redaction at Node 1 (`pipeline/gemma_filter.py`, GDPR Article 5). |
+| **A2A Protocol** | ✅ Implemented | 3-step Scoring ↔ Risk agent negotiation with EEOC adverse-impact veto (`pipeline/a2a_protocol.py`). |
+| **Cloud Run** | ✅ Implemented | 12-Factor App serverless container hosting for FastAPI gateway & Streamlit UI (`Dockerfile`). |
+| **BigQuery** | ✅ Implemented | Immutable Audit & State Store endpoint in `api/main.py` (in-memory placeholder, BigQuery schema defined). |
+| **Vertex AI** | 🔄 Dev-mode | Vector Search SDK calls gated behind `VERTEX_AI_ENABLED` env flag; falls back to local Qdrant (`pipeline/vector_sync.py`). |
+| **MCP (Model Context Protocol)** | 🔄 Dev-mode | Context injection is applied directly in `criteria_agent.py`; standalone MCP server planned as roadmap item. |
+| **Antigravity (AGY)** | 🔄 Dev-mode | Used for AI-assisted development and graph orchestration design; not a runtime dependency in production. |
+| **Google ADK** | 🔄 Dev-mode | Agent scaffolding patterns informed by ADK spec; direct SDK integration is a roadmap item. |
 
-</div>
+> **Legend**: ✅ Implemented = live, testable code path · 🔄 Dev-mode = partial / env-flag gated / roadmap
 
 ---
 

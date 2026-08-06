@@ -194,14 +194,24 @@ class VectorSyncManager:
         # ── Attempt 2: Qdrant Fallback ────────────────────────────────────
         if self._qdrant_client:
             try:
-                hits = self._qdrant_client.search(
-                    collection_name=QDRANT_COLLECTION,
-                    query_vector=query_vector,
-                    limit=top_k,
-                )
+                if hasattr(self._qdrant_client, "search"):
+                    hits = self._qdrant_client.search(
+                        collection_name=QDRANT_COLLECTION,
+                        query_vector=query_vector,
+                        limit=top_k,
+                    )
+                elif hasattr(self._qdrant_client, "query_points"):
+                    res = self._qdrant_client.query_points(
+                        collection_name=QDRANT_COLLECTION,
+                        query=query_vector,
+                        limit=top_k,
+                    )
+                    hits = res.points
+                else:
+                    hits = []
                 logger.info("[VectorSync][READ] Qdrant fallback returned %d results", len(hits))
                 return [
-                    {"vendor_id": h.payload.get("vendor_id"), "score": h.score, "text": h.payload.get("text", "")}
+                    {"vendor_id": h.payload.get("vendor_id"), "score": getattr(h, "score", 0.0), "text": h.payload.get("text", "")}
                     for h in hits
                 ]
             except Exception as exc:

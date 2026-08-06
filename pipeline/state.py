@@ -69,9 +69,11 @@ class VendorMindState(TypedDict, total=False):
     # Adverse impact ratios computed during A2A handshake.
     eeoc_report: Dict[str, Any]               # adverse impact ratios per vendor
 
-    # --- OpenTelemetry Observability ---
-    # Trace IDs and token counts for LLM observability dashboards.
+    # --- OpenTelemetry Observability & Distributed Tracing ---
+    # Trace IDs, correlation IDs, prompt hashes, and token counts for LLM observability dashboards.
+    correlation_id: Optional[str]
     otel_trace_id: Optional[str]
+    llm_invocation_audit: List[Dict[str, Any]] # per-node LLM audit log (prompt_hash, model_version, temp, span_id)
     token_usage: Dict[str, Any]               # node_name -> {prompt_tokens, completion_tokens}
     latency_ms: Dict[str, float]              # node_name -> elapsed milliseconds
 
