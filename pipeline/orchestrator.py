@@ -67,7 +67,13 @@ def _execute_node_with_tracing(node_key: str, state: VendorMindState) -> VendorM
     t0 = time.monotonic()
     func = meta.get("func")
     if func:
-        state = func(state)
+        try:
+            state = func(state)
+        except Exception as exc:
+            logger.error("[Orchestrator] Exception executing node %s: %s", node_key, exc)
+            if "errors" not in state or state["errors"] is None:
+                state["errors"] = []
+            state["errors"].append(f"{node_key}: {exc}")
     elapsed_ms = round((time.monotonic() - t0) * 1000, 2)
 
     audit_record = audit.finish()

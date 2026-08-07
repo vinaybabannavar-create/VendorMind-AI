@@ -62,8 +62,8 @@ def run_risk_agent(state: VendorMindState) -> VendorMindState:
     median_price = statistics.median(all_prices) if all_prices else None
 
     risk_flags: Dict[str, List[str]] = {}
-    for v in parsed_vendors:
-        vid = v["vendor_id"]
+    for i, v in enumerate(parsed_vendors):
+        vid = v.get("vendor_id", f"vendor_{i+1}")
         flags: List[str] = []
 
         required_certs = set(c.upper() for c in criteria.get("compliance_requirements", []))
@@ -89,7 +89,8 @@ def run_risk_agent(state: VendorMindState) -> VendorMindState:
 
     # Portfolio-level check: single-vendor over-dependency
     if len(parsed_vendors) == 1:
-        risk_flags.setdefault(parsed_vendors[0]["vendor_id"], []).append(
+        first_vid = parsed_vendors[0].get("vendor_id", "vendor_1")
+        risk_flags.setdefault(first_vid, []).append(
             "Only one vendor evaluated — no comparison basis, single-source dependency risk"
         )
 

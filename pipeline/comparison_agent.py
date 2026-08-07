@@ -17,8 +17,8 @@ def run_comparison_agent(state: VendorMindState) -> VendorMindState:
     explanations = state.get("explanations", {})
 
     rows = []
-    for v in parsed_vendors:
-        vid = v["vendor_id"]
+    for i, v in enumerate(parsed_vendors):
+        vid = v.get("vendor_id", f"vendor_{i+1}")
         s = scores.get(vid, {})
         rows.append({
             "vendor_id": vid,

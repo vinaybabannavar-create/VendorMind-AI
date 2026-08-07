@@ -46,7 +46,10 @@ def run_scoring_agent(state: VendorMindState) -> VendorMindState:
     criteria = state.get("criteria", {})
     vendor_context = state.get("vendor_context", {})
 
-    prices = {v["vendor_id"]: _extract_price(v["cleaned_text"]) for v in parsed_vendors}
+    prices = {
+        v.get("vendor_id", f"vendor_{i+1}"): _extract_price(v.get("cleaned_text") or v.get("raw_text") or "")
+        for i, v in enumerate(parsed_vendors)
+    }
     finite_prices = [p for p in prices.values() if p != float("inf")]
     min_price = min(finite_prices) if finite_prices else 1.0
 
@@ -55,9 +58,9 @@ def run_scoring_agent(state: VendorMindState) -> VendorMindState:
 
     # ── Step 1: Compute draft scores ─────────────────────────────────────────
     draft_scores: Dict[str, Any] = {}
-    for v in parsed_vendors:
-        vid = v["vendor_id"]
-        price = prices[vid]
+    for i, v in enumerate(parsed_vendors):
+        vid = v.get("vendor_id", f"vendor_{i+1}")
+        price = prices.get(vid, float("inf"))
 
         # Lower price -> higher cost score (normalized against cheapest vendor)
         cost_score = (min_price / price) if price not in (0, float("inf")) else 0.0

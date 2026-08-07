@@ -44,8 +44,8 @@ def run_explanation_agent(state: VendorMindState) -> VendorMindState:
     risk_flags = state.get("risk_flags", {})
 
     explanations = {}
-    for v in parsed_vendors:
-        vid = v["vendor_id"]
+    for i, v in enumerate(parsed_vendors):
+        vid = v.get("vendor_id", f"vendor_{i+1}")
         s = scores.get(vid, {})
         flags = risk_flags.get(vid, [])
 
