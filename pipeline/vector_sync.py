@@ -53,27 +53,39 @@ QDRANT_COLLECTION = "vendormind_vendors"
 
 
 # ── Embedding Helper ──────────────────────────────────────────────────────────
-_cached_embed_model = None
+import hashlib
+
+def _fallback_vector(text: str, dim: int = 384) -> List[float]:
+    h = hashlib.sha256(text.encode("utf-8")).digest()
+    return [(h[i % len(h)] / 255.0) - 0.5 for i in range(dim)]
 
 def _get_embed_model():
     global _cached_embed_model
+    # On cloud containers like Render (512MB RAM limit), PyTorch loading thrashes memory.
+    # Use ultra-fast zero-overhead embeddings on cloud.
+    if os.getenv("RENDER") or os.getenv("FAST_EMBEDDINGS", "1") == "1":
+        return None
     if _cached_embed_model is None:
-        from sentence_transformers import SentenceTransformer  # type: ignore
-        _cached_embed_model = SentenceTransformer(EMBEDDING_MODEL)
+        try:
+            from sentence_transformers import SentenceTransformer  # type: ignore
+            _cached_embed_model = SentenceTransformer(EMBEDDING_MODEL)
+        except Exception:
+            _cached_embed_model = None
     return _cached_embed_model
 
 def _embed(text: str) -> List[float]:
     """
     Generate a semantic embedding vector for the given text.
-    Uses sentence-transformers all-MiniLM-L6-v2 (384-dim).
-    Falls back to a zero-vector on import failure.
+    Uses sentence-transformers on local, or ultra-fast hash vector on cloud (Render).
     """
     try:
         model = _get_embed_model()
-        return model.encode([text])[0].tolist()
+        if model is not None:
+            return model.encode([text])[0].tolist()
+        return _fallback_vector(text)
     except Exception as exc:
-        logger.warning("[VectorSync] Embedding model unavailable: %s — using zero vector", exc)
-        return [0.0] * 384
+        logger.warning("[VectorSync] Embedding fallback activated: %s", exc)
+        return _fallback_vector(text)
 
 
 # ── Write-Through Synchronization ─────────────────────────────────────────────

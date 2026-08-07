@@ -35,7 +35,7 @@ from typing import Dict, Any
 logger = logging.getLogger(__name__)
 
 # ── Gemma model config ───────────────────────────────────────────────────────
-_GEMMA_MODEL = os.getenv("GEMMA_MODEL", "gemma-3-27b-it")
+_GEMMA_MODEL = os.getenv("GEMMA_MODEL", "gemini-2.0-flash")
 _gemma_client = None
 _gemma_error: str | None = None
 
