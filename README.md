@@ -6,7 +6,7 @@
 
 [![Hackathon](https://img.shields.io/badge/HiDevs-National%20Finale%202026-00D4FF?style=for-the-badge&logo=googlecloud&logoColor=white)](https://hidevs.ai)
 [![Track](https://img.shields.io/badge/Track-Vendor%20Evaluation-8B5CF6?style=for-the-badge)](https://hidevs.ai)
-[![Stack](https://img.shields.io/badge/Google%20Stack-10%2F10%20Met-34D399?style=for-the-badge&logo=google)](https://github.com/vinaybabannavar-create/VendorMind-AI)
+[![Stack](https://img.shields.io/badge/Google%20Stack-6%2F10%20Live%20%C2%B7%204%20Dev--Mode-34D399?style=for-the-badge&logo=google)](#-mandatory-hackathon-stack-implementation-status)
 [![License](https://img.shields.io/badge/License-MIT-F59E0B?style=for-the-badge)](./LICENSE)
 
 [![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
@@ -24,14 +24,16 @@
 
 - [Executive Overview](#-executive-overview)
 - [Why VendorMind AI](#-why-vendormind-ai)
-- [10/10 Mandatory Hackathon Stack Architecture](#-1010-mandatory-hackathon-stack-architecture)
+- [Mandatory Hackathon Stack — Implementation Status](#-mandatory-hackathon-stack-implementation-status)
 - [System Architecture](#-system-architecture)
+- [How It Works — Request Lifecycle, Step by Step](#-how-it-works-request-lifecycle-step-by-step)
 - [8-Node Agentic Pipeline](#-8-node-agentic-pipeline)
 - [Multi-Signal Scoring Model](#-multi-signal-scoring-model)
-- [Security, Privacy & Regulatory Compliance](#-security-privacy--regulatory-compliance)
+- [UI Design System](#-ui-design-system)
+- [Security, Privacy & Regulatory Compliance](#-security-privacy-regulatory-compliance)
 - [IEEE 830 SRS Traceability Matrix](#-ieee-830-srs-traceability-matrix)
-- [UI & Dashboard Experience](#-ui--dashboard-experience)
-- [Quick Start & Local Run Guide](#-quick-start--local-run-guide)
+- [UI & Dashboard Experience](#-ui-dashboard-experience)
+- [Quick Start & Local Run Guide](#-quick-start-local-run-guide)
 - [Key Project Documentation](#-key-project-documentation)
 
 ---
@@ -106,6 +108,63 @@ flowchart TD
     style PIPE fill:#0F1B2E,stroke:#8B5CF6,stroke-width:2px,color:#F1F5F9
     style DATA fill:#0F1B2E,stroke:#34D399,stroke-width:2px,color:#F1F5F9
 ```
+
+---
+
+## 🔬 How It Works — Request Lifecycle, Step by Step
+
+What actually happens between a procurement officer clicking "Evaluate" and a ranked, explainable recommendation appearing on screen — traced through the real code path, not a simplified summary.
+
+<table>
+<tr><td width="36" align="center"><b>1</b></td><td>
+
+**Dashboard submits the request**
+The Streamlit UI (`ui/app.py`) POSTs the RFP text and vendor documents to `POST /evaluate` on the FastAPI gateway, carrying an `Authorization: Bearer <JWT>` header obtained earlier from `POST /token`. FastAPI's OWASP A07 rate limiter checks the caller's IP against the 100 req/min ceiling before anything else runs.
+
+</td></tr>
+<tr><td align="center"><b>2</b></td><td>
+
+**Gateway validates and hands off**
+`api/main.py`'s `evaluate()` handler validates the payload against the `EvaluateRequest` Pydantic v2 schema (rejecting malformed vendor IDs, XSS payloads, and oversized fields per OWASP A03), then calls `run_pipeline(rfp_text=..., vendors=...)` in `pipeline/orchestrator.py` synchronously — this one call is what runs the entire 8-node graph.
+
+</td></tr>
+<tr><td align="center"><b>3</b></td><td>
+
+**The graph compiles and a correlation ID is minted**
+`build_graph()` constructs the LangGraph `StateGraph(VendorMindState)`, wiring all 8 nodes in sequence (`intake → criteria_extraction → retrieval → scoring → risk → explanation → comparison → output`). `run_pipeline()` generates one `correlation_id` (UUID4) that's threaded through every node via `pipeline/pubsub_eventbus.py`, so every hop in this run can be traced back together later.
+
+</td></tr>
+<tr><td align="center"><b>4</b></td><td>
+
+**Nodes 1–3 run: privacy, understanding, context**
+Node 1 (`gemma_filter.py`) strips PII from the raw text before anything touches a cloud LLM call. Node 2 (`criteria_agent.py`) calls Gemini 1.5 Pro to turn the RFP into a structured `criteria` dict. Node 3 (`retrieval_agent.py`) calls `vector_sync.query_similar()` to pull each vendor's historical profile, falling back to local Qdrant if Vertex AI isn't configured.
+
+</td></tr>
+<tr><td align="center"><b>5</b></td><td>
+
+**Nodes 4–5 run: the A2A handshake**
+Node 4 (`scoring_agent.py`) computes the weighted composite score per vendor and emits a `score_draft`. Node 5 (`risk_agent.py`) receives it via `a2a_protocol.py`'s 3-step handshake, computes the EEOC Adverse Impact Ratio across vendors, and can issue a `risk_veto` that adjusts the draft score before it's finalized — this negotiation is itself logged to `a2a_log` in state.
+
+</td></tr>
+<tr><td align="center"><b>6</b></td><td>
+
+**Nodes 6–8 run: explain, compare, gate**
+Node 6 (`explanation_agent.py`) asks Gemini for a 3-sentence CRISPE-structured justification per vendor. Node 7 (`comparison_agent.py`) assembles the ranked Pandas comparison table. Node 8 (`output_agent.py`) packages the `final_report` and waits for human sign-off — nothing is auto-approved.
+
+</td></tr>
+<tr><td align="center"><b>7</b></td><td>
+
+**Gateway returns, dashboard renders**
+Control returns to `evaluate()`, which stores the full result under a new `evaluation_id` (`eval_N`) and returns `{evaluation_id, final_report, comparison_table}`. The dashboard immediately calls `GET /evaluation/{id}/comparison` and `GET /evaluation/{id}/explain/{vendor_id}` to populate the ranked matrix and per-vendor rationale panels.
+
+</td></tr>
+<tr><td align="center"><b>8</b></td><td>
+
+**Human closes the loop**
+The procurement officer reviews the recommendation and clicks approve/reject in the dashboard, which fires `POST /evaluation/approve` — this is the literal code path behind the GDPR Article 22 "human oversight" claim in the compliance table above, not just a design note. `GET /evaluation/{id}/report` then renders the print-ready HTML audit report, and `GET /evaluation/{id}/telemetry` exposes the per-node latency and correlation trace for anyone who wants to see exactly how the 45 seconds were spent.
+
+</td></tr>
+</table>
 
 ---
 
@@ -226,6 +285,28 @@ VendorMind AI features a **Futuristic Glassmorphic Interface** built in Streamli
 | 📄 Executive Audit Report | One-click download of print-ready HTML procurement audit reports |
 
 </div>
+
+---
+
+## 🎛️ UI Design System
+
+The dashboard isn't just "dark mode Streamlit" — `ui/app.py` defines its own design tokens, applied consistently across all tabs rather than left as Streamlit defaults.
+
+<div align="center">
+
+| Token | Value | Used For |
+|:---|:---|:---|
+| Display / body typeface | `'Space Grotesk', sans-serif` | Applied globally via a CSS override on `html, body, [class*="css"]` — Streamlit's default font is never shown |
+| Primary accent | `#00D4FF` (cyan) | Live badges, active states, primary CTAs — the most-used color in the entire stylesheet |
+| Success / compliant | `#34D399` (mint) | Passing checks, EEOC-clear flags, approved states |
+| Risk / veto | `#F87171` (red), `#FBBF24` (amber) | A2A veto indicators, risk flags, warning states |
+| Secondary accent | `#A78BFA` / `#818CF8` (violet/indigo) | Node badges for the Risk & Bias and Explanation stages, echoing the same palette used in this README's Mermaid diagrams |
+| Surface effect | `backdrop-filter: blur(30px) saturate(180%)` | The glassmorphic panel effect behind every card and tab |
+| Corner radius | `border-radius: 6–14px` per element | Consistent rounding scale — tighter radius on small chips, larger on containers |
+
+</div>
+
+This is the same palette this README's architecture and pipeline diagrams above were deliberately built to match — the documentation and the running dashboard are visually one system, not two unrelated color schemes.
 
 ---
 
