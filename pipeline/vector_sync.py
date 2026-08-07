@@ -41,6 +41,8 @@ import logging
 import threading
 from typing import List, Optional, Dict, Any
 
+from pipeline.llm_client import with_retry
+
 logger = logging.getLogger(__name__)
 
 # ── Configuration ─────────────────────────────────────────────────────────────
@@ -151,7 +153,13 @@ class VectorSyncManager:
                     vector=vector,
                     payload={"vendor_id": vendor_id, "text": vendor_text[:500], **meta},
                 )
-                self._qdrant_client.upsert(collection_name=QDRANT_COLLECTION, points=[point])
+                
+                # Wrapped with exponential backoff retries
+                @with_retry(max_retries=3, initial_delay=0.5, backoff_factor=2.0)
+                def _do_qdrant_upsert():
+                    self._qdrant_client.upsert(collection_name=QDRANT_COLLECTION, points=[point])
+                
+                _do_qdrant_upsert()
                 logger.info("[VectorSync][WRITE-THROUGH] Mirrored %s → Qdrant", vendor_id)
                 result["qdrant_write"] = True
             else:
