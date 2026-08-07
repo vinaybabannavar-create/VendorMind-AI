@@ -53,6 +53,14 @@ QDRANT_COLLECTION = "vendormind_vendors"
 
 
 # ── Embedding Helper ──────────────────────────────────────────────────────────
+_cached_embed_model = None
+
+def _get_embed_model():
+    global _cached_embed_model
+    if _cached_embed_model is None:
+        from sentence_transformers import SentenceTransformer  # type: ignore
+        _cached_embed_model = SentenceTransformer(EMBEDDING_MODEL)
+    return _cached_embed_model
 
 def _embed(text: str) -> List[float]:
     """
@@ -61,9 +69,8 @@ def _embed(text: str) -> List[float]:
     Falls back to a zero-vector on import failure.
     """
     try:
-        from sentence_transformers import SentenceTransformer  # type: ignore
-        _model = SentenceTransformer(EMBEDDING_MODEL)
-        return _model.encode([text])[0].tolist()
+        model = _get_embed_model()
+        return model.encode([text])[0].tolist()
     except Exception as exc:
         logger.warning("[VectorSync] Embedding model unavailable: %s — using zero vector", exc)
         return [0.0] * 384
