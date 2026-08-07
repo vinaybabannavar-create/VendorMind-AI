@@ -18,21 +18,18 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: '3.11'
+        cache: 'pip'
 
-    - name: Install Core Test Dependencies
+    - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install fastapi uvicorn pydantic requests python-dotenv pytest pytest-asyncio httpx black flake8 bandit langgraph langchain-core google-generativeai qdrant-client pandas
+        pip install -r requirements.txt
 
     - name: Run Flake8 Syntax Check
       run: |
         flake8 ui/ api/ pipeline/ data/ tests/ --count --select=E9,F63,F7,F82 --show-source --statistics
 
-    - name: Run Code Style Check (Black)
-      run: |
-        black --check ui/ api/ pipeline/ data/ tests/ || true
-
-    - name: Run OWASP Security Audit (Bandit)
+    - name: Run Security Audit (Bandit)
       run: |
         bandit -r api/ pipeline/ data/ --exit-zero
 
