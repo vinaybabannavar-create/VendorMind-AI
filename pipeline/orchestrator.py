@@ -107,7 +107,7 @@ def build_graph():
         
         # Wrapped node functions
         graph.add_node("intake", lambda s: _execute_node_with_tracing("intake_agent", s))
-        graph.add_node("criteria", lambda s: _execute_node_with_tracing("criteria_agent", s))
+        graph.add_node("criteria_extraction", lambda s: _execute_node_with_tracing("criteria_agent", s))
         graph.add_node("retrieval", lambda s: _execute_node_with_tracing("retrieval_agent", s))
         graph.add_node("scoring", lambda s: _execute_node_with_tracing("scoring_agent", s))
         graph.add_node("risk", lambda s: _execute_node_with_tracing("risk_agent", s))
@@ -116,8 +116,8 @@ def build_graph():
         graph.add_node("output", lambda s: _execute_node_with_tracing("output_agent", s))
 
         graph.set_entry_point("intake")
-        graph.add_edge("intake", "criteria")
-        graph.add_edge("criteria", "retrieval")
+        graph.add_edge("intake", "criteria_extraction")
+        graph.add_edge("criteria_extraction", "retrieval")
         graph.add_edge("retrieval", "scoring")
         graph.add_edge("scoring", "risk")
         graph.add_edge("risk", "explanation")

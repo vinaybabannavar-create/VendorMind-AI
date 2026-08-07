@@ -7,8 +7,7 @@ sentence-transformers==3.0.1
 
 # ── LangGraph (Orchestration) ─────────────────────────────────────────────────
 langgraph==0.2.14
-langchain-core==0.3.0
-
+langchain-core==0.2.43
 # ── LLM: Gemini + Gemma (Google AI Studio / Vertex AI) ───────────────────────
 google-generativeai==0.7.2
 
@@ -17,6 +16,7 @@ fastapi==0.115.0
 uvicorn==0.30.6
 pydantic==2.9.0
 httpx==0.27.0
+python-multipart==0.0.9
 
 # ── Frontend ──────────────────────────────────────────────────────────────────
 streamlit==1.39.0
