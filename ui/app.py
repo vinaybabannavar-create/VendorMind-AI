@@ -1383,19 +1383,46 @@ if run_btn:
         result_box, error_box = [None], [None]
 
         try:
-            from pipeline.orchestrator import run_pipeline
-            res = run_pipeline(rfp_text=rfp_input, vendors=active_vendors)
-            res["evaluation_id"] = "eval_1"
-            result_box[0] = res
+            import uuid
+            from pipeline.orchestrator import _execute_node_with_tracing
+
+            correlation_id = str(uuid.uuid4())
+            state = {
+                "rfp_text": rfp_input,
+                "vendors": active_vendors,
+                "errors": [],
+                "correlation_id": correlation_id,
+                "otel_trace_id": correlation_id,
+                "llm_invocation_audit": [],
+                "latency_ms": {},
+                "token_usage": {},
+            }
+
+            node_keys = [
+                "intake_agent",
+                "criteria_agent",
+                "retrieval_agent",
+                "scoring_agent",
+                "risk_agent",
+                "explanation_agent",
+                "comparison_agent",
+                "output_agent"
+            ]
+
+            for i, (num, icon, name, desc, _) in enumerate(AGENTS):
+                rnode(nph[i], num, icon, name, desc, "active")
+                log(f"NODE-{num}", f"→ INVOKE  {icon} {name}", "am")
+                t0 = time.time()
+                state = _execute_node_with_tracing(node_keys[i], state)
+                elapsed = time.time() - t0
+                log(f"NODE-{num}", f"✓ COMPLETE ({elapsed:.1f}s elapsed)", "gr")
+                rnode(nph[i], num, icon, name, desc, "done")
+
+            state["evaluation_id"] = "eval_1"
+            result_box[0] = state
+
         except Exception as exc:
             error_box[0] = str(exc)
-
-        for i, (num, icon, name, desc, dur) in enumerate(AGENTS[:-1]):
-            rnode(nph[i], num, icon, name, desc, "done")
-            log(f"NODE-{num}", f"✓ COMPLETE", "gr")
-
-        rnode(nph[7], 8, "✅", "Output & HITL Agent", "Final report ready · awaiting human approval", "done")
-        log("NODE-8", "✓ COMPLETE — All 8 nodes finished", "gr")
 
         if error_box[0]:
             log("ERROR", error_box[0], "rd")
@@ -1408,10 +1435,8 @@ if run_btn:
             st.session_state.evaluation_id = result_box[0].get("evaluation_id", "eval_1")
             n   = len(result_box[0].get("comparison_table",[]))
             top = (result_box[0].get("final_report") or {}).get("recommended_vendor","N/A")
-            log("NODE-8",f"✓ COMPLETE — {n} vendors ranked","gr")
             log("ORCHESTRATOR",f"Top recommendation: {top}","cy")
             log("ORCHESTRATOR",f"Eval ID: {st.session_state.evaluation_id} — HITL gate open","cy")
-            rnode(nph[7],8,"✅","Output & HITL Agent","Final report ready · awaiting human approval","done")
             st.success(f"✅ All 8 agents complete!  **{n} vendors ranked.** Top pick: **{top}**")
 
 # ──────────────────────────────────────────────────────────────────────────────
