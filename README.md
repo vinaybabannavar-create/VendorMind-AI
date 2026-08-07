@@ -88,25 +88,71 @@ Engineered with an **8-node stateful agentic graph (LangGraph)**, **Google Cloud
 
 ---
 
-## 📐 System Architecture
-
-Five tiers, client to storage — rendered live below with [Mermaid](https://mermaid.js.org/), so it displays natively on GitHub with no external image dependency.
+Six decoupled tiers — Client to Persistence & Hardening — rendered below with full microservice boundaries, 8 LangGraph agent nodes, Write-Through Vector Sync, and GitHub Actions CI/CD automation.
 
 ```mermaid
 flowchart TD
-    UI["🖥️ Tier 1 — Streamlit Dashboard\nGlassmorphic UI · port 8516"]
-    GW["🔐 Tier 2 — FastAPI Gateway\nOAuth2/JWT · Cloud Run"]
-    BUS["📡 Tier 3 — Cloud Pub/Sub\nrfp.ingested · score.draft · consent"]
-    PIPE["🤖 Tier 4 — 8-Node LangGraph Pipeline"]
-    DATA["🗄️ Tier 5 — BigQuery · Cloud Storage · OpenTelemetry"]
+    subgraph TIER1["🖥️ TIER 1 — Client & Dashboard Layer (Port 8516)"]
+        UI["Streamlit Procurement Dashboard (ui/app.py)\n• 3D Cyberpunk Entry & Crown Card\n• 7 Interactive Tabs & Web Speech AI Briefing"]
+        USER["Procurement Officer / Manager"]
+        USER -->|Web Browser| UI
+    end
 
-    UI -->|HTTPS · TLS 1.3 · Bearer JWT| GW --> BUS --> PIPE --> DATA
+    subgraph TIER2["🔐 TIER 2 — API Gateway & Governance Layer (Port 8080)"]
+        GW["FastAPI Gateway (api/main.py)\n• OWASP A01 (OAuth2 JWT) · A02 (TLS 1.3/AES-256)\n• OWASP A03 (Pydantic v2 XSS Guard) · A07 (Rate Limit)\n• Response Sanitization Layer (_sanitize)"]
+        GDPR["GDPR Art. 13/14 Consent Engine\n(pipeline/gdpr_consent.py)"]
+        GW --- GDPR
+    end
 
-    style UI fill:#0F1B2E,stroke:#38BDF8,stroke-width:2px,color:#F1F5F9
-    style GW fill:#0F1B2E,stroke:#38BDF8,stroke-width:2px,color:#F1F5F9
-    style BUS fill:#0F1B2E,stroke:#8B5CF6,stroke-width:2px,color:#F1F5F9
-    style PIPE fill:#0F1B2E,stroke:#8B5CF6,stroke-width:2px,color:#F1F5F9
-    style DATA fill:#0F1B2E,stroke:#34D399,stroke-width:2px,color:#F1F5F9
+    subgraph TIER3["🤖 TIER 3 — 8-Node LangGraph Agentic Pipeline"]
+        ORCH["Agent Orchestrator (pipeline/orchestrator.py)\n• Exponential Backoff (@with_retry)\n• Root Correlation ID Envelope"]
+        N1["Node 1: Intake Agent\nGemma 3 27B-IT PII Gate"]
+        N2["Node 2: Criteria Extraction Agent\nGemini 2.0 Flash + MCP Injection"]
+        N3["Node 3: Vendor Retrieval Agent\nWrite-Through Vector Search"]
+        N4["Node 4: Multi-Signal Scoring Agent\nInverse Cost & Cert Match"]
+        N5["Node 5: Risk & Bias Agent\nEEOC 4/5ths Rule & A2A Veto"]
+        N6["Node 6: Explanation Agent\nEU AI Act Art. 13 CRISPE Prompt"]
+        N7["Node 7: Comparison Agent\n1-v-1 Cyber Duel Matrix"]
+        N8["Node 8: Output & HITL Agent\nExecutive Report & Human Approval Gate"]
+
+        ORCH --> N1 --> N2 --> N3 --> N4 <-->|A2A 3-Step Handshake| N5 --> N6 --> N7 --> N8
+    end
+
+    subgraph TIER4["🧠 TIER 4 — AI & Protocol Services"]
+        GEMINI["Google Gemini 2.0 Flash API\n(Google AI Studio)"]
+        GEMMA["Gemma 3 27B-IT Edge Model\n(On-Device PII Filtering)"]
+        A2A["Google Agent-to-Agent (A2A) Protocol\n(EEOC Adverse Impact Negotiation)"]
+        OTEL["OpenTelemetry Audit Engine\n(Prompt-Hash SHA-256 & Drift Audit)"]
+    end
+
+    subgraph TIER5["💾 TIER 5 — Storage & Hybrid Vector Sync Layer"]
+        PUBSUB["Cloud Pub/Sub Event Bus\nvendormind.rfp.ingested · score.draft · risk.approved"]
+        VSYNC["Write-Through Vector Sync Manager\nVertex AI Vector Search ↔ Local Qdrant Mirror\n300s Batch Reconciliation Daemon"]
+        STORE["BigQuery Audit & State Store\n90-Day Automatic GDPR TTL Policy"]
+    end
+
+    subgraph TIER6["🔄 TIER 6 — CI/CD & Production Hardening"]
+        CICD["GitHub Actions CI/CD Pipeline (.github/workflows/test.yml)\n• 70/70 Automated Pytest Suite (100% Pass Rate)\n• Flake8 Linter · Bandit OWASP Security Audit"]
+    end
+
+    UI -->|HTTPS · TLS 1.3 · Bearer JWT| GW
+    GW -->|Pub/Sub Event Bus| PUBSUB
+    PUBSUB --> ORCH
+    N1 <--> GEMMA
+    N2 <--> GEMINI
+    N3 <--> VSYNC
+    N4 <--> A2A <--> N5
+    N6 <--> GEMINI
+    ORCH <--> OTEL
+    N8 --> STORE
+    CICD -.->|Automated Validation| GW
+
+    style TIER1 fill:#070F22,stroke:#00D4FF,stroke-width:2px,color:#F1F5F9
+    style TIER2 fill:#070F22,stroke:#00D4FF,stroke-width:2px,color:#F1F5F9
+    style TIER3 fill:#070F22,stroke:#8B5CF6,stroke-width:2px,color:#F1F5F9
+    style TIER4 fill:#070F22,stroke:#C084FC,stroke-width:2px,color:#F1F5F9
+    style TIER5 fill:#070F22,stroke:#34D399,stroke-width:2px,color:#F1F5F9
+    style TIER6 fill:#070F22,stroke:#F59E0B,stroke-width:2px,color:#F1F5F9
 ```
 
 ---
