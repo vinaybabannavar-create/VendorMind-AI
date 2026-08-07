@@ -1383,9 +1383,18 @@ if run_btn:
         result_box, error_box = [None],[None]
         def call_api():
             try:
-                r = requests.post(f"{API_BASE}/evaluate", json={"rfp_text":rfp_input,"vendors":active_vendors}, timeout=300)
-                r.raise_for_status(); result_box[0] = r.json()
-            except Exception as e: error_box[0] = str(e)
+                r = requests.post(f"{API_BASE}/evaluate", json={"rfp_text":rfp_input,"vendors":active_vendors}, timeout=45)
+                r.raise_for_status()
+                result_box[0] = r.json()
+            except Exception as e:
+                # Direct in-process fallback for 100% resilience on cloud deployments (Render/Cloud Run)
+                try:
+                    from pipeline.orchestrator import run_pipeline
+                    res = run_pipeline(rfp_text=rfp_input, vendors=active_vendors)
+                    res["evaluation_id"] = "eval_1"
+                    result_box[0] = res
+                except Exception as exc:
+                    error_box[0] = str(exc)
 
         t = threading.Thread(target=call_api, daemon=True)
         t.start()
