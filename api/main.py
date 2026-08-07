@@ -127,6 +127,25 @@ async def security_headers(request: Request, call_next):
 _evaluations: dict = {}
 
 
+def _sanitize(obj):
+    """Recursively convert any non-JSON-serializable value to a string
+    so FastAPI can always return a valid JSON response even when the
+    pipeline state contains numpy types, Pydantic models, or custom objects."""
+    if obj is None or isinstance(obj, (bool, int, float, str)):
+        return obj
+    if isinstance(obj, dict):
+        return {str(k): _sanitize(v) for k, v in obj.items()}
+    if isinstance(obj, (list, tuple)):
+        return [_sanitize(i) for i in obj]
+    # Fallback: coerce anything else to string
+    try:
+        import json
+        json.dumps(obj)
+        return obj
+    except (TypeError, ValueError):
+        return str(obj)
+
+
 # ── Pydantic Models with OWASP A03 Input Validation ─────────────────────────
 
 class VendorInput(BaseModel):
@@ -169,6 +188,7 @@ def evaluate(req: EvaluateRequest):
 
     vendors_payload = [v.model_dump() for v in req.vendors]
     result = run_pipeline(rfp_text=req.rfp_text, vendors=vendors_payload)
+    result = _sanitize(result)
 
     evaluation_id = f"eval_{len(_evaluations) + 1}"
     _evaluations[evaluation_id] = result
