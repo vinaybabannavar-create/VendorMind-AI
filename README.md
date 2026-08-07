@@ -88,7 +88,9 @@ Engineered with an **8-node stateful agentic graph (LangGraph)**, **Google Cloud
 
 ---
 
-Six decoupled tiers — Client to Persistence & Hardening — rendered below with full microservice boundaries, 8 LangGraph agent nodes, Write-Through Vector Sync, and GitHub Actions CI/CD automation.
+## 📐 System Architecture
+
+Six decoupled tiers — Client to Persistence & Hardening — rendered below with full microservice boundaries, 8 LangGraph agent nodes, Write-Through Vector Sync, and GitHub Actions CI/CD automation. Status tags follow the same ✅ Implemented / 🔄 Dev-mode split as the stack table above.
 
 ```mermaid
 flowchart TD
@@ -107,7 +109,7 @@ flowchart TD
     subgraph TIER3["🤖 TIER 3 — 8-Node LangGraph Agentic Pipeline"]
         ORCH["Agent Orchestrator (pipeline/orchestrator.py)\n• Exponential Backoff (@with_retry)\n• Root Correlation ID Envelope"]
         N1["Node 1: Intake Agent\nGemma 3 27B-IT PII Gate"]
-        N2["Node 2: Criteria Extraction Agent\nGemini 2.0 Flash + MCP Injection"]
+        N2["Node 2: Criteria Extraction Agent\nGemini 1.5 Pro + MCP-style Injection (dev-mode)"]
         N3["Node 3: Vendor Retrieval Agent\nWrite-Through Vector Search"]
         N4["Node 4: Multi-Signal Scoring Agent\nInverse Cost & Cert Match"]
         N5["Node 5: Risk & Bias Agent\nEEOC 4/5ths Rule & A2A Veto"]
@@ -119,16 +121,16 @@ flowchart TD
     end
 
     subgraph TIER4["🧠 TIER 4 — AI & Protocol Services"]
-        GEMINI["Google Gemini 2.0 Flash API\n(Google AI Studio)"]
-        GEMMA["Gemma 3 27B-IT Edge Model\n(On-Device PII Filtering)"]
-        A2A["Google Agent-to-Agent (A2A) Protocol\n(EEOC Adverse Impact Negotiation)"]
-        OTEL["OpenTelemetry Audit Engine\n(Prompt-Hash SHA-256 & Drift Audit)"]
+        GEMINI["Google Gemini 1.5 Pro API ✅\n(Google AI Studio, gemini-1.5-pro-002)"]
+        GEMMA["Gemma 3 27B-IT Edge Model ✅\n(On-Device PII Filtering)"]
+        A2A["Google Agent-to-Agent (A2A) Protocol ✅\n(EEOC Adverse Impact Negotiation)"]
+        OTEL["Correlation/Audit Engine ✅\n(Prompt-Hash SHA-256 & Drift Audit)"]
     end
 
     subgraph TIER5["💾 TIER 5 — Storage & Hybrid Vector Sync Layer"]
-        PUBSUB["Cloud Pub/Sub Event Bus\nvendormind.rfp.ingested · score.draft · risk.approved"]
-        VSYNC["Write-Through Vector Sync Manager\nVertex AI Vector Search ↔ Local Qdrant Mirror\n300s Batch Reconciliation Daemon"]
-        STORE["BigQuery Audit & State Store\n90-Day Automatic GDPR TTL Policy"]
+        PUBSUB["Cloud Pub/Sub Event Bus 🔄 dev-mode\nvendormind.rfp.ingested · score.draft · risk.approved"]
+        VSYNC["Write-Through Vector Sync Manager 🔄 dev-mode\nVertex AI (gated) ↔ Local Qdrant (active fallback)\n300s Batch Reconciliation Daemon"]
+        STORE["Evaluation Store 🔄 dev-mode\nIn-memory now; BigQuery schema defined, not yet wired"]
     end
 
     subgraph TIER6["🔄 TIER 6 — CI/CD & Production Hardening"]
