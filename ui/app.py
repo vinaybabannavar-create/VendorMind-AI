@@ -1408,14 +1408,17 @@ if run_btn:
         if error_box[0]:
             log("ERROR", error_box[0], "rd")
             st.error(f"❌ Pipeline error: {error_box[0]}")
+        elif not result_box[0]:
+            log("ERROR", "API request timed out or returned empty response", "rd")
+            st.error("❌ Pipeline API timed out or returned empty response. Please try again.")
         else:
             st.session_state.result = result_box[0]
-            st.session_state.evaluation_id = result_box[0]["evaluation_id"]
+            st.session_state.evaluation_id = result_box[0].get("evaluation_id", "eval_1")
             n   = len(result_box[0].get("comparison_table",[]))
-            top = result_box[0].get("final_report",{}).get("recommended_vendor","N/A")
+            top = (result_box[0].get("final_report") or {}).get("recommended_vendor","N/A")
             log("NODE-8",f"✓ COMPLETE — {n} vendors ranked","gr")
             log("ORCHESTRATOR",f"Top recommendation: {top}","cy")
-            log("ORCHESTRATOR",f"Eval ID: {result_box[0]['evaluation_id']} — HITL gate open","cy")
+            log("ORCHESTRATOR",f"Eval ID: {st.session_state.evaluation_id} — HITL gate open","cy")
             rnode(nph[7],8,"✅","Output & HITL Agent","Final report ready · awaiting human approval","done")
             st.success(f"✅ All 8 agents complete!  **{n} vendors ranked.** Top pick: **{top}**")
 

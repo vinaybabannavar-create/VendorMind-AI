@@ -193,11 +193,8 @@ def evaluate(req: EvaluateRequest):
     evaluation_id = f"eval_{len(_evaluations) + 1}"
     _evaluations[evaluation_id] = result
 
-    return {
-        "evaluation_id": evaluation_id,
-        "final_report": result.get("final_report"),
-        "comparison_table": result.get("comparison_table"),
-    }
+    result["evaluation_id"] = evaluation_id
+    return result
 
 
 @app.get("/evaluation/{evaluation_id}")
