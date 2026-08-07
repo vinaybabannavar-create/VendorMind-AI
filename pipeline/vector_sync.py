@@ -124,19 +124,15 @@ class VectorSyncManager:
     def upsert_vendor(
         self,
         vendor_id: str,
-        vendor_text: str,
+        vendor_text: Optional[str] = None,
         metadata: Optional[Dict[str, Any]] = None,
+        text: Optional[str] = None,
     ) -> Dict[str, Any]:
         """
         WRITE-THROUGH: Upsert vendor embedding to Vertex AI AND Qdrant simultaneously.
-
-        Consistency guarantee: Vertex AI is authoritative. If Qdrant write fails,
-        the vendor_id is added to _pending_reconciliation for the next batch sync.
-
-        Returns:
-            Dict with write status for each store.
         """
-        vector = _embed(vendor_text)
+        content = vendor_text or text or ""
+        vector = _embed(content)
         meta = metadata or {}
         result = {"vendor_id": vendor_id, "vertex_write": False, "qdrant_write": False}
 

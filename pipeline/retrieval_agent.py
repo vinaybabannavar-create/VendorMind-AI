@@ -38,7 +38,7 @@ def run_retrieval_agent(state: VendorMindState) -> VendorMindState:
             try:
                 vector_sync.upsert_vendor(
                     vendor_id=v["vendor_id"],
-                    text=v["cleaned_text"],
+                    vendor_text=v.get("cleaned_text", v.get("raw_text", "")),
                     metadata=meta,
                 )
             except Exception:
