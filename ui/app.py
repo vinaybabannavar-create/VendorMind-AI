@@ -1380,39 +1380,22 @@ if run_btn:
         log("ORCHESTRATOR","State graph invoked — transitions begin...","sl")
         time.sleep(0.3)
 
-        result_box, error_box = [None],[None]
-        def call_api():
-            try:
-                r = requests.post(f"{API_BASE}/evaluate", json={"rfp_text":rfp_input,"vendors":active_vendors}, timeout=45)
-                r.raise_for_status()
-                result_box[0] = r.json()
-            except Exception as e:
-                # Direct in-process fallback for 100% resilience on cloud deployments (Render/Cloud Run)
-                try:
-                    from pipeline.orchestrator import run_pipeline
-                    res = run_pipeline(rfp_text=rfp_input, vendors=active_vendors)
-                    res["evaluation_id"] = "eval_1"
-                    result_box[0] = res
-                except Exception as exc:
-                    error_box[0] = str(exc)
+        result_box, error_box = [None], [None]
 
-        t = threading.Thread(target=call_api, daemon=True)
-        t.start()
+        try:
+            from pipeline.orchestrator import run_pipeline
+            res = run_pipeline(rfp_text=rfp_input, vendors=active_vendors)
+            res["evaluation_id"] = "eval_1"
+            result_box[0] = res
+        except Exception as exc:
+            error_box[0] = str(exc)
 
-        for i,(num,icon,name,desc,dur) in enumerate(AGENTS[:-1]):
-            rnode(nph[i],num,icon,name,desc,"active")
-            log(f"NODE-{num}",f"→ INVOKE  {icon} {name}","am")
-            time.sleep(0.3)
-            log(f"NODE-{num}",desc,"sl")
-            time.sleep(dur)
-            log(f"NODE-{num}",f"✓ COMPLETE  ({dur:.1f}s elapsed)","gr")
-            rnode(nph[i],num,icon,name,desc,"done")
-            time.sleep(0.15)
+        for i, (num, icon, name, desc, dur) in enumerate(AGENTS[:-1]):
+            rnode(nph[i], num, icon, name, desc, "done")
+            log(f"NODE-{num}", f"✓ COMPLETE", "gr")
 
-        rnode(nph[7],8,"✅","Output & HITL Agent","Compiling final report & shortlist...","active")
-        log("NODE-8","→ INVOKE  ✅ Output & HITL Agent","am")
-        log("NODE-8","Waiting for full pipeline state...","sl")
-        t.join(timeout=270)
+        rnode(nph[7], 8, "✅", "Output & HITL Agent", "Final report ready · awaiting human approval", "done")
+        log("NODE-8", "✓ COMPLETE — All 8 nodes finished", "gr")
 
         if error_box[0]:
             log("ERROR", error_box[0], "rd")
