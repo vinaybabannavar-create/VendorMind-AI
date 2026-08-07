@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: vendormind-ai
+    env: docker
+    plan: free
+    dockerfilePath: Dockerfile
+    healthCheckPath: /
+    envVars:
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GEMINI_MODEL
+        value: gemini-2.0-flash
+      - key: PYTHONPATH
+        value: .
