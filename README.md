@@ -360,8 +360,9 @@ python -m streamlit run ui/app.py --server.port 8516
 
 | Document | Description |
 |:---|:---|
-| 📘 [`PRD.md`](./PRD.md) | Formal IEEE 830 SRS Product Requirements Document |
-| 📐 [`ARCHITECTURE.md`](./ARCHITECTURE.md) | Architectural Specifications & Node Contracts |
+| 📘 [`PRD.md`](./PRD.md) | Formal Product Requirements Document (PRD) & IEEE 830 SRS |
+| 📐 [`architecture.md`](./architecture.md) | System Architecture Specification (Decoupled Microservices) |
+| 🏗️ [`ARCHITECTURE.md`](./ARCHITECTURE.md) | Extended Architecture & Agent Node Specifications |
 | 📜 [`LICENSE`](./LICENSE) | MIT Open Source License |
 
 </div>

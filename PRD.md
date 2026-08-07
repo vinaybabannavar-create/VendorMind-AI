@@ -64,15 +64,26 @@ The system follows a **Decoupled Microservices Architecture** orchestrated by **
 6.  **AI Tier:** Gemini 1.5 Pro (Reasoning), Gemma 3 27B-IT (Edge Privacy), Enkrypt AI (Guardrails).
 7.  **Storage & Audit Tier:** BigQuery (Immutable Audit & State Store with 90-day TTL), Vertex AI Vector Search, Google Cloud Storage.
 
-## 8. Tech Stack
-*   **LLM & Reasoning:** Gemini 1.5 Pro (via Google AI Studio / Vertex AI), Gemma 3 27B-IT (On-Device / Vertex AI).
-*   **Orchestration:** LangGraph, Antigravity (AGY), Google ADK.
-*   **Protocols & Event Bus:** MCP (Model Context Protocol), A2A (Agent-to-Agent), Google Cloud Pub/Sub.
-*   **Tracing & Sync:** OpenTelemetry Schema Adapter (`correlation_tracing.py`), Vector Sync Manager (`vector_sync.py`).
-*   **Backend:** FastAPI, Python 3.11+, Pydantic v2, PyJWT.
-*   **Frontend:** Streamlit, Web Speech API.
-*   **Infrastructure:** Cloud Run, Docker, Google Cloud Build.
-*   **Data & Vector:** BigQuery, Vertex AI Vector Search, Qdrant fallback.
+## 8. Tech Stack — Implementation Status
+
+| Component | Status | Notes |
+| :--- | :---: | :--- |
+| Gemini 1.5 Pro (`gemini-1.5-pro-002`), via Google AI Studio | ✅ Live | Core reasoning LLM, used in `criteria_agent.py`, `scoring_agent.py`, `risk_agent.py`, `explanation_agent.py` |
+| Gemma 3 27B-IT | ✅ Live | On-device PII redaction, `pipeline/gemma_filter.py` |
+| LangGraph (`langgraph==0.2.14`) | ✅ Live | Real `StateGraph` orchestration, `pipeline/orchestrator.py`, verified against 70-test suite |
+| A2A Protocol | ✅ Live | 3-step Scoring ↔ Risk handshake, `pipeline/a2a_protocol.py` |
+| Correlation Tracing | ✅ Live | `correlation_id` threaded through every node, `pipeline/correlation_tracing.py` |
+| FastAPI, Pydantic v2, PyJWT | ✅ Live | `api/main.py` |
+| Streamlit, Web Speech API | ✅ Live | `ui/app.py` |
+| Cloud Run, Docker | ✅ Live | `Dockerfile`, `start.sh` |
+| Vertex AI Vector Search | 🔄 Dev-mode | SDK call gated behind `VERTEX_AI_ENABLED`; falls back to local Qdrant, `pipeline/vector_sync.py` |
+| Google Cloud Pub/Sub | 🔄 Dev-mode | Real `pubsub_v1.PublisherClient` attempted; falls back to in-process dispatch without live GCP credentials, `pipeline/pubsub_eventbus.py` |
+| MCP (Model Context Protocol) | 🔄 Dev-mode | Context injection applied directly in `criteria_agent.py`; standalone MCP server/client is a roadmap item |
+| Google ADK | 🔄 Dev-mode | Agent scaffolding patterns informed by ADK design; no direct SDK integration yet |
+| Antigravity (AGY) | 🔄 Dev-mode | Used as an AI-assisted development aid during build; not a runtime dependency |
+| BigQuery | 🔄 Dev-mode | Schema defined in `api/main.py`; evaluation store currently in-memory, explicitly commented as a placeholder for BigQuery/Firestore |
+
+> **Legend:** ✅ Live = exercised by the test suite and the real request path · 🔄 Dev-mode = implemented with a working local fallback, gated behind config, or not yet wired to the live GCP service
 
 ## 9. Data Requirements & Telemetry Schema
 ### 9.1 Pub/Sub Message Envelope Schema

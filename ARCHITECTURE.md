@@ -12,7 +12,7 @@ The architecture enforces:
 2. **A2A EEOC Negotiation**: 3-step Agent-to-Agent handshake (`score_draft` -> `risk_veto` -> `score_final`) enforcing EEOC 4/5ths Rule Adverse Impact Ratios (AIR >= 0.80).
 3. **Distributed Correlation Tracing**: Standardized message envelopes carrying `correlation_id`, `parent_span_id`, and `span_id` across all Pub/Sub topic boundaries.
 4. **LLM Invocation Auditability**: OpenTelemetry logging capturing SHA-256 `prompt_hash`, exact `model_version`, and `temperature` for every LLM call.
-5. **Vector Sync Consistency**: Write-Through + Periodic Batch Reconciliation (300s daemon) between Vertex AI Vector Search (authoritative) and local Qdrant (fallback).
+5. **Vector Sync Consistency**: Write-Through + Periodic Batch Reconciliation (300s daemon) between Vertex AI Vector Search (dev-mode, gated behind `VERTEX_AI_ENABLED`) and local Qdrant (active fallback in the current build).
 
 ---
 
@@ -40,49 +40,51 @@ The architecture enforces:
 │   FastAPI Gateway (api/main.py, Cloud Run)                                              │
 │   • OAuth2 Password Bearer / JWT Token Issuance (`POST /token`)                         │
 │   • GDPR Consent Capture & Transparency Notice Dispatch (`POST /v1/consent`)            │
-│   • OWASP A03 Input Validation (Pydantic v2) & OWASP A07 Rate Limiting (100 req/min/IP)    │
+│   • OWASP A03 Input Validation (Pydantic v2) & OWASP A07 Rate Limiting (100 req/min/IP) │
 │   • OpenTelemetry Observability Endpoint (`GET /evaluation/{id}/telemetry`)             │
 └───────────────────────────────────────────┬─────────────────────────────────────────────┘
                                             │
                                             ▼
 ┌─────────────────────────────────────────────────────────────────────────────────────────┐
-│ TIER 4 — EVENT BUS & DECOUPLED MICROSERVICES (pipeline/pubsub_eventbus.py)               │
+│ TIER 4 — EVENT BUS & DECOUPLED MICROSERVICES (pipeline/pubsub_eventbus.py) [DEV-MODE]   │
+│   Real google.cloud.pubsub_v1.PublisherClient attempted; falls back to in-process       │
+│   dispatch when live GCP Pub/Sub credentials aren't configured.                         │
 │   Topics:                                                                               │
-│     • `vendormind.rfp.ingested`         (Intake ➔ Criteria)                              │
-│     • `vendormind.criteria.extracted`   (Criteria ➔ Retrieval)                           │
-│     • `vendormind.score.draft`          (Scoring ➔ Risk A2A Step 1)                      │
-│     • `vendormind.risk.vetoed`          (Risk ➔ Scoring A2A Step 2 Veto)                 │
-│     • `vendormind.risk.approved`        (Risk ➔ Scoring A2A Step 3 Approval)             │
+│     • `vendormind.rfp.ingested`         (Intake ➔ Criteria)                             │
+│     • `vendormind.criteria.extracted`   (Criteria ➔ Retrieval)                          │
+│     • `vendormind.score.draft`          (Scoring ➔ Risk A2A Step 1)                     │
+│     • `vendormind.risk.vetoed`          (Risk ➔ Scoring A2A Step 2 Veto)                │
+│     • `vendormind.risk.approved`        (Risk ➔ Scoring A2A Step 3 Approval)            │
 │     • `vendormind.evaluation.completed` (Pipeline Output ➔ BigQuery Audit)              │
 │     • `vendormind.vendor.consent`       (GDPR Consent Logger)                           │
 └───────────────────────────────────────────┬─────────────────────────────────────────────┘
                                             │
                                             ▼
 ┌─────────────────────────────────────────────────────────────────────────────────────────┐
-│ TIER 5 — 8-NODE STATEFUL AGENTIC PIPELINE (pipeline/orchestrator.py)                     │
+│ TIER 5 — 8-NODE STATEFUL AGENTIC PIPELINE (pipeline/orchestrator.py)                    │
 │                                                                                         │
 │   [Node 1: Intake Agent]        ◄── Gemma 3 27B-IT Edge PII Scrubbing (GDPR Art. 5)     │
 │              │                                                                          │
 │              ▼                                                                          │
-│   [Node 2: Criteria Agent]      ◄── Gemini 1.5 Pro + MCP Context Injection                │
+│   [Node 2: Criteria Agent]      ◄── Gemini 1.5 Pro + MCP-style Injection (dev-mode)     │
 │              │                                                                          │
 │              ▼                                                                          │
-│   [Node 3: Retrieval Agent]     ◄── VectorSyncManager (Vertex AI ↔ Qdrant Write-Through)  │
+│   [Node 3: Retrieval Agent]     ◄── VectorSyncManager (Vertex AI ↔ Qdrant Write-Through)│
 │              │                                                                          │
 │              ▼                                                                          │
 │   [Node 4: Scoring Agent]       ◄── 4-Signal Composite Scoring (Cost/Compliance/Fit)    │
 │              │                                                                          │
 │              │ ◄════════════════════════════════════════════════════════════════════►   │
-│              │ A2A PROTOCOL HANDSHAKE (Score Draft ⇄ EEOC Adverse Impact Veto)           │
+│              │ A2A PROTOCOL HANDSHAKE (Score Draft ⇄ EEOC Adverse Impact Veto)          │
 │              │ ◄════════════════════════════════════════════════════════════════════►   │
 │              ▼                                                                          │
-│   [Node 5: Risk & Bias Agent]   ◄── Gemini 1.5 Pro + Enkrypt AI Guardrails                  │
+│   [Node 5: Risk & Bias Agent]   ◄── Gemini 1.5 Pro + Enkrypt AI Guardrails              │
 │              │                                                                          │
 │              ▼                                                                          │
-│   [Node 6: Explanation Agent]   ◄── Gemini 1.5 Pro (EU AI Act Art. 13 CRISPE Prompt)       │
+│   [Node 6: Explanation Agent]   ◄── Gemini 1.5 Pro (EU AI Act Art. 13 CRISPE Prompt)    │
 │              │                                                                          │
 │              ▼                                                                          │
-│   [Node 7: Comparison Agent]    ◄── Side-by-Side Ranked Pandas Matrix                       │
+│   [Node 7: Comparison Agent]    ◄── Side-by-Side Ranked Pandas Matrix                   │
 │              │                                                                          │
 │              ▼                                                                          │
 │   [Node 8: Output & HITL Agent] ◄── Procurement Officer Approval Gate + Web Speech      │
@@ -91,11 +93,14 @@ The architecture enforces:
                                             ▼
 ┌─────────────────────────────────────────────────────────────────────────────────────────┐
 │ TIER 6 — DATA, PERSISTENCE & OBSERVABILITY TIER                                         │
-│   • BigQuery Audit Store (Immutable Event Logs, A2A Messages, 90-Day Retention TTL)     │
-│   • Vertex AI Vector Search (Primary Authoritative Knowledge Base)                      │
-│   • Qdrant Local Fallback (Mirrored via Write-Through + 300s Batch Reconciliation Daemon) │
+│   • BigQuery Audit Store [DEV-MODE — schema defined in api/main.py, evaluation store    │
+│     is currently in-memory pending a live BigQuery/Firestore connection]                │
+│   • Vertex AI Vector Search [DEV-MODE — gated behind VERTEX_AI_ENABLED, Qdrant is       │
+│     the active fallback in the current build]                                           │
+│   • Qdrant Local Fallback (Write-Through Mirror + 300s Reconcile Daemon)                │
 │   • OpenTelemetry Audit Log (correlation_id, prompt_hash SHA-256, model_version)        │
-│   • Google Cloud Storage (Raw RFP PDFs & Vendor Proposals)                              │
+│   • Google Cloud Storage [ROADMAP — no client code in the current build; RFP/proposal   │
+│     files are handled in-request, not yet persisted to GCS]                             │
 └─────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -136,6 +141,8 @@ To resolve distributed tracing across asynchronous Google Cloud Pub/Sub boundari
 
 ## 4. Vector Search Write-Through & Reconciliation Protocol (`pipeline/vector_sync.py`)
 
+**Status: DEV-MODE.** Vertex AI calls are gated behind the `VERTEX_AI_ENABLED` env flag; the current build actively runs on the Qdrant local fallback path. The write-through and reconciliation logic below is real and exercised — it's the Vertex AI leg specifically that's not yet wired to a live GCP project.
+
 To ensure read consistency and fault isolation between primary cloud storage (**Vertex AI Vector Search**) and local fallback (**Qdrant**), VendorMind AI enforces a **Write-Through + Periodic Batch Reconciliation** protocol.
 
 ```
@@ -163,7 +170,7 @@ To ensure read consistency and fault isolation between primary cloud storage (**
                                                    ▼
                                     ┌──────────────────────────────┐
                                     │ Re-sync to Qdrant            │
-                                    └──────────────────────────────┘
+                                    └──────────────┬───────────────┘
 ```
 
 ### Protocol Mechanics
@@ -178,8 +185,8 @@ To ensure read consistency and fault isolation between primary cloud storage (**
 | Node ID | Node Name | Responsibilities | Technology & Models | Key Outputs / State Updates |
 |---|---|---|---|---|
 | **Node 1** | Intake Agent | Parses PDFs/TXTs; scrubs PII before cloud egress | Gemma 3 27B-IT, PyPDF2 | `parsed_rfp`, `parsed_vendors`, `gemma_pii_results` |
-| **Node 2** | Criteria Extraction Agent | Extracts explicit/implicit criteria; flags RFP bias | Gemini 1.5 Pro, MCP | `criteria_dict`, `rfp_bias_flags` |
-| **Node 3** | Vendor Retrieval Agent | Fetches historical performance & certs via vector search | Vertex Vector Search, Qdrant, sentence-transformers | `vendor_context`, `vector_sync_status` |
+| **Node 2** | Criteria Extraction Agent | Extracts explicit/implicit criteria; flags RFP bias | Gemini 1.5 Pro, MCP-style context injection (dev-mode — inline in `criteria_agent.py`, no standalone MCP server) | `criteria_dict`, `rfp_bias_flags` |
+| **Node 3** | Vendor Retrieval Agent | Fetches historical performance & certs via vector search | Vertex Vector Search (dev-mode), Qdrant (active fallback), sentence-transformers | `vendor_context`, `vector_sync_status` |
 | **Node 4** | Multi-Signal Scoring Agent | Computes 4-signal composite score; initiates A2A handshake | Gemini 1.5 Pro, Python, NumPy | `score_draft`, `a2a_log` |
 | **Node 5** | Risk & Bias Detection Agent | Monitors EEOC 4/5ths rule; triggers A2A veto if AIR < 0.80 | Gemini 1.5 Pro, Enkrypt AI | `risk_flags`, `eeoc_report`, `a2a_veto_count` |
 | **Node 6** | Explanation Generation Agent | Generates 3-sentence human-readable score rationale | Gemini 1.5 Pro (CRISPE Prompt) | `explanations` (EU AI Act Art. 13) |
