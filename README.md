@@ -15,6 +15,13 @@
 [![LangGraph](https://img.shields.io/badge/LangGraph-Orchestration-1C3C3C?style=flat-square)](https://www.langchain.com/langgraph)
 [![Gemini](https://img.shields.io/badge/Gemini%201.5%20Pro-Reasoning-4285F4?style=flat-square&logo=googlegemini&logoColor=white)](https://ai.google.dev/)
 [![Cloud Run](https://img.shields.io/badge/Cloud%20Run-Deployment-4285F4?style=flat-square&logo=googlecloud&logoColor=white)](https://cloud.google.com/run)
+<br/>
+
+### 🌐 **OFFICIAL HACKATHON SUBMISSION LINKS**
+
+| 🚀 Live Web Application | 🎬 Demo Video | 📦 GitHub Repository |
+| :---: | :---: | :---: |
+| [**vendormind-ai.onrender.com**](https://vendormind-ai.onrender.com) | [**Watch Video Demo**](https://drive.google.com/file/d/1WDluCH9bl6V4vgsQRYToamPxnyNLwoRR/view?usp=drivesdk) | [**vinaybabannavar-create/VendorMind-AI**](https://github.com/vinaybabannavar-create/VendorMind-AI.git) |
 
 </div>
 
