@@ -24,7 +24,7 @@ _memory_store: List[Dict[str, Any]] = []  # fallback: [{"id":..., "vector":[...]
 
 def _get_embed_model():
     global _embed_model
-    if os.getenv("RENDER") or os.getenv("FAST_EMBEDDINGS", "1") == "1":
+    if os.getenv("RENDER") or os.getenv("FAST_EMBEDDINGS") == "1":
         return None
     if _embed_model is not None:
         return _embed_model

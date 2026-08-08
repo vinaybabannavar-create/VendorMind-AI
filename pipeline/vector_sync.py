@@ -55,6 +55,8 @@ QDRANT_COLLECTION = "vendormind_vendors"
 # ── Embedding Helper ──────────────────────────────────────────────────────────
 import hashlib
 
+_cached_embed_model = None
+
 def _fallback_vector(text: str, dim: int = 384) -> List[float]:
     h = hashlib.sha256(text.encode("utf-8")).digest()
     return [(h[i % len(h)] / 255.0) - 0.5 for i in range(dim)]
@@ -63,7 +65,7 @@ def _get_embed_model():
     global _cached_embed_model
     # On cloud containers like Render (512MB RAM limit), PyTorch loading thrashes memory.
     # Use ultra-fast zero-overhead embeddings on cloud.
-    if os.getenv("RENDER") or os.getenv("FAST_EMBEDDINGS", "1") == "1":
+    if os.getenv("RENDER") or os.getenv("FAST_EMBEDDINGS") == "1":
         return None
     if _cached_embed_model is None:
         try:

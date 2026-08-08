@@ -30,6 +30,7 @@ def run_comparison_agent(state: VendorMindState) -> VendorMindState:
             "risk_flag_count": len(risk_flags.get(vid, [])),
             "risk_flags": risk_flags.get(vid, []),
             "explanation": explanations.get(vid, ""),
+            "explanation_source": state.get("explanation_source", {}).get(vid, "gemini"),
         })
 
     rows.sort(key=lambda r: r["composite_score"], reverse=True)

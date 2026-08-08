@@ -35,7 +35,9 @@ from typing import Dict, Any
 logger = logging.getLogger(__name__)
 
 # ── Gemma model config ───────────────────────────────────────────────────────
-_GEMMA_MODEL = os.getenv("GEMMA_MODEL", "gemini-2.0-flash")
+# Note: Uses GEMMA_MODEL env var if set, defaulting to gemini-3.6-flash for API Studio
+# compatibility while deterministic regex PII scrubber handles pre-processing.
+_GEMMA_MODEL = os.getenv("GEMMA_MODEL", "gemini-3.6-flash")
 _gemma_client = None
 _gemma_error: str | None = None
 

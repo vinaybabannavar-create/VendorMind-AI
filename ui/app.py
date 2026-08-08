@@ -1622,6 +1622,8 @@ if st.session_state.result:
             sem  = item.get("semantic_score",0)*100
             flags= item.get("risk_flags",[])
             expl = item.get("explanation","")
+            expl_src = item.get("explanation_source", "gemini")
+            expl_label = "💬 Gemini 1.5 Pro AI Justification" if expl_src == "gemini" else "📐 Rule-Based Justification (LLM unavailable)"
 
             ccls, bcls, scls, blabel = RMETA.get(rk,("rn","vb-cyan","slate",f"🏅 RANK #{rk}"))
 
@@ -1684,7 +1686,7 @@ if st.session_state.result:
               </div>
 
               {"<div class='risk-row'><div style='color:#F87171;font-size:0.75rem;font-weight:800;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.4rem'>⚠️ Risk Guardrail Flags (" + str(len(flags)) + ")</div>" + "".join(f"<div style='color:#FCA5A5;font-size:0.84rem;line-height:1.6'>• {f}</div>" for f in flags) + "</div>" if flags else "<div style='color:#34D399;font-size:0.82rem;margin-top:0.8rem;font-weight:700'>✓ Zero risk flags — passed all guardrail checks</div>"}
-              {"<div class='expl-row'><div style='color:#00D4FF;font-size:0.75rem;font-weight:800;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.4rem'>💬 Gemini 2.0 AI Justification</div><div style='color:#BAE6FD;font-size:0.86rem;line-height:1.75'>" + expl + "</div></div>" if expl else ""}
+              {"<div class='expl-row'><div style='color:#00D4FF;font-size:0.75rem;font-weight:800;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.4rem'>" + expl_label + "</div><div style='color:#BAE6FD;font-size:0.86rem;line-height:1.75'>" + expl + "</div></div>" if expl else ""}
             </div>""", unsafe_allow_html=True)
 
     # ── TAB 2: AI ANALYSIS DASHBOARD ────────────────────────────────────────
@@ -1898,7 +1900,7 @@ if st.session_state.result:
 
             # Executive Printable HTML Audit Report
             report_rows = "".join(f"<tr style='border-bottom:1px solid #334155;'><td style='padding:10px;color:#00D4FF;'>#{r.get('rank')}</td><td style='padding:10px;font-weight:bold;'>{r.get('vendor_name')}</td><td style='padding:10px;color:#34D399;font-weight:bold;'>{r.get('composite_score',0)*100:.1f}/100</td><td style='padding:10px;font-size:0.85em;color:#CBD5E1;'>{r.get('explanation','N/A')}</td></tr>" for r in table)
-            executive_html = f"""<!DOCTYPE html><html><head><meta charset="utf-8"><title>VendorMind AI — Executive Audit Report</title><style>body{{font-family:system-ui,sans-serif;background:#0B1120;color:#F1F5F9;padding:40px;}}table{{width:100%;border-collapse:collapse;margin-top:20px;}}th{{background:#0F172A;color:#38BDF8;padding:12px;text-align:left;}}</style></head><body><h1 style="color:#00D4FF">VendorMind AI — Executive Procurement Audit Report</h1><p>Evaluation ID: <strong>{st.session_state.evaluation_id}</strong> | Recommended Winner: <strong>{top}</strong></p><table><thead><tr><th>Rank</th><th>Vendor Name</th><th>Composite Score</th><th>AI Score Rationale (Gemini 2.0)</th></tr></thead><tbody>{report_rows}</tbody></table></body></html>"""
+            executive_html = f"""<!DOCTYPE html><html><head><meta charset="utf-8"><title>VendorMind AI — Executive Audit Report</title><style>body{{font-family:system-ui,sans-serif;background:#0B1120;color:#F1F5F9;padding:40px;}}table{{width:100%;border-collapse:collapse;margin-top:20px;}}th{{background:#0F172A;color:#38BDF8;padding:12px;text-align:left;}}</style></head><body><h1 style="color:#00D4FF">VendorMind AI — Executive Procurement Audit Report</h1><p>Evaluation ID: <strong>{st.session_state.evaluation_id}</strong> | Recommended Winner: <strong>{top}</strong></p><table><thead><tr><th>Rank</th><th>Vendor Name</th><th>Composite Score</th><th>AI Score Rationale (Gemini 1.5 Pro)</th></tr></thead><tbody>{report_rows}</tbody></table></body></html>"""
             st.download_button("📊  Download Printable HTML Audit Report", data=executive_html, file_name=f"vendormind_executive_report_{st.session_state.evaluation_id}.html", mime="text/html", use_container_width=True)
 
     # ── TAB 6: DISTRIBUTED TRACE & LLM AUDIT ────────────────────────────────
